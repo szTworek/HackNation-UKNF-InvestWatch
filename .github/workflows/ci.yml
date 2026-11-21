@@ -77,9 +77,10 @@ jobs:
           python-version: "3.12"
       - name: Install API dependencies at locked versions (without torch)
         run: |
-          uv export --frozen --no-hashes --no-emit-project -o "$RUNNER_TEMP/constraints.txt" >/dev/null
+          uv export --frozen --no-dev --no-hashes --no-emit-project --no-annotate --no-header \
+            | grep -vE '^(torch|triton|nvidia-|cuda-)' > "$RUNNER_TEMP/requirements.txt"
           uv venv "$RUNNER_TEMP/venv"
-          VIRTUAL_ENV="$RUNNER_TEMP/venv" uv pip install -c "$RUNNER_TEMP/constraints.txt" fastapi pydantic rapidfuzz httpx
+          VIRTUAL_ENV="$RUNNER_TEMP/venv" uv pip install --no-deps -r "$RUNNER_TEMP/requirements.txt"
       - name: Smoke test API on the baseline model
         env:
           INVESTWATCH_BASELINE: "1"

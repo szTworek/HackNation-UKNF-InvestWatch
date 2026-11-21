@@ -527,11 +527,12 @@ class OpenRouterTeacher(GroqTeacher):
     """Darmowe modele OpenRouter, wyłącznie do etykietowania danych treningowych. Aplikacja z nich nie korzysta."""
 
     URL = "https://openrouter.ai/api/v1/chat/completions"
-    DEFAULT = "google/gemma-4-31b-it:free"
+    DEFAULT = "baidu/ernie-5.5-flash-preview:free"
 
     def __init__(self, model: str | None = None, **kw: Any):
         load_env()
         Teacher.__init__(self, model=model or self.DEFAULT, **kw)
+        self.num_predict = max(self.num_predict, 4000)  # modele z rozumowaniem zużywają limit przed odpowiedzią JSON
         self.api_key = os.environ.get("OPENROUTER_API_KEY", "")
         if not self.api_key:
             raise RuntimeError("Brak OPENROUTER_API_KEY w ml/.env")
