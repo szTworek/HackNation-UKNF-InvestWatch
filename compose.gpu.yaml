@@ -1,6 +1,8 @@
 # Opcjonalna nakładka GPU (wymaga NVIDIA Container Toolkit). Włączana przez USE_GPU=1 w deploy/<env>.env.
+# Obraz GPU powstaje tylko przy tagu vX.Y.Z, więc IMAGE_TAG musi wskazywać release.
 services:
   ai-service:
+    image: ${REGISTRY:-ghcr.io/sztworek}/uknf-ai-service-gpu:${IMAGE_TAG:-main}
     deploy:
       resources:
         reservations:

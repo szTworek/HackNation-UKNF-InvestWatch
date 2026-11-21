@@ -10,3 +10,4 @@ scrapers/poc/results/
 .idea/
 .vscode/
 !.env.example
+/models/

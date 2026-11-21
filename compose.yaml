@@ -1,7 +1,5 @@
-# Stack uruchamiany z gotowych obrazów (środowiska wdrożone: dev i prod).
-# Profile:
-#   jobs – kolektory, uruchamiane jednorazowo: docker compose run --rm collector youtube_posts forex
-#   app  – frontend, API, ai-service; wymaga katalogów frontend/ i ml/ z kodem
+# Cały stack z gotowych obrazów: docker compose up -d, potem http://localhost:8080
+# Kolektory (profil jobs) są jednorazowe: docker compose run --rm collector youtube_posts forex
 # Wdrożenie: deploy/deploy.sh <dev|prod> <tag> [--with-app]; ustawienia w deploy/<env>.env
 
 x-service: &service
@@ -36,7 +34,6 @@ services:
 
   frontend:
     <<: *service
-    profiles: [app]
     image: ${REGISTRY:-ghcr.io/sztworek}/uknf-frontend:${IMAGE_TAG:-main}
     depends_on:
       - api
@@ -48,7 +45,6 @@ services:
   # Mock API jest kontraktem backendu. Gdy powstanie backend, podmieniamy tylko ten serwis.
   api:
     <<: *service
-    profiles: [app]
     image: ${REGISTRY:-ghcr.io/sztworek}/uknf-mock-api:${IMAGE_TAG:-main}
     read_only: true
     tmpfs:
@@ -61,7 +57,6 @@ services:
 
   ai-service:
     <<: *service
-    profiles: [app]
     image: ${REGISTRY:-ghcr.io/sztworek}/uknf-ai-service:${IMAGE_TAG:-main}
     environment:
       INVESTWATCH_BASELINE: ${INVESTWATCH_BASELINE:-0}

@@ -6,9 +6,10 @@
 |---|---|---|
 | `uknf-collector` | `scrapers/`, `adapters/`, `preprocessing/` | zawsze |
 | `uknf-frontend`, `uknf-mock-api` | `frontend/` | gdy istnieje `frontend/package.json` |
-| `uknf-ai-service` | `ml/` | gdy istnieje `ml/pyproject.toml` |
+| `uknf-ai-service` (CPU) | `ml/` | gdy istnieje `ml/pyproject.toml` |
+| `uknf-ai-service-gpu` (CUDA) | `ml/` | tylko przy tagu `vX.Y.Z` |
 
-Serwisy aplikacji (profil `app`) wdrażają się, gdy w repo są i `frontend/`, i `ml/`.
+`docker compose up -d` uruchamia frontend, API i `ai-service`.
 Kolektory (profil `jobs`) to zadania jednorazowe, nie działają stale.
 
 ## Środowiska
@@ -19,7 +20,7 @@ Kolektory (profil `jobs`) to zadania jednorazowe, nie działają stale.
 | Obrazy | budowane ze źródeł | GHCR `sha-<commit>` | GHCR `sha-<commit>` |
 | Ustawienia | `compose.dev.yaml` | `deploy/dev.env` | `deploy/prod.env` |
 | Front | `localhost:5173` | `127.0.0.1:8081` | `127.0.0.1:8080` |
-| ai-service | `localhost:8000`, baseline | `127.0.0.1:8001`, baseline | `127.0.0.1:8000`, model |
+| ai-service | `localhost:8000`, baseline | `127.0.0.1:8001`, baseline | `127.0.0.1:8000`, model po przejściu bramki jakości |
 
 ## Lokalnie
 
@@ -34,8 +35,8 @@ docker compose -f compose.yaml -f compose.dev.yaml run --rm collector youtube_po
 docker compose -f compose.yaml -f compose.dev.yaml run --rm --entrypoint python collector \
   -m youtube_transcripts.transcribe results/youtube_posts.ytdlp/<plik>-docs.json
 
-# aplikacja (gdy są frontend/ i ml/)
-docker compose -f compose.yaml -f compose.dev.yaml --profile app up --build
+# aplikacja z hot reloadem
+docker compose -f compose.yaml -f compose.dev.yaml up --build
 ```
 
 Klucze API są w opcjonalnym `.env`, a sesje Playwright w `.secrets/` (tylko do odczytu). Żadne z nich nie trafia do obrazu.
@@ -75,6 +76,6 @@ REGISTRY=ghcr.io/sztworek IMAGE_TAG=main docker compose -p investwatch-dev --env
 
 - **Klucze i sesje:** `~/investwatch/<env>/.env` i `~/investwatch/<env>/.secrets/`.
 - **Wyniki kolektorów:** wolumen `investwatch-<env>_collector-results`.
-- **Modele:** skopiuj zawartość `ml/models/` do `~/investwatch/<env>/models/`; bez nich działa baseline.
-- **GPU:** zainstaluj NVIDIA Container Toolkit i ustaw `USE_GPU=1` w `deploy/<env>.env`.
+- **Modele:** skopiuj zawartość `ml/models/` do `~/investwatch/<env>/models/`. Model włącza się przy co najmniej 500 dokumentach treningowych i przykładach scamu w walidacji; inaczej działa baseline.
+- **GPU:** zainstaluj NVIDIA Container Toolkit i ustaw `USE_GPU=1` w `deploy/prod.env`. Obraz GPU powstaje tylko dla tagów.
 - **Dostęp publiczny:** porty są na `127.0.0.1`. Postaw przed frontem reverse proxy z TLS.

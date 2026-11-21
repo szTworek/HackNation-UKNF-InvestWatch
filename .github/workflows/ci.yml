@@ -45,7 +45,11 @@ jobs:
           fi
           if [ -f ml/pyproject.toml ]; then
             ml=true
-            images=$(jq -c '. + [{"name":"ai-service","context":"ml","file":"ml/Dockerfile"}]' <<<"$images")
+            images=$(jq -c '. + [{"name":"ai-service","context":"ml","file":"ml/Dockerfile","target":"runtime-cpu"}]' <<<"$images")
+            # Obraz GPU ma kilka GB, więc powstaje tylko dla release'ów.
+            if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+              images=$(jq -c '. + [{"name":"ai-service-gpu","context":"ml","file":"ml/Dockerfile","target":"runtime-gpu"}]' <<<"$images")
+            fi
           fi
           app=false
           if [ "$frontend" = true ] && [ "$ml" = true ]; then app=true; fi

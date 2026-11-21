@@ -25,8 +25,8 @@ release() {
   # Jawne &&: wewnątrz `if release ...` bash wyłącza set -e
   compose --profile jobs pull collector || return 1
   if [ -n "$WITH_APP" ]; then
-    compose --profile app pull \
-      && compose --profile app up -d --no-build --remove-orphans --wait --wait-timeout 600
+    compose pull \
+      && compose up -d --no-build --remove-orphans --wait --wait-timeout 600
   fi
 }
 
@@ -42,8 +42,8 @@ fi
 
 echo "Wdrożenie $TAG nieudane" >&2
 if [ -n "$WITH_APP" ]; then
-  compose --profile app ps >&2 || true
-  compose --profile app logs --tail=50 >&2 || true
+  compose ps >&2 || true
+  compose logs --tail=50 >&2 || true
 fi
 if [ -s "$LAST_GOOD" ]; then
   PREVIOUS="$(cat "$LAST_GOOD")"

@@ -31,7 +31,7 @@ jobs:
       IMAGE: ghcr.io/${{ needs.ci.outputs.owner }}/uknf-${{ matrix.name }}
     steps:
       - name: Free disk space for the CUDA image
-        if: matrix.name == 'ai-service'
+        if: matrix.name == 'ai-service-gpu'
         run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
       - uses: actions/checkout@v5
       - uses: docker/setup-buildx-action@v3
@@ -52,6 +52,7 @@ jobs:
         with:
           context: ${{ matrix.context }}
           file: ${{ matrix.file }}
+          target: ${{ matrix.target }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
