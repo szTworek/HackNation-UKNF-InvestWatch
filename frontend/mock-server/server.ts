@@ -153,20 +153,24 @@ function filterFindings(q: Query): Finding[] {
   });
 }
 
-const SORTERS: Record<string, (f: Finding) => number | string> = {
-  fetchedAt: (f) => f.fetchedAt,
-  publishedAt: (f) => f.publishedAt ?? '',
-  riskScore: (f) => f.riskScore,
-  scam: (f) => f.scam.p,
-  author: (f) => f.author.handle.toLowerCase(),
-  status: (f) => STATUSES.indexOf(f.status),
-  riskLevel: (f) => RISK_LEVELS.indexOf(f.riskLevel),
-  platform: (f) => f.platform,
-};
+type SortKey = (f: Finding) => number | string;
+const byFetchedAt: SortKey = (f) => f.fetchedAt;
+
+// Map zamiast obiektu: pole z URL nie może wskazać metody z prototypu (np. `constructor`).
+const SORTERS = new Map<string, SortKey>([
+  ['fetchedAt', byFetchedAt],
+  ['publishedAt', (f) => f.publishedAt ?? ''],
+  ['riskScore', (f) => f.riskScore],
+  ['scam', (f) => f.scam.p],
+  ['author', (f) => f.author.handle.toLowerCase()],
+  ['status', (f) => STATUSES.indexOf(f.status)],
+  ['riskLevel', (f) => RISK_LEVELS.indexOf(f.riskLevel)],
+  ['platform', (f) => f.platform],
+]);
 
 function sortFindings(items: Finding[], sort: string | undefined): Finding[] {
   const [field, dir] = (sort ?? 'fetchedAt:desc').split(':');
-  const key = SORTERS[field] ?? SORTERS.fetchedAt;
+  const key = SORTERS.get(field) ?? byFetchedAt;
   const sign = dir === 'asc' ? 1 : -1;
   return [...items].sort((a, b) => {
     const x = key(a);

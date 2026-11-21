@@ -89,9 +89,18 @@ jobs:
           status=0
           for target in ml collector; do
             echo "### pip-audit: $target" >> "$GITHUB_STEP_SUMMARY"
+            target_status=0
             uvx pip-audit@2.10.1 -r "$RUNNER_TEMP/$target.txt" --no-deps --disable-pip --progress-spinner off \
-              "${ignored[@]}" -f markdown -o "$RUNNER_TEMP/$target.md" || status=1
-            cat "$RUNNER_TEMP/$target.md" >> "$GITHUB_STEP_SUMMARY"
+              "${ignored[@]}" -f markdown -o "$RUNNER_TEMP/$target.md" || target_status=$?
+            # bez znalezisk pip-audit nie tworzy pliku raportu
+            if [ -s "$RUNNER_TEMP/$target.md" ]; then
+              cat "$RUNNER_TEMP/$target.md" >> "$GITHUB_STEP_SUMMARY"
+            elif [ "$target_status" -eq 0 ]; then
+              echo "No known vulnerabilities" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "pip-audit failed (exit $target_status)" >> "$GITHUB_STEP_SUMMARY"
+            fi
+            [ "$target_status" -eq 0 ] || status=1
           done
           exit "$status"
 
