@@ -1,0 +1,211 @@
+/* InvestWatch – jasny, biurowy styl. */
+:root {
+  --iw-bg: #f4f5f7;
+  --iw-surface: #ffffff;
+  --iw-border: #e1e4e8;
+  --iw-border-soft: #eef0f3;
+  --iw-text: #1f2933;
+  --iw-muted: #6b7480;
+  --iw-primary: #0f6cbd;
+  --iw-sidebar: #ffffff;
+}
+
+html,
+body {
+  background: var(--iw-bg);
+  color: var(--iw-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* karty */
+.mantine-Paper-root[data-with-border] {
+  border-color: var(--iw-border);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.05);
+}
+
+/* panel z nagłówkiem (komponent Panel) */
+.iw-panel {
+  background: var(--iw-surface);
+  border: 1px solid var(--iw-border);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.05);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.iw-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--iw-border-soft);
+  min-height: 44px;
+}
+.iw-panel-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--iw-text);
+}
+.iw-panel-body {
+  padding: 14px;
+  flex: 1;
+  min-height: 0;
+}
+.iw-panel-body.flush {
+  padding: 0;
+}
+
+/* tabele */
+.iw-table {
+  --table-border-color: var(--iw-border-soft);
+  --table-hover-color: #f5f8fc;
+}
+.iw-table thead th {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--iw-muted);
+  background: #fafbfc;
+  border-bottom: 1px solid var(--iw-border);
+  white-space: nowrap;
+}
+.iw-row-scam {
+  box-shadow: inset 3px 0 0 #c4314b;
+}
+.iw-row-new {
+  animation: iw-flash 1.6s ease-out;
+}
+@keyframes iw-flash {
+  from {
+    background: #fff4ce;
+  }
+  to {
+    background: transparent;
+  }
+}
+
+/* nawigacja boczna */
+.iw-nav-group {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--iw-muted);
+  padding: 14px 12px 6px;
+}
+.iw-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  margin: 1px 6px;
+  border-radius: 6px;
+  color: var(--iw-text);
+  font-size: 14px;
+  text-decoration: none;
+  transition: background-color 120ms ease-out;
+}
+.iw-nav-link:hover {
+  background: #f1f3f6;
+}
+.iw-nav-link.active {
+  background: #ebf3fc;
+  color: var(--iw-primary);
+  font-weight: 600;
+}
+.iw-nav-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.iw-nav-count {
+  margin-left: auto;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--iw-muted);
+}
+.iw-nav-key {
+  font-size: 10px;
+  color: var(--iw-muted);
+  border: 1px solid var(--iw-border);
+  border-radius: 3px;
+  padding: 0 3px;
+  margin-left: 6px;
+}
+
+/* pasek nowych rekordów: spokojny, jedna linia */
+.iw-ticker {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  background: #fbfcfd;
+  border-bottom: 1px solid var(--iw-border);
+  overflow: hidden;
+  font-size: 13px;
+}
+.iw-ticker-label {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--iw-muted);
+}
+.iw-ticker-track {
+  display: flex;
+  gap: 32px;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: iw-marquee 90s linear infinite;
+}
+.iw-ticker:hover .iw-ticker-track {
+  animation-play-state: paused;
+}
+.iw-ticker-item {
+  color: var(--iw-text);
+  text-decoration: none;
+}
+.iw-ticker-item:hover {
+  color: var(--iw-primary);
+  text-decoration: underline;
+}
+@keyframes iw-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.iw-num {
+  font-variant-numeric: tabular-nums;
+}
+.iw-kpi-value {
+  font-variant-numeric: tabular-nums;
+  color: var(--iw-text);
+}
+
+/* pasek wartości */
+.iw-meter {
+  height: 6px;
+  background: #eceff3;
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+}
+.iw-meter > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 3px;
+}
+
+mark[data-flags] {
+  color: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iw-row-new,
+  .iw-ticker-track {
+    animation: none;
+  }
+}

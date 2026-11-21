@@ -17,7 +17,8 @@ RUN pip install --no-cache-dir -r /tmp/requirements.txt faster-whisper==1.2.1 \
 COPY adapters ./adapters
 COPY preprocessing ./preprocessing
 COPY scrapers ./scrapers
-RUN useradd --system --uid 10001 --home-dir /app app \
+# Chrome (crashpad) wymaga zapisywalnego katalogu domowego
+RUN useradd --system --uid 10001 --create-home --home-dir /home/app app \
     && mkdir -p /app/scrapers/poc/results /app/.secrets /cache/huggingface \
     && chown -R app:app /app/scrapers/poc/results /cache
 
