@@ -1,0 +1,171 @@
+name: CI
+
+on:
+  pull_request:
+  workflow_call:
+    outputs:
+      images:
+        description: JSON list of images that can be built from this commit
+        value: ${{ jobs.detect.outputs.images }}
+      app:
+        description: true when frontend/ and ml/ contain code
+        value: ${{ jobs.detect.outputs.app }}
+      owner:
+        description: Lowercase repository owner for GHCR
+        value: ${{ jobs.detect.outputs.owner }}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.head_ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      images: ${{ steps.detect.outputs.images }}
+      frontend: ${{ steps.detect.outputs.frontend }}
+      ml: ${{ steps.detect.outputs.ml }}
+      app: ${{ steps.detect.outputs.app }}
+      owner: ${{ steps.detect.outputs.owner }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: detect
+        env:
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          images='[{"name":"collector","context":".","file":"scrapers/Dockerfile"}]'
+          frontend=false; ml=false
+          if [ -f frontend/package.json ]; then
+            frontend=true
+            images=$(jq -c '. + [{"name":"frontend","context":"frontend","file":"frontend/Dockerfile"},
+              {"name":"mock-api","context":"frontend","file":"frontend/mock-server/Dockerfile"}]' <<<"$images")
+          fi
+          if [ -f ml/pyproject.toml ]; then
+            ml=true
+            images=$(jq -c '. + [{"name":"ai-service","context":"ml","file":"ml/Dockerfile"}]' <<<"$images")
+          fi
+          app=false
+          if [ "$frontend" = true ] && [ "$ml" = true ]; then app=true; fi
+          {
+            echo "images=$images"
+            echo "frontend=$frontend"
+            echo "ml=$ml"
+            echo "app=$app"
+            echo "owner=${OWNER,,}"
+          } >> "$GITHUB_OUTPUT"
+
+  collector:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: scrapers/Dockerfile
+          load: true
+          tags: investwatch-collector:ci
+          cache-from: type=gha,scope=collector
+          cache-to: type=gha,mode=max,scope=collector
+      - name: Smoke test collector image
+        run: |
+          docker run --rm investwatch-collector:ci | grep -q youtube_posts
+          docker run --rm --entrypoint python investwatch-collector:ci -c "
+          import sys
+          sys.path[:0] = ['/app', '/app/preprocessing/ocr']
+          import faster_whisper, rapid, yt_dlp
+          from adapters import bing_ads, google_ads, meta_ads, tiktok, youtube
+          from playwright.sync_api import sync_playwright
+          with sync_playwright() as p:
+              for channel in ('chromium', 'chrome'):
+                  browser = p.chromium.launch(channel=channel, headless=True)
+                  page = browser.new_page()
+                  page.set_content('<h1>ok</h1>')
+                  assert page.inner_text('h1') == 'ok'
+                  browser.close()
+          "
+
+  frontend:
+    needs: detect
+    if: needs.detect.outputs.frontend == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci --ignore-scripts --no-audit
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npm run build:mock
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+
+  ml:
+    needs: detect
+    if: needs.detect.outputs.ml == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ml
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: 0.9.22
+          python-version: "3.12"
+      - name: Install API dependencies at locked versions (without torch)
+        run: |
+          uv export --frozen --no-hashes --no-emit-project -o "$RUNNER_TEMP/constraints.txt" >/dev/null
+          uv venv "$RUNNER_TEMP/venv"
+          VIRTUAL_ENV="$RUNNER_TEMP/venv" uv pip install -c "$RUNNER_TEMP/constraints.txt" fastapi pydantic rapidfuzz httpx
+      - name: Smoke test API on the baseline model
+        env:
+          INVESTWATCH_BASELINE: "1"
+          PYTHONPATH: src
+        run: |
+          "$RUNNER_TEMP/venv/bin/python" - <<'PY'
+          from fastapi.testclient import TestClient
+          from investwatch_ml.api import app
+
+          client = TestClient(app)
+          assert client.get("/health").json()["status"] == "ok"
+          item = {"id": "ci-1", "text": "Gwarantowany zysk 300% w tydzien, wplac 250 USD"}
+          response = client.post("/analyze", json={"items": [item]})
+          assert response.status_code == 200, response.text
+          assert response.json()["results"][0]["itemId"] == "ci-1"
+          PY
+
+  frontend-images:
+    # ai-service (kilka GB) jest budowany dopiero w CD.
+    needs: detect
+    if: needs.detect.outputs.frontend == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: frontend
+            file: frontend/Dockerfile
+          - name: mock-api
+            file: frontend/mock-server/Dockerfile
+    steps:
+      - uses: actions/checkout@v5
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: frontend
+          file: ${{ matrix.file }}
+          push: false
+          cache-from: type=gha,scope=${{ matrix.name }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.name }}

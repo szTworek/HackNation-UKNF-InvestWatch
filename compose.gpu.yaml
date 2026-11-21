@@ -1,0 +1,10 @@
+# Opcjonalna nakładka GPU (wymaga NVIDIA Container Toolkit). Włączana przez USE_GPU=1 w deploy/<env>.env.
+services:
+  ai-service:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

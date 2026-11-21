@@ -1,0 +1,87 @@
+name: CD
+
+# push na main -> obrazy + wdrożenie dev; tag vX.Y.Z -> obrazy + wdrożenie prod
+on:
+  push:
+    branches: [main]
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cd-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  images:
+    needs: ci
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: true
+      matrix:
+        include: ${{ fromJSON(needs.ci.outputs.images) }}
+    env:
+      IMAGE: ghcr.io/${{ needs.ci.outputs.owner }}/uknf-${{ matrix.name }}
+    steps:
+      - name: Free disk space for the CUDA image
+        if: matrix.name == 'ai-service'
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+      - uses: actions/checkout@v5
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE }}
+          tags: |
+            type=sha,format=long
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+      - uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.file }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=${{ env.IMAGE }}:buildcache
+          cache-to: type=registry,ref=${{ env.IMAGE }}:buildcache,mode=max
+
+  deploy-dev:
+    if: github.ref == 'refs/heads/main'
+    needs: [ci, images]
+    permissions:
+      contents: read
+      packages: read
+    uses: ./.github/workflows/deploy.yml
+    with:
+      environment: dev
+      image-tag: sha-${{ github.sha }}
+      registry: ghcr.io/${{ needs.ci.outputs.owner }}
+      with-app: ${{ needs.ci.outputs.app == 'true' }}
+    secrets: inherit
+
+  deploy-prod:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [ci, images]
+    permissions:
+      contents: read
+      packages: read
+    uses: ./.github/workflows/deploy.yml
+    with:
+      environment: prod
+      image-tag: sha-${{ github.sha }}
+      registry: ghcr.io/${{ needs.ci.outputs.owner }}
+      with-app: ${{ needs.ci.outputs.app == 'true' }}
+    secrets: inherit

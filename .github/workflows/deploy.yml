@@ -1,0 +1,77 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: true
+      image-tag:
+        type: string
+        required: true
+      registry:
+        type: string
+        required: true
+      with-app:
+        type: boolean
+        default: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    permissions:
+      contents: read
+      packages: read
+    env:
+      ENV_NAME: ${{ inputs.environment }}
+      IMAGE_TAG: ${{ inputs.image-tag }}
+      IMAGE_REGISTRY: ${{ inputs.registry }}
+      APP_FLAG: ${{ inputs.with-app && '--with-app' || '' }}
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+      DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+      DEPLOY_PORT: ${{ vars.DEPLOY_PORT || '22' }}
+    steps:
+      - id: config
+        name: Check deployment configuration
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          if [ -n "$DEPLOY_HOST" ] && [ -n "$DEPLOY_USER" ] && [ -n "$SSH_KEY" ] && [ -n "$KNOWN_HOSTS" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          elif [ "$ENV_NAME" = "prod" ]; then
+            echo "::error::Brak sekretów DEPLOY_* w środowisku prod"
+            exit 1
+          else
+            echo "::warning::Pomijam wdrożenie dev: brak sekretów DEPLOY_* (docs/deployment.md)"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.config.outputs.ready == 'true'
+        uses: actions/checkout@v5
+      - name: Configure SSH
+        if: steps.config.outputs.ready == 'true'
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/deploy_key ~/.ssh/known_hosts
+      - name: Upload stack and deploy
+        if: steps.config.outputs.ready == 'true'
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
+        run: |
+          SSH_OPTS=(-i ~/.ssh/deploy_key -o BatchMode=yes -o StrictHostKeyChecking=yes)
+          TARGET="$DEPLOY_USER@$DEPLOY_HOST"
+          DIR="investwatch/$ENV_NAME"
+          ssh "${SSH_OPTS[@]}" -p "$DEPLOY_PORT" "$TARGET" "mkdir -p '$DIR'"
+          scp "${SSH_OPTS[@]}" -P "$DEPLOY_PORT" compose.yaml compose.gpu.yaml deploy/deploy.sh "deploy/$ENV_NAME.env" "$TARGET:$DIR/"
+          printf '%s' "$GHCR_TOKEN" | ssh "${SSH_OPTS[@]}" -p "$DEPLOY_PORT" "$TARGET" \
+            "docker login ghcr.io -u '$GHCR_USER' --password-stdin && { REGISTRY='$IMAGE_REGISTRY' bash '$DIR/deploy.sh' '$ENV_NAME' '$IMAGE_TAG' $APP_FLAG; rc=\$?; docker logout ghcr.io; exit \$rc; }"
+      - name: Remove SSH key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key

@@ -1,0 +1,78 @@
+# Stack uruchamiany z gotowych obrazów (środowiska wdrożone: dev i prod).
+# Profile:
+#   jobs – kolektory, uruchamiane jednorazowo: docker compose run --rm collector youtube_posts forex
+#   app  – frontend, API, ai-service; wymaga katalogów frontend/ i ml/ z kodem
+# Wdrożenie: deploy/deploy.sh <dev|prod> <tag> [--with-app]; ustawienia w deploy/<env>.env
+
+x-service: &service
+  restart: unless-stopped
+  security_opt:
+    - no-new-privileges:true
+  cap_drop:
+    - ALL
+  logging:
+    driver: json-file
+    options:
+      max-size: 10m
+      max-file: "5"
+
+services:
+  collector:
+    profiles: [jobs]
+    image: ${REGISTRY:-ghcr.io/sztworek}/uknf-collector:${IMAGE_TAG:-main}
+    init: true
+    shm_size: 1gb
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - collector-results:/app/scrapers/poc/results
+      - collector-cache:/cache/huggingface
+      - ${SECRETS_PATH:-./.secrets}:/app/.secrets:ro
+
+  frontend:
+    <<: *service
+    profiles: [app]
+    image: ${REGISTRY:-ghcr.io/sztworek}/uknf-frontend:${IMAGE_TAG:-main}
+    depends_on:
+      - api
+    environment:
+      API_UPSTREAM: http://api:4000
+    ports:
+      - "${FRONTEND_BIND:-127.0.0.1}:${FRONTEND_PORT:-8080}:8080"
+
+  # Mock API jest kontraktem backendu. Gdy powstanie backend, podmieniamy tylko ten serwis.
+  api:
+    <<: *service
+    profiles: [app]
+    image: ${REGISTRY:-ghcr.io/sztworek}/uknf-mock-api:${IMAGE_TAG:-main}
+    read_only: true
+    tmpfs:
+      - /tmp
+    environment:
+      MOCK_EMIT_MIN_MS: ${MOCK_EMIT_MIN_MS:-15000}
+      MOCK_EMIT_MAX_MS: ${MOCK_EMIT_MAX_MS:-30000}
+      MOCK_SEED: ${MOCK_SEED:-42}
+      MOCK_CORS_ORIGIN: ${MOCK_CORS_ORIGIN:-*}
+
+  ai-service:
+    <<: *service
+    profiles: [app]
+    image: ${REGISTRY:-ghcr.io/sztworek}/uknf-ai-service:${IMAGE_TAG:-main}
+    environment:
+      INVESTWATCH_BASELINE: ${INVESTWATCH_BASELINE:-0}
+    # Tylko localhost: serwis nie ma autoryzacji i nie może być publiczny.
+    ports:
+      - "127.0.0.1:${AI_PORT:-8000}:8000"
+    volumes:
+      - ${MODELS_PATH:-./models}:/app/models:ro
+      - hf-cache:/cache/huggingface
+
+volumes:
+  collector-results:
+  collector-cache:
+  hf-cache:
