@@ -24,7 +24,7 @@ FLAG_PATTERNS: dict[str, list[str]] = {
     "PAST_PERF_DISCLAIMER": [r"wyniki historyczne nie", r"przeszłe wyniki nie", r"nie gwarantują (osiągnięcia )?(podobnych|przyszłych)"],
     "FORECAST": [r"dojdzie do", r"pójdzie na \d+", r"\bprognoz\w*", r"(wzrośnie|urośnie) (do|o) \d+"],
     "FORECAST_DISCLAIMER": [r"prognoz\w* nie (jest|są) (wiarygodnym )?wskaźnik"],
-    "TAX_CLAIM": [r"podat\w* belki", r"\bulg\w* podatk\w*", r"bez podatku", r"\bIKZE\b", r"\bIKE\b"],
+    "TAX_CLAIM": [r"podat\w* belki", r"\bulg\w* podatk\w*", r"bez podatku", r"(nie )?(zapłacisz|płać|płacisz) podatk\w*", r"odlicz\w*.{0,40}(podatk|PIT)", r"(zwrot|odzysk\w*).{0,25}podatk\w*", r"zwolnien\w* z podatk\w*"],
     "PRODUCT_COMPARISON": [r"lepsz\w* niż", r"najniższ\w* prowizj\w*", r"najlepsz\w* (wynik|broker|oferta)", r"w przeciwieństwie do"],
     "SUPERVISOR_AS_SAFETY": [r"nadzor\w* (przez )?KNF.{0,60}bezpieczn", r"licencj\w* KNF", r"regulowan\w* przez KNF", r"KNF.{0,40}bezpieczn"],
     "PERSONALIZED_ADVICE": [r"dopasowan\w* do (twoich|twojej|ciebie)", r"indywidualn\w* (portfel|strategi|plan)", r"dobior\w* (ci|portfel)"],

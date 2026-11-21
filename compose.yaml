@@ -1,6 +1,6 @@
-# Cały stack z gotowych obrazów: docker compose up -d, potem http://localhost:8080
-# Kolektory (profil jobs) są jednorazowe: docker compose run --rm collector youtube_posts forex
-# Wdrożenie: deploy/deploy.sh <dev|prod> <tag> [--with-app]; ustawienia w deploy/<env>.env
+# Cały stack ze źródeł: docker compose up -d --build, potem http://localhost:8080
+# Kolektory (profil jobs) są jednorazowe: docker compose run --rm --build collector youtube_posts forex
+# Weryfikacja środowiska: bash deploy/verify.sh <dev|prod>
 
 x-service: &service
   restart: unless-stopped
@@ -17,7 +17,10 @@ x-service: &service
 services:
   collector:
     profiles: [jobs]
-    image: ${REGISTRY:-ghcr.io/sztworek}/uknf-collector:${IMAGE_TAG:-main}
+    image: investwatch/uknf-collector:local
+    build:
+      context: .
+      dockerfile: scrapers/Dockerfile
     init: true
     shm_size: 1gb
     security_opt:
@@ -34,7 +37,9 @@ services:
 
   frontend:
     <<: *service
-    image: ${REGISTRY:-ghcr.io/sztworek}/uknf-frontend:${IMAGE_TAG:-main}
+    image: investwatch/uknf-frontend:local
+    build:
+      context: ./frontend
     depends_on:
       - api
     environment:
@@ -45,7 +50,10 @@ services:
   # Mock API jest kontraktem backendu. Gdy powstanie backend, podmieniamy tylko ten serwis.
   api:
     <<: *service
-    image: ${REGISTRY:-ghcr.io/sztworek}/uknf-mock-api:${IMAGE_TAG:-main}
+    image: investwatch/uknf-mock-api:local
+    build:
+      context: ./frontend
+      dockerfile: mock-server/Dockerfile
     read_only: true
     tmpfs:
       - /tmp
@@ -57,7 +65,10 @@ services:
 
   ai-service:
     <<: *service
-    image: ${REGISTRY:-ghcr.io/sztworek}/uknf-ai-service:${IMAGE_TAG:-main}
+    image: investwatch/uknf-ai-service:local
+    build:
+      context: ./ml
+      target: runtime-cpu
     environment:
       INVESTWATCH_BASELINE: ${INVESTWATCH_BASELINE:-0}
     # Tylko localhost: serwis nie ma autoryzacji i nie może być publiczny.

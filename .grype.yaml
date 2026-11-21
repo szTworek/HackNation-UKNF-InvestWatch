@@ -1,0 +1,11 @@
+# Zaakceptowane podatności w obrazach. Uzasadnienia: .security/pip-audit-ignore.txt
+ignore:
+  - vulnerability: GHSA-rrmf-rvhw-rf47
+    package:
+      name: torch
+  - vulnerability: CVE-2025-3000
+    package:
+      name: torch
+  - vulnerability: GHSA-xmj3-9gf7-h52w
+    package:
+      name: setuptools

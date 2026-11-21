@@ -1,0 +1,4 @@
+# Zaakceptowane podatności Pythona: identyfikator, potem uzasadnienie. Usuń wpis po aktualizacji pakietu.
+PYSEC-2025-194 # torch 2.11 (CVE-2025-3000): dotyczy torch.jit.script, którego kod nie używa; poprawka 2.13 nie ma buildu cu128
+PYSEC-2026-3447 # setuptools 81, zależność torch: dotyczy budowania sdist na macOS, obraz tego nie robi
+GHSA-xmj3-9gf7-h52w # setuptools 81, zależność torch: dotyczy instalacji legacy wheel na Windows, obraz działa na Linuksie

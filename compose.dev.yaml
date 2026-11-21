@@ -35,6 +35,7 @@ services:
     image: investwatch-api:dev
     build:
       context: ./frontend
+      dockerfile: Dockerfile
       target: dev
     restart: "no"
     read_only: false

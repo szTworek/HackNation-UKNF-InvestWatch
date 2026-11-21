@@ -1,81 +1,66 @@
-# InvestWatch – Docker, CI/CD i wdrożenie
+# InvestWatch – Docker i CI/CD
 
-## Co jest budowane
+## Uruchomienie
 
-| Obraz | Kod | Kiedy |
+```bash
+docker compose up -d --build
+```
+
+Aplikacja: http://localhost:8080 · API AI: http://localhost:8000/docs
+
+Komenda buduje ze źródeł i uruchamia frontend, API (mock) i `ai-service` na CPU. Obrazy nie są publikowane w żadnym rejestrze.
+
+## Obrazy
+
+| Obraz | Kod | Uwagi |
 |---|---|---|
-| `uknf-collector` | `scrapers/`, `adapters/`, `preprocessing/` | zawsze |
-| `uknf-frontend`, `uknf-mock-api` | `frontend/` | gdy istnieje `frontend/package.json` |
-| `uknf-ai-service` (CPU) | `ml/` | gdy istnieje `ml/pyproject.toml` |
-| `uknf-ai-service-gpu` (CUDA) | `ml/` | tylko przy tagu `vX.Y.Z` |
-
-`docker compose up -d` uruchamia frontend, API i `ai-service`.
-Kolektory (profil `jobs`) to zadania jednorazowe, nie działają stale.
+| `uknf-frontend` | `frontend/` | nginx, proxy `/api` i `/socket.io` |
+| `uknf-mock-api` | `frontend/mock-server/` | kontrakt API backendu |
+| `uknf-ai-service` | `ml/` | CPU |
+| `uknf-ai-service-gpu` | `ml/` | CUDA, tylko przez `compose.gpu.yaml` |
+| `uknf-collector` | `scrapers/`, `adapters/`, `preprocessing/` | zadania jednorazowe (profil `jobs`) |
 
 ## Środowiska
 
-| | dev lokalny | dev (serwer) | prod (serwer) |
+| | dev lokalny | dev | prod |
 |---|---|---|---|
-| Uruchomienie | `compose.yaml` + `compose.dev.yaml` | push na `main` | tag `vX.Y.Z` |
-| Obrazy | budowane ze źródeł | GHCR `sha-<commit>` | GHCR `sha-<commit>` |
+| Uruchomienie | `compose.yaml` + `compose.dev.yaml` | `bash deploy/verify.sh dev` | `bash deploy/verify.sh prod` |
 | Ustawienia | `compose.dev.yaml` | `deploy/dev.env` | `deploy/prod.env` |
-| Front | `localhost:5173` | `127.0.0.1:8081` | `127.0.0.1:8080` |
-| ai-service | `localhost:8000`, baseline | `127.0.0.1:8001`, baseline | `127.0.0.1:8000`, model po przejściu bramki jakości |
+| Front | `localhost:5173`, hot reload | `localhost:8081` | `localhost:8080` |
+| ai-service | `localhost:8000`, baseline | `localhost:8001`, baseline | `localhost:8000`, model po przejściu bramki jakości |
 
-## Lokalnie
+`deploy/verify.sh` stawia stack, sprawdza frontend, API, socket.io i analizę AI, a na końcu usuwa kontenery.
+
+## Development
 
 ```bash
+# aplikacja z hot reloadem
+docker compose -f compose.yaml -f compose.dev.yaml up --build
+
 # lista kolektorów
 docker compose -f compose.yaml -f compose.dev.yaml run --rm --build collector
 
 # uruchomienie kolektora; wyniki trafiają do scrapers/poc/results/
 docker compose -f compose.yaml -f compose.dev.yaml run --rm collector youtube_posts forex
 
-# transkrypcja
-docker compose -f compose.yaml -f compose.dev.yaml run --rm --entrypoint python collector \
-  -m youtube_transcripts.transcribe results/youtube_posts.ytdlp/<plik>-docs.json
-
-# aplikacja z hot reloadem
-docker compose -f compose.yaml -f compose.dev.yaml up --build
+# GPU (wymaga NVIDIA Container Toolkit)
+docker compose -f compose.yaml -f compose.gpu.yaml up -d --build
 ```
 
 Klucze API są w opcjonalnym `.env`, a sesje Playwright w `.secrets/` (tylko do odczytu). Żadne z nich nie trafia do obrazu.
 `python -m login` otwiera widoczne okno Chrome, więc uruchamiaj je na hoście, nie w kontenerze.
 
+Model włącza się przy co najmniej 500 dokumentach treningowych i przykładach scamu w walidacji; inaczej działa baseline. Pliki modelu kopiuje się do `models/`.
+
 ## Pipeline
 
-- **PR:** obraz kolektora ze smoke testem (importy, Chromium, Chrome), a gdy jest kod aplikacji: lint, typecheck, testy, build, `npm audit`, smoke test API.
-- **Push na `main`:** CI, obrazy do GHCR, wdrożenie dev.
-- **Tag `vX.Y.Z`:** CI, obrazy do GHCR, wdrożenie prod.
-
-Nieudane wdrożenie przywraca ostatni działający tag (`deploy/deploy.sh`).
-
-## Konfiguracja GitHub
-
-Utwórz środowiska `dev` i `prod` (Settings → Environments). Dla `prod` ustaw *Required reviewers*
-oraz ogranicz wdrożenia do tagów `v*`. W każdym środowisku dodaj sekrety:
-
-| Sekret | Wartość |
-|---|---|
-| `DEPLOY_HOST` | adres serwera |
-| `DEPLOY_USER` | użytkownik z dostępem do Dockera |
-| `DEPLOY_SSH_KEY` | prywatny klucz SSH przeznaczony tylko do wdrożeń |
-| `DEPLOY_KNOWN_HOSTS` | wynik `ssh-keyscan -p <port> <host>`, zweryfikowany z serwerem |
-
-Opcjonalna zmienna `DEPLOY_PORT` (domyślnie 22). Bez sekretów wdrożenie dev jest pomijane z ostrzeżeniem, a prod kończy się błędem.
-
-## Serwer
-
-Wymagany Docker z Compose v2.24+. Stack trafia do `~/investwatch/<env>/`.
-
-```bash
-cd ~/investwatch/dev
-REGISTRY=ghcr.io/sztworek IMAGE_TAG=main docker compose -p investwatch-dev --env-file dev.env \
-  --profile jobs run --rm collector google_ads XTB
+```text
+CI + Security -> build i skan obrazów -> deploy dev -> deploy prod
 ```
 
-- **Klucze i sesje:** `~/investwatch/<env>/.env` i `~/investwatch/<env>/.secrets/`.
-- **Wyniki kolektorów:** wolumen `investwatch-<env>_collector-results`.
-- **Modele:** skopiuj zawartość `ml/models/` do `~/investwatch/<env>/models/`. Model włącza się przy co najmniej 500 dokumentach treningowych i przykładach scamu w walidacji; inaczej działa baseline.
-- **GPU:** zainstaluj NVIDIA Container Toolkit i ustaw `USE_GPU=1` w `deploy/prod.env`. Obraz GPU powstaje tylko dla tagów.
-- **Dostęp publiczny:** porty są na `127.0.0.1`. Postaw przed frontem reverse proxy z TLS.
+- **CI:** lint, typecheck, testy, build, smoke test API i kolektora.
+- **Security:** gitleaks (sekrety), CodeQL (SAST), `npm audit`, `pip-audit`, Snyk (wymaga sekretu `SNYK_TOKEN`). Uruchamiany też w PR i co tydzień.
+- **Obrazy:** Grype blokuje podatności HIGH/CRITICAL z dostępną poprawką.
+- **Deploy dev / prod:** wdrożenie weryfikacyjne na runnerze GitHub Actions przez `deploy/verify.sh`. Projekt nie ma serwera, więc nic nie zostaje uruchomione po zakończeniu joba.
+
+Zaakceptowane wyjątki z uzasadnieniem: `.security/pip-audit-ignore.txt` i `.grype.yaml`.

@@ -6,6 +6,7 @@ przelicza wyniki bez ponownej inferencji). Logika jest jawna i edytowalna.
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from .labels import FLAG_KEYS
@@ -17,7 +18,7 @@ DEFAULT_THRESHOLDS: dict[str, float] = {
     "contentType.THIRD_PARTY_PROMO": 0.35,
     "contentType.SERVICE_OFFER": 0.35,
     "contentType.RECOMMENDATION": 0.35,
-    "scam": 0.6,
+    "scam.p": 0.6,
     "risk.MEDIUM": 0.4,
     "risk.HIGH": 0.65,
     "risk.CRITICAL": 0.85,
@@ -44,13 +45,30 @@ RULES: dict[str, tuple[str, bool]] = {
     "16": ("Informacja podatkowa", True),
     "17": ("Zakaz sugerowania aprobaty organu nadzoru", True),
     "18": ("Nadzór jako argument bezpieczeństwa", True),
-    "M1": ("Moduł 1: reklama firmy przez podmiot trzeci", True),
-    "M3": ("Moduł 3: możliwe doradztwo bez zezwolenia", True),
-    "SCAM": ("Cechy oszustwa inwestycyjnego", True),
+    "M1_PROMO": ("Moduł 1: reklama firmy przez podmiot trzeci", True),
+    "M3_ADVISORY": ("Moduł 3: możliwe doradztwo bez zezwolenia", True),
 }
 
 MARKETING_RULES = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12a", "12b", "13", "14", "15", "16", "17", "18"}
 ADVISORY_INSTRUMENTS = {"CFD_FOREX", "STOCKS", "FUNDS_ETF", "BONDS", "OTHER_DERIVATIVES"}
+
+
+_TAX_INDIVIDUAL = re.compile(r"indywidualn\w* sytuacj|sytuacj\w* (indywidualn|klienta|podatnika)", re.IGNORECASE)
+_TAX_CHANGE = re.compile(r"(może|mogą|moze|moga) (ulec|podlegać|podlegac) zmian|(może|mogą) się zmieni", re.IGNORECASE)
+
+
+def has_tax_disclaimer(text: str) -> bool:
+    """Reguła 16 wymaga obu informacji: zależność od sytuacji klienta i możliwość zmian."""
+    return bool(_TAX_INDIVIDUAL.search(text) and _TAX_CHANGE.search(text))
+
+
+def normalize_thresholds(values: dict[str, float] | None) -> dict[str, float]:
+    """Klucz progu oszustwa w kontrakcie to `scam.p`; starszy `scam` jest przyjmowany na wejściu."""
+    out = dict(values or {})
+    if "scam" in out:
+        legacy = out.pop("scam")
+        out.setdefault("scam.p", legacy)
+    return out
 
 
 def _t(th: dict[str, float], key: str) -> float:
@@ -58,18 +76,34 @@ def _t(th: dict[str, float], key: str) -> float:
 
 
 def compute(pred: dict[str, Any], entities: list[dict[str, Any]], thresholds: dict[str, float] | None = None,
-            extra_scam_signals: list[str] | None = None) -> dict[str, Any]:
-    th = {**DEFAULT_THRESHOLDS, **(thresholds or {})}
+            extra_scam_signals: list[str] | None = None, is_paid_ad: bool = False,
+            is_polish: bool = True, tax_disclaimer: bool = False) -> dict[str, Any]:
+    th = {**DEFAULT_THRESHOLDS, **normalize_thresholds(thresholds)}
     fp = {k: v["p"] for k, v in pred["flags"].items()}
     ev = {k: v.get("evidence", []) for k, v in pred["flags"].items()}
     on = {k: fp[k] >= _t(th, f"flags.{k}") for k in fp}
     ct = pred["contentType"]
-    is_inv = pred["topic"].get("INVESTMENT", 0) >= _t(th, "topic.INVESTMENT")
-    is_ad = (ct.get("FIRM_OWN_MARKETING", 0) >= _t(th, "contentType.FIRM_OWN_MARKETING")
+    registered = [e for e in entities if e.get("knfRegister", {}).get("status") == "REGISTERED"]
+    related = [e for e in entities if e.get("knfRegister", {}).get("relatedEntity")]
+    publishers = [e for e in entities if e.get("publisher")]
+    publisher_registered = any(e in registered for e in publishers)
+    publisher_related = any(e in related for e in publishers)  # inna spółka tej samej marki: wymaga weryfikacji
+    firm_known = bool(registered or related)
+    # płatna reklama samej firmy z rejestru to M2, także gdy tekst (np. OCR) jest za słaby dla klasyfikatora
+    topic_inv = pred["topic"].get("INVESTMENT", 0) >= _t(th, "topic.INVESTMENT")
+    # bank reklamuje też konta i ubezpieczenia, więc u banku o M2 decyduje treść
+    publisher_is_bank = any("BANK" in e.get("knfRegister", {}).get("lists", []) for e in publishers)
+    own_ad = (is_paid_ad and is_polish and (publisher_registered or publisher_related)
+              and (topic_inv or not publisher_is_bank))
+    is_inv = own_ad or topic_inv
+    own_marketing = own_ad or (ct.get("FIRM_OWN_MARKETING", 0) >= _t(th, "contentType.FIRM_OWN_MARKETING")
+                               and (publisher_registered or publisher_related or (not publishers and firm_known)))
+    third_party = (not publisher_registered and not publisher_related and firm_known
+                   and (is_paid_ad or ct.get("THIRD_PARTY_PROMO", 0) >= _t(th, "contentType.THIRD_PARTY_PROMO")))
+    is_ad = (own_marketing or third_party or ct.get("FIRM_OWN_MARKETING", 0) >= _t(th, "contentType.FIRM_OWN_MARKETING")
              or ct.get("THIRD_PARTY_PROMO", 0) >= _t(th, "contentType.THIRD_PARTY_PROMO"))
     # art. 44 rozp. 2017/565 dotyczy komunikacji marketingowej – dla opinii / newsów reguły „nie dotyczą”
     is_mkt = is_ad or ct.get("SERVICE_OFFER", 0) >= _t(th, "contentType.SERVICE_OFFER")
-    registered = [e for e in entities if e.get("knfRegister", {}).get("status") == "REGISTERED"]
     instr_on = {k for k, p in pred["instruments"].items() if p >= 0.5}
 
     rules: list[dict[str, Any]] = []
@@ -88,7 +122,10 @@ def compute(pred: dict[str, Any], entities: list[dict[str, Any]], thresholds: di
             else:
                 add(rid, "NOT_APPLICABLE")
         elif rid == "2":
-            if is_ad:
+            if is_ad and is_paid_ad and not on["AD_DISCLOSURE"]:
+                # płatną reklamę oznacza platforma poza treścią kreacji, której scraper nie widzi
+                add(rid, "NOT_CHECKED")
+            elif is_ad:
                 add(rid, "OK" if on["AD_DISCLOSURE"] else "VIOLATION", 1 - fp["AD_DISCLOSURE"], ev["AD_DISCLOSURE"])
             else:
                 add(rid, "NOT_APPLICABLE")
@@ -116,50 +153,55 @@ def compute(pred: dict[str, Any], entities: list[dict[str, Any]], thresholds: di
             else:
                 add(rid, "NOT_APPLICABLE")
         elif rid == "16":
-            add(rid, "VIOLATION" if on["TAX_CLAIM"] else "NOT_APPLICABLE", fp["TAX_CLAIM"] * 0.7, ev["TAX_CLAIM"])
+            if on["TAX_CLAIM"]:
+                add(rid, "OK" if tax_disclaimer else "VIOLATION", 0.0 if tax_disclaimer else fp["TAX_CLAIM"] * 0.7, ev["TAX_CLAIM"])
+            else:
+                add(rid, "NOT_APPLICABLE")
         elif rid in ("17", "18"):
             add(rid, "VIOLATION" if on["SUPERVISOR_AS_SAFETY"] else "NOT_APPLICABLE", fp["SUPERVISOR_AS_SAFETY"],
                 ev["SUPERVISOR_AS_SAFETY"])
-        elif rid == "M1":
-            promo = ct.get("THIRD_PARTY_PROMO", 0) >= _t(th, "contentType.THIRD_PARTY_PROMO")
-            if promo:
-                viol = not on["AD_DISCLOSURE"] or (on["PROFIT_CLAIM"] and not on["RISK_WARNING"])
-                add(rid, "VIOLATION" if viol else "OK", ct["THIRD_PARTY_PROMO"] * (1.0 if viol else 0.3), ev["AD_DISCLOSURE"])
+        elif rid == "M1_PROMO":
+            if third_party:
+                viol = not (on["AD_DISCLOSURE"] or is_paid_ad) or (on["PROFIT_CLAIM"] and not on["RISK_WARNING"])
+                strength = max(ct.get("THIRD_PARTY_PROMO", 0), 0.7 if is_paid_ad else 0)
+                add(rid, "VIOLATION" if viol else "OK", strength * (1.0 if viol else 0.3), ev["AD_DISCLOSURE"])
             else:
                 add(rid, "NOT_APPLICABLE")
-        elif rid == "M3":
+        elif rid == "M3_ADVISORY":
             adv = max(fp["PERSONALIZED_ADVICE"], fp["PAID_ADVISORY_SERVICE"])
             advisory = on["PERSONALIZED_ADVICE"] or on["PAID_ADVISORY_SERVICE"]
             instruments_ok = bool(instr_on & ADVISORY_INSTRUMENTS) or not instr_on
             if advisory and instruments_ok:
-                viol = not registered
-                add(rid, "VIOLATION" if viol else "OK", adv if viol else 0.1,
-                    ev["PERSONALIZED_ADVICE"] + ev["PAID_ADVISORY_SERVICE"])
+                evidence = ev["PERSONALIZED_ADVICE"] + ev["PAID_ADVISORY_SERVICE"]
+                # liczy się status oferenta: wzmianka o XTB w poście doradcy nie czyni go firmą z rejestru
+                if publisher_registered or (not publishers and registered):
+                    add(rid, "OK", 0.1, evidence)
+                elif publisher_related or not publishers:
+                    add(rid, "NOT_CHECKED", adv, evidence)
+                else:
+                    add(rid, "VIOLATION", adv, evidence)
             else:
                 add(rid, "NOT_APPLICABLE")
-        elif rid == "SCAM":
-            pass  # niżej
         else:
             add(rid, "NOT_CHECKED")
 
     scam_p = float(pred.get("scamText", 0.0))
     signals = list(extra_scam_signals or [])
-    if scam_p >= _t(th, "scam"):
+    if scam_p >= _t(th, "scam.p"):
         signals.append("TEXT_MODEL")
     if signals and "TEXT_MODEL" not in signals:
         scam_p = max(scam_p, 0.7)  # silny sygnał spoza tekstu (lista CERT/KNF, podszywanie się)
-    scam_on = is_inv and scam_p >= _t(th, "scam")
-    scam_ev = [e for k in ("GUARANTEED_PROFIT", "UNREALISTIC_RETURNS", "AUTOMATED_PROFIT", "OFF_PLATFORM_CONTACT",
-                           "CELEBRITY_OR_BRAND_ENDORSEMENT", "LOW_ENTRY_DEPOSIT") for e in ev.get(k, [])]
-    add("SCAM", "VIOLATION" if scam_on else ("OK" if is_inv else "NOT_APPLICABLE"), scam_p, scam_ev)
+    scam_on = is_inv and scam_p >= _t(th, "scam.p")
 
+    # Moduły wg zadania: M1/M2 dotyczą firm z rejestru, M3 podmiotów spoza niego; scam ma własną ścieżkę.
     modules = []
-    if ct.get("THIRD_PARTY_PROMO", 0) >= _t(th, "contentType.THIRD_PARTY_PROMO") and is_inv:
-        modules.append(1)
-    if ct.get("FIRM_OWN_MARKETING", 0) >= _t(th, "contentType.FIRM_OWN_MARKETING") and is_inv:
-        modules.append(2)
-    if any(r["ruleId"] == "M3" and r["status"] != "NOT_APPLICABLE" for r in rules):
-        modules.append(3)
+    if is_inv and is_polish and not scam_on:
+        if third_party:
+            modules.append(1)
+        if own_marketing:
+            modules.append(2)
+        if any(r["ruleId"] == "M3_ADVISORY" and r["status"] == "VIOLATION" for r in rules):
+            modules.append(3)
 
     viol_scores = [r["score"] for r in rules if r["status"] == "VIOLATION"]
     risk = max(viol_scores + [0.0])

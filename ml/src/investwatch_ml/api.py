@@ -9,7 +9,6 @@ na klasyfikator embeddingowy – kontrakt i scoring (scoring.py) się nie zmieni
 from __future__ import annotations
 
 import random
-import re
 import time
 import zlib
 from typing import Any
@@ -17,7 +16,7 @@ from typing import Any
 from fastapi import FastAPI
 from pydantic import BaseModel, ConfigDict, Field
 
-from . import heuristics, indicators, scoring
+from . import heuristics, indicators, ingest, knf, scoring
 from .labels import FLAG_KEYS
 from .text import normalize
 
@@ -61,15 +60,23 @@ class Item(BaseModel):
     outboundLinks: list[str] = Field(default_factory=list)
     landingPages: list[dict[str, Any]] | None = None
     mediaAnalysis: dict[str, Any] | None = None
+    publisher: str | None = None  # autor lub sponsor materiału, sprawdzany w rejestrze KNF
+    isSponsored: bool = False
+    isPolish: bool = True  # reklama spoza polskiego rynku nie trafia do modułów
 
 
 class ItemsRequest(BaseModel):
     items: list[Item]
 
 
+class RecordsRequest(BaseModel):
+    records: list[dict[str, Any]]
+
+
 class RescoreRequest(BaseModel):
     thresholds: dict[str, Any]
     itemIds: list[str] | None = None
+    persist: bool = True  # false: podgląd w panelu kalibracji, bez zmiany aktywnych progów
 
 
 class MediaRequest(BaseModel):
@@ -81,23 +88,19 @@ class ExplainRequest(BaseModel):
     itemId: str
 
 
-FIRM_RE = re.compile(r"\b([A-ZŁŚŻŹĆ][\w&.-]+(?:\s[A-ZŁŚŻŹĆ][\w&.-]+){0,3}\s(?:S\.A\.|SA|DM|TFI|Markets|Invest|Capital|Brokers?))\b")
-
-
 def _full_text(it: Item) -> str:
     t = normalize(it.text)
     return f"{normalize(it.title)}\n\n{t}" if it.title else t
 
 
-def _entities(text: str) -> list[dict[str, Any]]:
-    ents, seen = [], set()
-    for m in FIRM_RE.finditer(text):
-        name = m.group(1)
-        if name.lower() not in seen:
-            seen.add(name.lower())
-            # TODO: prawdziwy lookup w rejestrze KNF (knf_entities) + listy ostrzeżeń
-            ents.append({"name": name, "role": "investment_firm", "knfRegister": {"status": "NOT_FOUND"}})
-    return ents[:8]
+def _publisher(it: Item) -> str | None:
+    if it.publisher:
+        return it.publisher
+    extra = it.model_extra or {}
+    author = extra.get("author")
+    if isinstance(author, dict):
+        author = author.get("displayName") or author.get("handle")
+    return extra.get("sponsor") or (author if isinstance(author, str) else None)
 
 
 def predict_text(text: str) -> dict[str, Any]:
@@ -115,14 +118,16 @@ def predict_text(text: str) -> dict[str, Any]:
 def _analyze(it: Item) -> dict[str, Any]:
     text = _full_text(it)
     pred = predict_text(text)
-    ents = _entities(text)
+    ents = knf.resolve_entities(text, _publisher(it))
     inds = indicators.extract(text, it.outboundLinks)
-    _PRED[it.id] = {"pred": pred, "entities": ents}
-    sc = scoring.compute(pred, ents, _THRESHOLDS)
+    context = {"is_paid_ad": it.isSponsored, "is_polish": it.isPolish, "tax_disclaimer": scoring.has_tax_disclaimer(text)}
+    _PRED[it.id] = {"pred": pred, "entities": ents, "context": context}
+    sc = scoring.compute(pred, ents, _THRESHOLDS, **context)
     return {
         "itemId": it.id,
+        "analyzedText": text,  # evidence ma offsety w tym tekście; backend zapisuje go jako Finding.text
         "topic": pred["topic"],
-        "contentType": pred["contentType"],
+        "contentType": {k: v for k, v in pred["contentType"].items() if k != "NONE"},  # NONE jest wewnętrzne
         "instruments": pred["instruments"],
         "flags": pred["flags"],
         "entities": ents,
@@ -142,7 +147,9 @@ def health() -> dict[str, Any]:
         gpu = torch.cuda.get_device_name(0) if torch.cuda.is_available() else None
     except Exception:
         gpu = None
-    return {"status": "ok", "modelVersion": MODEL_VERSION, "gpu": gpu}
+    reg = knf.register()
+    return {"status": "ok", "modelVersion": MODEL_VERSION, "gpu": gpu,
+            "knfRegister": {"entities": len(reg.entities), "generatedAt": reg.generated_at}}
 
 
 @app.post("/triage")
@@ -161,15 +168,24 @@ def analyze(req: ItemsRequest) -> dict[str, Any]:
     return {"results": [_analyze(it) for it in req.items]}
 
 
+@app.post("/ingest")
+def ingest_records(req: RecordsRequest) -> dict[str, Any]:
+    """Rekordy prosto z kolektora: adapter, rejestr KNF i analiza. Zwraca znormalizowany item razem z wynikiem."""
+    items, stats = ingest.to_items(req.records)
+    return {"stats": dict(stats), "results": [{"item": item, "analysis": _analyze(Item(**item))} for item in items]}
+
+
 @app.post("/rescore")
 def rescore(req: RescoreRequest) -> dict[str, Any]:
     th = req.thresholds.get("values", req.thresholds)  # przyjmujemy Thresholds albo samą mapę values
-    _THRESHOLDS.update({k: float(v) for k, v in th.items()})
+    values = {**_THRESHOLDS, **{k: float(v) for k, v in scoring.normalize_thresholds(th).items()}}
+    if req.persist:
+        _THRESHOLDS.update(values)
     ids = req.itemIds or list(_PRED)
     out = []
     for i in ids:
         if i in _PRED:
-            sc = scoring.compute(_PRED[i]["pred"], _PRED[i]["entities"], _THRESHOLDS)
+            sc = scoring.compute(_PRED[i]["pred"], _PRED[i]["entities"], values, **_PRED[i].get("context", {}))
             out.append({"itemId": i, **{k: sc[k] for k in ("rules", "modules", "riskScore", "riskLevel", "scam")}})
     return {"results": out}
 
@@ -184,9 +200,14 @@ def thresholds_default() -> dict[str, Any]:
 def eval_set(n: int = 200) -> list[dict[str, Any]]:
     """Zbiór walidacyjny z treningu (models/eval_set.json); bez modelu – syntetyczny stub."""
     if (MODELS_DIR / "eval_set.json").exists():
-        return json.loads((MODELS_DIR / "eval_set.json").read_text(encoding="utf-8"))[:n * 10]
+        rows = json.loads((MODELS_DIR / "eval_set.json").read_text(encoding="utf-8"))[:n * 10]
+        for row in rows:  # trening zapisuje klucz `scam`, kontrakt używa `scam.p`
+            for part in ("probs", "gold"):
+                if "scam" in row[part]:
+                    row[part]["scam.p"] = row[part].pop("scam")
+        return rows
     rng = random.Random(7)
-    keys = [f"flags.{k}" for k in FLAG_KEYS] + ["topic.INVESTMENT", "scam", "contentType.THIRD_PARTY_PROMO",
+    keys = [f"flags.{k}" for k in FLAG_KEYS] + ["topic.INVESTMENT", "scam.p", "contentType.THIRD_PARTY_PROMO",
                                                  "contentType.FIRM_OWN_MARKETING", "contentType.SERVICE_OFFER"]
     items = []
     for i in range(n):
@@ -196,6 +217,10 @@ def eval_set(n: int = 200) -> list[dict[str, Any]]:
             g = 1 if rng.random() < base_rate else 0
             p = min(max(rng.gauss(0.72 if g else 0.25, 0.18), 0.0), 1.0)
             probs[k], gold[k] = round(p, 3), g
+        level = rng.choices([0, 1, 2, 3], weights=[40, 25, 20, 15])[0]
+        risk = min(max(rng.gauss((0.22, 0.52, 0.74, 0.9)[level], 0.1), 0.0), 1.0)
+        for idx, name in enumerate(("MEDIUM", "HIGH", "CRITICAL"), start=1):
+            probs[f"risk.{name}"], gold[f"risk.{name}"] = round(risk, 3), int(level >= idx)
         items.append({"id": f"eval-{i:03d}", "probs": probs, "gold": gold})
     return items
 
@@ -214,7 +239,7 @@ def explain(req: ExplainRequest) -> dict[str, Any]:
     st = _PRED.get(req.itemId)
     if not st:
         return {"explanation": "Brak analizy dla tego rekordu."}
-    sc = scoring.compute(st["pred"], st["entities"], _THRESHOLDS)
+    sc = scoring.compute(st["pred"], st["entities"], _THRESHOLDS, **st.get("context", {}))
     names = [scoring.RULES[r["ruleId"]][0] for r in sc["rules"] if r["status"] == "VIOLATION"]
     txt = ("Wykryto możliwe naruszenia: " + ", ".join(names) + ".") if names else "Nie wykryto naruszeń."
     return {"explanation": txt + " (stub – docelowo opis generowany przez Bielika)"}
