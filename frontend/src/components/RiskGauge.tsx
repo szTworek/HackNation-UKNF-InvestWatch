@@ -3,7 +3,7 @@ import type { RiskLevel } from '../api/types';
 import { fmtPct } from '../lib/format';
 import { RISK_LABEL } from '../lib/labels';
 
-const COLORS: Record<RiskLevel, string> = { LOW: '#8a939e', MEDIUM: '#d39e00', HIGH: '#e8590c', CRITICAL: '#c4314b' };
+const COLORS: Record<RiskLevel, string> = { LOW: '#5f6673', MEDIUM: '#946200', HIGH: '#c2500a', CRITICAL: '#c00417' };
 
 interface Props {
   score: number; // 0..1
@@ -46,8 +46,8 @@ export function RiskGauge({ score, level, medium, high, critical }: Props) {
           {zones.map(([a, b, lv]) => (
             <path key={lv} d={arc(a, b)} stroke={COLORS[lv]} strokeWidth={16} fill="none" opacity={lv === level ? 1 : 0.28} />
           ))}
-          <line x1={CX} y1={CY} x2={tip.x} y2={tip.y} stroke="#1f2933" strokeWidth={3} strokeLinecap="round" />
-          <circle cx={CX} cy={CY} r={6} fill="#1f2933" />
+          <line x1={CX} y1={CY} x2={tip.x} y2={tip.y} stroke="#2b303b" strokeWidth={3} strokeLinecap="round" />
+          <circle cx={CX} cy={CY} r={6} fill="#2b303b" />
         </svg>
       </Box>
       <Stack gap={0}>
@@ -57,7 +57,7 @@ export function RiskGauge({ score, level, medium, high, critical }: Props) {
         <Text fz={30} fw={700} c={COLORS[level]} lh={1.15}>
           {RISK_LABEL[level]}
         </Text>
-        <Text size="sm" c="dimmed" ff="monospace">
+        <Text size="sm" c="dimmed">
           {fmtPct(score)}
         </Text>
       </Stack>

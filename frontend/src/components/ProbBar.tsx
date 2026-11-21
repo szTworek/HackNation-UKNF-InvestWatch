@@ -27,7 +27,7 @@ export function ProbBar({ label, p, threshold, color = 'blue', active, onClick, 
               {note}
             </Text>
           )}
-          <Text size="sm" ff="monospace">
+          <Text size="sm">
             {fmtProb(p)}
           </Text>
         </Group>

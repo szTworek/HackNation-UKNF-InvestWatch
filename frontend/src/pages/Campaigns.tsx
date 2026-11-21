@@ -83,10 +83,10 @@ export function Campaigns() {
                         {c.name}
                       </Text>
                     </Table.Td>
-                    <Table.Td ta="right" ff="monospace">
+                    <Table.Td ta="right">
                       {fmtInt(c.size)}
                     </Table.Td>
-                    <Table.Td ta="right" ff="monospace" c={c.scamShare >= 0.5 ? 'red.7' : undefined}>
+                    <Table.Td ta="right" c={c.scamShare >= 0.5 ? 'red.7' : undefined}>
                       {fmtPct(c.scamShare)}
                     </Table.Td>
                     <Table.Td>

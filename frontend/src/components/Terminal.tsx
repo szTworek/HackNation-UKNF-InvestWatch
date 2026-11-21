@@ -87,4 +87,4 @@ export function Stat({ label, children }: { label: string; children: ReactNode }
   );
 }
 
-export const RISK_HEX = { LOW: '#8a939e', MEDIUM: '#d39e00', HIGH: '#e8590c', CRITICAL: '#c4314b' } as const;
+export const RISK_HEX = { LOW: '#5f6673', MEDIUM: '#946200', HIGH: '#c2500a', CRITICAL: '#c00417' } as const;

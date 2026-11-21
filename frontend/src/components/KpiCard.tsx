@@ -13,16 +13,16 @@ interface Props {
   accent?: string;
 }
 
-export function KpiCard({ label, value, hint, to, loading, valueSize = 30, accent = 'var(--iw-primary)' }: Props) {
+export function KpiCard({ label, value, hint, to, loading, valueSize = 30, accent }: Props) {
   const content = (
-    <Box pl="sm" style={{ borderLeft: `3px solid ${accent}` }}>
+    <Box>
       <Text size="sm" c="dimmed" fw={500}>
         {label}
       </Text>
       {loading ? (
         <Skeleton h={34} w={80} mt={6} />
       ) : (
-        <Text fz={valueSize} fw={600} lh={1.25} mt={4} component="div" className="iw-kpi-value">
+        <Text fz={valueSize} fw={600} lh={1.25} mt={4} component="div" className="iw-kpi-value" c={accent}>
           {value}
         </Text>
       )}

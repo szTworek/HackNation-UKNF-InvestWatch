@@ -46,7 +46,7 @@ function Risk({ f, scam }: { f: FindingSummary; scam: boolean }) {
     <Group gap={6} wrap="nowrap">
       <span style={{ width: 8, height: 8, borderRadius: 2, background: scam ? RISK_HEX.CRITICAL : RISK_HEX[f.riskLevel], flexShrink: 0 }} aria-hidden />
       <Text size="sm" fw={500} c={scam ? RISK_HEX.CRITICAL : undefined}>
-        {scam ? 'Podejrzenie oszustwa' : RISK_LABEL[f.riskLevel]}
+        {scam ? 'Podejrzenie' : RISK_LABEL[f.riskLevel]}
       </Text>
     </Group>
   );
@@ -258,7 +258,7 @@ export function ModuleTable(p: Props) {
             </Table.Th>
             {sortHead('Wykryto', 'fetchedAt', 120)}
             {cols.map((c) => (c.sort ? sortHead(c.title, c.sort, c.w) : <Table.Th key={c.key} w={c.w}>{c.title}</Table.Th>))}
-            {sortHead('Ryzyko', 'riskScore', 170)}
+            {sortHead('Ryzyko', 'riskScore', 130)}
             <Table.Th w={110}>Status</Table.Th>
             <Table.Th w={40} aria-label="Akcje" />
           </Table.Tr>
@@ -266,9 +266,9 @@ export function ModuleTable(p: Props) {
         <Table.Tbody>
           {p.items.map((f) => {
             const scam = f.scamP >= p.scamThreshold;
-            const cls = [scam ? 'iw-row-scam' : '', p.freshIds.has(f.id) ? 'iw-row-new' : ''].filter(Boolean).join(' ');
+            const cls = [scam && p.moduleKey !== 'scam' ? 'iw-row-scam' : '', p.freshIds.has(f.id) ? 'iw-row-new' : ''].filter(Boolean).join(' ');
             return (
-              <Table.Tr key={f.id} className={cls || undefined} onClick={() => p.onOpen(f.id)} style={{ cursor: 'pointer' }} bg={p.selected.has(f.id) ? '#ebf3fc' : undefined}>
+              <Table.Tr key={f.id} className={cls || undefined} onClick={() => p.onOpen(f.id)} style={{ cursor: 'pointer' }} bg={p.selected.has(f.id) ? '#eef3f9' : undefined}>
                 <Table.Td onClick={(e) => e.stopPropagation()}>
                   <Checkbox size="xs" aria-label={`Zaznacz ${f.id}`} checked={p.selected.has(f.id)} onChange={() => p.onToggle(f.id)} />
                 </Table.Td>

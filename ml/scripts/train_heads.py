@@ -52,7 +52,7 @@ def merge(labels: list[dict]) -> tuple[dict, float]:
     """Łączy etykiety nauczycieli: temat/scam większością (remis → najlepszy nauczyciel), typ treści od najlepszego,
     flagi i instrumenty – suma. Waga 1.0 przy pełnej zgodności tematu i scamu, 0.6 przy rozbieżności."""
     if len(labels) == 1:
-        return labels[0], 1.0
+        return labels[0], float(labels[0].get("_weight", 1.0))
     labels = sorted(labels, key=lambda x: TEACHER_RANK.get(x["_teacher"], 9))
     best = labels[0]
     merged = dict(best)
@@ -116,6 +116,9 @@ def main() -> None:
         for r in read_jsonl(f):
             if str(r.get("id")) in labels:
                 docs[str(r["id"])] = Doc(**r)
+    for r in read_jsonl(ML_DIR / "data/gold/edge_cases.jsonl"):  # ręczne przypadki graniczne: tylko trening, większa waga
+        docs[r["doc"]["id"]] = Doc(**r["doc"])
+        labels[r["doc"]["id"]] = [{**r["label"], "_teacher": "edge", "_weight": 2.0}]
     ids = sorted(docs)
     log(f"dokumenty z etykietami: {len(ids)} | źródła: {Counter(docs[i].source for i in ids)}")
     if len(ids) < 50:

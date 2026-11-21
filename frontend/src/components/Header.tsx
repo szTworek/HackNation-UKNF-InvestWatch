@@ -126,8 +126,7 @@ export function AlertBell({ alerts, unread, onOpen, onClear }: BellProps) {
                   py={8}
                   style={{
                     borderBottom: '1px solid var(--iw-border)',
-                    boxShadow: a.priority === 'campaign' ? 'inset 3px 0 0 var(--mantine-color-red-7)' : undefined,
-                    background: a.read ? undefined : '#ebf3fc',
+                    background: a.read ? undefined : '#eef3f9',
                   }}
                 >
                   <Group justify="space-between" wrap="nowrap" gap="xs">

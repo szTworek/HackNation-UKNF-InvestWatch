@@ -61,8 +61,8 @@ export function ThresholdSlider({ id, label, value, saved, selected, onChange, o
       w="100%"
       style={{
         borderRadius: 4,
-        background: selected ? '#ebf3fc' : undefined,
-        borderLeft: `3px solid ${selected ? 'var(--iw-primary)' : 'transparent'}`,
+        background: selected ? '#eef3f9' : undefined,
+        outline: selected ? '1px solid var(--iw-primary)' : undefined,
       }}
     >
       <Group wrap="nowrap" gap="sm">
@@ -85,7 +85,7 @@ export function ThresholdSlider({ id, label, value, saved, selected, onChange, o
           onChange={onChange}
           label={fmtProb}
           aria-label={label}
-          color={changed ? 'orange' : 'office'}
+          color={changed ? 'orange' : 'knf'}
           size="sm"
         />
         <NumberInput

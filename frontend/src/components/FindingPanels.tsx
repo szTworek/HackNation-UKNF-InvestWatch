@@ -22,7 +22,7 @@ export function ScamPanel({ finding, thresholds }: { finding: Finding; threshold
   const signals = scamSignalTexts(finding);
   const quotes = scamQuotes(finding, thresholds);
   return (
-    <Paper withBorder p="md" style={{ borderLeft: '3px solid #c4314b' }}>
+    <Paper withBorder p="md" bg="var(--iw-red-soft)" style={{ borderColor: 'var(--iw-red)' }}>
       <Group justify="space-between" mb="sm">
         <Title order={4}>Podejrzenie oszustwa</Title>
         <Badge color="red" size="lg" variant="filled" tt="none">
@@ -126,7 +126,7 @@ export function FindingMeta({ finding }: { finding: Finding }) {
         </Meta>
       )}
       <Meta label="Wersja modelu">
-        <Text span size="xs" c="dimmed" ff="monospace">
+        <Text span size="xs" c="dimmed">
           {finding.modelVersion}
         </Text>
       </Meta>

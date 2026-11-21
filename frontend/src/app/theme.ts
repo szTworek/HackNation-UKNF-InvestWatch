@@ -1,38 +1,49 @@
-import { Paper, Table, createTheme, type MantineColorsTuple } from '@mantine/core';
+import { Badge, Button, Paper, Table, createTheme, type MantineColorsTuple } from '@mantine/core';
 
-// biurowy błękit (jak w aplikacjach pakietu biurowego), od jasnego do ciemnego
-const office: MantineColorsTuple = [
-  '#ebf3fc',
-  '#d4e4f7',
-  '#a9c9ef',
-  '#7aabe6',
-  '#5392de',
-  '#3a82d9',
-  '#2477d3',
-  '#0f6cbd',
-  '#0c5aa0',
-  '#094a85',
+// granat z serwisu knf.gov.pl (#113B6F) jako odcień 7
+const knf: MantineColorsTuple = [
+  '#eef3f9',
+  '#d8e3f0',
+  '#b1c6e0',
+  '#86a6cd',
+  '#5f87b8',
+  '#3f6ca1',
+  '#255388',
+  '#113b6f',
+  '#0e315c',
+  '#0a2848',
 ];
 
 export const theme = createTheme({
-  primaryColor: 'office',
+  primaryColor: 'knf',
   primaryShade: 7,
-  colors: { office },
-  defaultRadius: 'md',
-  fontFamily: '"IBM Plex Sans", "Segoe UI", system-ui, sans-serif',
-  fontFamilyMonospace: '"IBM Plex Mono", ui-monospace, monospace',
-  headings: { fontFamily: '"IBM Plex Sans", "Segoe UI", system-ui, sans-serif', fontWeight: '600' },
+  colors: { knf },
+  black: '#2b303b',
+  defaultRadius: 0,
+  fontFamily: 'Inter, sans-serif',
+  fontFamilyMonospace: 'Inter, sans-serif',
+  headings: {
+    fontFamily: 'Inter, sans-serif',
+    fontWeight: '700',
+    sizes: {
+      h2: { fontSize: '2.25rem', lineHeight: '1.3' },
+      h4: { fontSize: '1.125rem', lineHeight: '1.4' },
+      h5: { fontSize: '1rem', lineHeight: '1.4' },
+    },
+  },
   components: {
-    Paper: Paper.extend({ defaultProps: { withBorder: true, radius: 'md' } }),
+    Paper: Paper.extend({ defaultProps: { withBorder: true, radius: 0 } }),
     Table: Table.extend({ classNames: { table: 'iw-table' } }),
+    Button: Button.extend({ defaultProps: { radius: 0 } }),
+    Badge: Badge.extend({ defaultProps: { radius: 2, tt: 'none' } }),
   },
 });
 
-/** Kolor każdego modułu i ścieżki oszustw – ten sam w nawigacji, nagłówkach i plakietkach. */
+/** Kolor modułu: paleta serwisu KNF, czerwień zarezerwowana dla podejrzeń oszustwa. */
 export const MODULE_COLOR = {
-  1: '#0f6cbd',
-  2: '#0e7a5f',
-  3: '#7a3fb0',
-  scam: '#c4314b',
-  all: '#4b5563',
+  1: '#113b6f',
+  2: '#1e6ac8',
+  3: '#4b5f7c',
+  scam: '#c00417',
+  all: '#2b303b',
 } as const;

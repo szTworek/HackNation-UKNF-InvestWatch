@@ -92,7 +92,7 @@ export function ModuleReport({ finding: f, rules, thresholds }: { finding: Findi
   return (
     <Stack gap="sm">
       {f.modules.map((m) => (
-        <Paper key={m} p="md" style={{ borderLeft: `4px solid ${MODULE_COLOR[m]}` }}>
+        <Paper key={m} p="md" bg="var(--iw-soft)">
           <Group mb="sm">
             <Text fw={600} c={MODULE_COLOR[m]}>
               Raport: {MODULE_LABEL[m]}

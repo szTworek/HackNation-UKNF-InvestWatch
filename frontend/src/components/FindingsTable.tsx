@@ -123,10 +123,10 @@ export function FindingsTable(p: Props) {
                   <Checkbox size="xs" aria-label={`Zaznacz ${f.id}`} checked={selected.has(f.id)} onChange={() => p.onToggle(f.id)} />
                 </Table.Td>
                 <Table.Td>
-                  <Text size="xs" ff="monospace" title={fmtDateTime(f.fetchedAt)}>
+                  <Text size="xs" title={fmtDateTime(f.fetchedAt)}>
                     {fmtTime(f.fetchedAt)}
                   </Text>
-                  <Text size="xs" ff="monospace" c="dimmed">
+                  <Text size="xs" c="dimmed">
                     {fmtDateTime(f.fetchedAt).slice(0, 5)}
                   </Text>
                 </Table.Td>
@@ -156,7 +156,7 @@ export function FindingsTable(p: Props) {
                   </Group>
                 </Table.Td>
                 <Table.Td>
-                  <Text size="xs" ff="monospace" c="dimmed">
+                  <Text size="xs" c="dimmed">
                     {f.modules.map((m) => MODULE_SHORT[m]).join(' ') || '—'}
                   </Text>
                 </Table.Td>
@@ -200,7 +200,7 @@ export function FindingList({ items, scamThreshold, onOpen }: { items: FindingSu
             return (
               <Table.Tr key={f.id} onClick={() => onOpen(f.id)} style={{ cursor: 'pointer' }} className={scam ? 'iw-row-scam' : undefined}>
                 <Table.Td w={120}>
-                  <Text size="xs" ff="monospace">
+                  <Text size="xs">
                     {fmtDateTime(f.fetchedAt)}
                   </Text>
                 </Table.Td>

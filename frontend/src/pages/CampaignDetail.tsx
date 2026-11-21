@@ -1,8 +1,7 @@
 import { Anchor, Badge, Button, Grid, Group, Modal, Paper, SimpleGrid, Stack, Text, Textarea, Title } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconArrowLeft } from '@tabler/icons-react';
 import { lazy, Suspense, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useBulkStatus, useCampaign, useThresholds } from '../api/hooks';
 import type { GraphNode, Indicator, IndicatorType } from '../api/types';
 import { CampaignStatusBadge } from '../components/Badges';
@@ -57,17 +56,12 @@ export function CampaignDetailPage() {
 
   return (
     <Stack gap="md">
-      <Anchor component={Link} to={`/campaigns${search}`} size="sm">
-        <Group gap={4}>
-          <IconArrowLeft size={14} /> Kampanie
-        </Group>
-      </Anchor>
 
       <Group justify="space-between" align="flex-start">
         <Stack gap={4}>
           <Title order={2}>{c.name}</Title>
           <Group gap="xs">
-            <Text size="sm" c="dimmed" ff="monospace">
+            <Text size="sm" c="dimmed">
               {c.id}
             </Text>
             <CampaignStatusBadge status={c.status} />

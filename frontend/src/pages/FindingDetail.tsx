@@ -1,6 +1,5 @@
 import { Accordion, Anchor, Badge, Box, Button, Grid, Group, Modal, Paper, SegmentedControl, Stack, Table, Tabs, Text, Title, UnstyledButton } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconArrowLeft } from '@tabler/icons-react';
 import { lazy, Suspense, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useFinding, useFindingGraph, useRules, useThresholds, useUpdateStatus } from '../api/hooks';
@@ -41,7 +40,6 @@ type Tab = 'content' | 'landing' | 'video' | 'links' | 'history';
 
 export function FindingDetail() {
   const { id } = useParams();
-  const search = useRangeSearch();
   const finding = useFinding(id);
   const thresholds = useThresholds();
   const allRules = useRules();
@@ -71,11 +69,6 @@ export function FindingDetail() {
 
   return (
     <Stack gap="lg">
-      <Anchor component={Link} to={`/findings${search}`} size="sm">
-        <Group gap={4}>
-          <IconArrowLeft size={14} /> Wszystkie wyniki
-        </Group>
-      </Anchor>
 
       <Group justify="space-between" align="flex-start" wrap="nowrap">
         <div>
@@ -256,7 +249,7 @@ function ContentTab({
           {rules.data && <ViolatedRules defs={rules.data} finding={f} />}
 
           {(m1m3 || f.entities.length > 0) && (
-            <Paper withBorder p="md" style={m1m3 ? { borderLeft: '3px solid var(--iw-primary)' } : undefined}>
+            <Paper withBorder p="md" >
               <Title order={5} mb="sm">
                 Podmioty i rejestr KNF
               </Title>

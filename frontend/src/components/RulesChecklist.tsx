@@ -43,7 +43,7 @@ export function RulesChecklist({ defs, results }: Props) {
             const ev = result?.evidence[0];
             return (
               <Table.Tr key={def.id} bg={status === 'VIOLATION' ? 'var(--mantine-color-red-light)' : undefined}>
-                <Table.Td ff="monospace" c="dimmed">
+                <Table.Td c="dimmed">
                   {def.id.startsWith('M') ? '—' : def.id}
                 </Table.Td>
                 <Table.Td>
@@ -60,7 +60,7 @@ export function RulesChecklist({ defs, results }: Props) {
                       {RULE_STATUS_LABEL[status]}
                     </Badge>
                     {status === 'VIOLATION' && result && (
-                      <Text size="xs" c="dimmed" ff="monospace">
+                      <Text size="xs" c="dimmed">
                         {fmtProb(result.score)}
                       </Text>
                     )}

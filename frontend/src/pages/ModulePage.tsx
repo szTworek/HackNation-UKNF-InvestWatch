@@ -2,7 +2,6 @@ import { Alert, Box, Button, Grid, Group, Menu, MultiSelect, Pagination, Paper, 
 import { useDebouncedCallback } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconChevronDown, IconDownload, IconSearch } from '@tabler/icons-react';
-import dayjs from 'dayjs';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { api } from '../api/client';
@@ -15,7 +14,7 @@ import { ModuleTable, type ModuleKey } from '../components/ModuleTable';
 import { ErrorState, Loading } from '../components/PageState';
 import { Meter, Panel } from '../components/Terminal';
 import { scamThreshold } from '../lib/findings';
-import { fmtInt } from '../lib/format';
+import { fmtInt, todayIso } from '../lib/format';
 import {
   ALL_FLAGS,
   FLAG_LABEL,
@@ -203,6 +202,11 @@ export function ModulePage({ moduleKey }: { moduleKey: ModuleKey }) {
   const findings = useFindings(query);
   // podsumowanie: wszystkie rekordy modułu w zakresie dat (lekkie wiersze)
   const all = useFindings({ from, to, ...cfg.base, page: 1, pageSize: 200, sort: 'fetchedAt:desc' });
+  // liczniki z pola total, niezależne od limitu strony
+  const countBase = { from, to, ...cfg.base, page: 1, pageSize: 1 };
+  const newToday = useFindings({ ...countBase, from: todayIso(), to: todayIso() });
+  const highRisk = useFindings({ ...countBase, riskLevel: ['HIGH', 'CRITICAL'] });
+  const waiting = useFindings({ ...countBase, status: ['NEW'] });
   const rules = useRules();
   const thresholds = useThresholds();
   const updateStatus = useUpdateStatus();
@@ -220,7 +224,6 @@ export function ModulePage({ moduleKey }: { moduleKey: ModuleKey }) {
   const total = findings.data?.total ?? 0;
   const pages = Math.max(1, Math.ceil(total / filters.pageSize));
   const moduleItems = all.data?.items ?? [];
-  const today = dayjs().startOf('day');
 
   const prevIds = useRef<Set<string> | null>(null);
   const [freshIds, setFreshIds] = useState<Set<string>>(new Set());
@@ -250,18 +253,18 @@ export function ModulePage({ moduleKey }: { moduleKey: ModuleKey }) {
   return (
     <Stack gap="md">
       {/* nagłówek modułu */}
-      <Paper p="lg" style={{ borderTop: `4px solid ${cfg.color}` }}>
+      <Box pb="lg" style={{ borderBottom: '1px solid var(--iw-border)' }}>
         <Group justify="space-between" align="flex-start" wrap="nowrap">
           <div>
-            <Title order={2} fz={22}>
+            <Title order={2}>
               {cfg.title}
             </Title>
-            <Text size="sm" c="dimmed" mt={4} maw={760}>
+            <Text mt={6} maw={820} c="var(--iw-muted)">
               {cfg.scope}
             </Text>
           </div>
           {cfg.report ? (
-            <Button component="a" href={api.reportUrl(cfg.report, query)} download leftSection={<IconDownload size={16} />} style={{ background: cfg.color }}>
+            <Button component="a" href={api.reportUrl(cfg.report, query)} download variant="default" bg="var(--iw-soft)" bd="0" leftSection={<IconDownload size={16} />}>
               Raport CSV
             </Button>
           ) : moduleKey === 'all' ? (
@@ -281,21 +284,17 @@ export function ModulePage({ moduleKey }: { moduleKey: ModuleKey }) {
             </Menu>
           ) : null}
         </Group>
-      </Paper>
+      </Box>
 
       <SimpleGrid cols={{ base: 2, md: 4 }} spacing="md">
         <Kpi label="Rekordów w zakresie dat" value={all.data?.total} />
-        <Kpi label="Nowe dziś" value={all.data ? moduleItems.filter((i) => dayjs(i.fetchedAt).isAfter(today)).length : undefined} />
-        <Kpi label="Wysokie i krytyczne" value={all.data ? moduleItems.filter((i) => i.riskLevel === 'HIGH' || i.riskLevel === 'CRITICAL').length : undefined} color="orange.8" />
-        <Kpi label="Czeka na decyzję" value={all.data ? moduleItems.filter((i) => i.status === 'NEW').length : undefined} color={cfg.color} />
+        <Kpi label="Nowe dziś" value={newToday.data?.total} />
+        <Kpi label="Wysokie i krytyczne" value={highRisk.data?.total} color="#c2500a" />
+        <Kpi label="Czeka na decyzję" value={waiting.data?.total} color={cfg.color} />
       </SimpleGrid>
 
-      <Panel title="Podsumowanie modułu">
-        {all.data && rules.data ? <Insights moduleKey={moduleKey} items={moduleItems} rules={rules.data} color={cfg.color} /> : <Loading />}
-      </Panel>
-
       {rt.pendingNew > 0 && (
-        <Alert color="office" variant="light" py={8}>
+        <Alert color="knf" variant="light" py={8}>
           <Group justify="space-between">
             <Text size="sm">{rt.pendingNew === 1 ? '1 nowy rekord' : `${fmtInt(rt.pendingNew)} nowych rekordów`}</Text>
             <Button
@@ -305,6 +304,9 @@ export function ModulePage({ moduleKey }: { moduleKey: ModuleKey }) {
                 rt.resetPending();
                 void findings.refetch();
                 void all.refetch();
+                void newToday.refetch();
+                void highRisk.refetch();
+                void waiting.refetch();
               }}
             >
               Odśwież listę
@@ -431,6 +433,10 @@ export function ModulePage({ moduleKey }: { moduleKey: ModuleKey }) {
           <Select aria-label="Wierszy na stronie" size="xs" w={80} data={PAGE_SIZES.map(String)} value={String(filters.pageSize)} onChange={(v) => v && update({ pageSize: Number(v) })} allowDeselect={false} />
           <Pagination size="sm" total={pages} value={Math.min(filters.page, pages)} onChange={(page) => update({ page })} />
         </Group>
+      </Panel>
+
+      <Panel title={all.data && all.data.total > moduleItems.length ? `Podsumowanie: ostatnie ${fmtInt(moduleItems.length)} z ${fmtInt(all.data.total)}` : 'Podsumowanie modułu'}>
+        {all.data && rules.data ? <Insights moduleKey={moduleKey} items={moduleItems} rules={rules.data} color={cfg.color} /> : <Loading />}
       </Panel>
     </Stack>
   );
