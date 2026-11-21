@@ -57,7 +57,7 @@ export interface World {
   index: Map<string, Set<string>>; // `${type}:${value}` -> id rekordów
   members: Map<string, string[]>; // campaignId -> id rekordów
   campaigns: Map<string, Campaign>;
-  defs: Map<string, CampaignDef>;
+  defs: Map<string, Pick<CampaignDef, 'name' | 'status'>>;
   evalSet: EvalItem[];
   thresholds: Thresholds;
 }

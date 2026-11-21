@@ -53,7 +53,9 @@ export function ModuleReport({ finding: f, rules, thresholds }: { finding: Findi
             </Badge>
           </Field>
           <Field label="Lokalizacja">
-            <ExternalLink href={f.url}>{f.url}</ExternalLink>
+            <ExternalLink href={f.url} blocked={f.blockedUrls?.includes(f.url)}>
+              {f.url}
+            </ExternalLink>
           </Field>
         </SimpleGrid>
       );
@@ -61,11 +63,13 @@ export function ModuleReport({ finding: f, rules, thresholds }: { finding: Findi
       return (
         <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="md">
           <Field label="Firma inwestycyjna">{firm?.name ?? 'nie rozpoznano'}</Field>
-          <Field label={`Naruszone reguły (${violations.length})`}>
+          <Field label={`Reguły do weryfikacji (${violations.length})`}>
             {violations.length ? violations.map((v) => ruleName.get(v.ruleId) ?? v.ruleId).join(', ') : 'brak'}
           </Field>
           <Field label="Lokalizacja">
-            <ExternalLink href={f.url}>{f.url}</ExternalLink>
+            <ExternalLink href={f.url} blocked={f.blockedUrls?.includes(f.url)}>
+              {f.url}
+            </ExternalLink>
           </Field>
         </SimpleGrid>
       );
@@ -83,7 +87,9 @@ export function ModuleReport({ finding: f, rules, thresholds }: { finding: Findi
         </Field>
         <Field label="Instrumenty">{instruments.join(', ') || '—'}</Field>
         <Field label="Lokalizacja">
-          <ExternalLink href={f.url}>{f.url}</ExternalLink>
+          <ExternalLink href={f.url} blocked={f.blockedUrls?.includes(f.url)}>
+              {f.url}
+            </ExternalLink>
         </Field>
       </SimpleGrid>
     );

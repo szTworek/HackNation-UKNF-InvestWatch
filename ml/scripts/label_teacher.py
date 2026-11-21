@@ -25,7 +25,7 @@ import httpx
 
 from investwatch_ml.schema import Doc, append_jsonl, read_jsonl
 from investwatch_ml.smoke import smoke_docs
-from investwatch_ml.teacher import DEFAULT_HOST, DEFAULT_MODEL, PROMPT_VERSION, GeminiTeacher, GroqTeacher, Teacher, wait_for_model
+from investwatch_ml.teacher import DEFAULT_HOST, DEFAULT_MODEL, PROMPT_VERSION, GeminiTeacher, GroqTeacher, OpenRouterTeacher, Teacher, wait_for_model
 
 ML_DIR = Path(__file__).resolve().parents[1]
 sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)  # konsola Windows
@@ -165,7 +165,7 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--input", nargs="*", default=["data/pool/*.jsonl"])
     ap.add_argument("--output", default="data/silver/teacher.jsonl")
-    ap.add_argument("--backend", choices=["ollama", "gemini", "groq"], default="ollama")
+    ap.add_argument("--backend", choices=["ollama", "gemini", "groq", "openrouter"], default="ollama")
     ap.add_argument("--model", default=None, help="domyślnie Bielik (ollama) / gemini-3.5-flash-lite")
     ap.add_argument("--host", default=DEFAULT_HOST)
     ap.add_argument("--workers", type=int, default=2, help="równoległe zapytania (ustaw OLLAMA_NUM_PARALLEL >= tyle)")
@@ -184,7 +184,11 @@ def main() -> None:
     out_path = ML_DIR / args.output
     err_path = out_path.with_name(out_path.stem + "_errors.jsonl")
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    if args.backend == "groq":
+    if args.backend == "openrouter":
+        args.model = args.model or OpenRouterTeacher.DEFAULT
+        teacher = OpenRouterTeacher(model=args.model)
+        args.wait = False
+    elif args.backend == "groq":
         args.model = args.model or "llama-3.3-70b-versatile"
         teacher = GroqTeacher(model=args.model)
         args.wait = False

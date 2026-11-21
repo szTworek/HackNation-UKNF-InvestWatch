@@ -31,8 +31,9 @@ from investwatch_ml.schema import Doc, read_jsonl
 ML_DIR = Path(__file__).resolve().parents[1]
 sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
 TEACHER_FILES = {"bielik": "data/silver/teacher.jsonl", "gemini": "data/silver/teacher_gemini.jsonl",
-                 "groq": "data/silver/teacher_groq.jsonl"}
-TEACHER_RANK = {"groq": 0, "gemini": 1, "bielik": 2}  # kto rozstrzyga typ treści przy rozbieżności
+                 "groq": "data/silver/teacher_groq.jsonl",
+                 "openrouter": "data/silver/teacher_openrouter.jsonl"}
+TEACHER_RANK = {"groq": 0, "gemini": 1, "openrouter": 1, "bielik": 2}  # kto rozstrzyga typ treści przy rozbieżności
 
 
 def log(m: str) -> None:
@@ -100,7 +101,7 @@ def bin_metrics(y, p, t=0.5) -> dict:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--teachers", default="bielik,gemini,groq")
+    ap.add_argument("--teachers", default="bielik,gemini,groq,openrouter")
     ap.add_argument("--embedder", default="BAAI/bge-m3")
     ap.add_argument("--out", default="models")
     ap.add_argument("--test-size", type=float, default=0.2)

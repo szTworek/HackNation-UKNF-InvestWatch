@@ -1,4 +1,5 @@
 import type {
+  ApiHealth,
   BulkStatusUpdate,
   CampaignDetail,
   CampaignListItem,
@@ -88,6 +89,7 @@ export interface CampaignsQuery extends DateRange {
 const json = (body: unknown): RequestInit => ({ body: JSON.stringify(body) });
 
 export const api = {
+  health: () => request<ApiHealth>('/health'),
   findings: (q: FindingsQuery) => request<Page<FindingSummary>>(`/findings${buildQuery({ ...q })}`),
   finding: (id: string) => request<Finding>(`/findings/${encodeURIComponent(id)}`),
   updateStatus: (id: string, body: StatusUpdate) =>

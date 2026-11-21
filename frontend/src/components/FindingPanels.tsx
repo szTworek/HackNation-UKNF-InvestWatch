@@ -7,7 +7,14 @@ import { domainOf, scamQuotes, scamSignalTexts, suspiciousDomains, type Threshol
 import { fmtCompact, fmtDateTime, fmtPct } from '../lib/format';
 import { FLAG_COLOR, FLAG_LABEL, KIND_LABEL, PLATFORM_LABEL } from '../lib/labels';
 
-export function ExternalLink({ href, children }: { href: string; children: ReactNode }) {
+export function ExternalLink({ href, blocked, children }: { href: string; blocked?: boolean; children: ReactNode }) {
+  if (blocked) {
+    return (
+      <Text span size="sm" title="Link nieaktywny: adres podejrzany, nie otwieraj go" style={{ wordBreak: 'break-all' }}>
+        {href}
+      </Text>
+    );
+  }
   return (
     <Anchor href={href} target="_blank" rel="noopener noreferrer" size="sm" style={{ wordBreak: 'break-all' }}>
       {children} <IconExternalLink size={12} style={{ verticalAlign: 'middle' }} aria-label="otwiera się w nowej karcie" />
@@ -78,7 +85,9 @@ export function LinkList({ finding }: { finding: Finding }) {
     <Stack gap={6}>
       {finding.outboundLinks.map((url) => (
         <Group key={url} gap={6} wrap="nowrap" align="flex-start">
-          <ExternalLink href={url}>{domainOf(url)}</ExternalLink>
+          <ExternalLink href={url} blocked={finding.blockedUrls?.includes(url)}>
+            {domainOf(url)}
+          </ExternalLink>
           {bad.has(domainOf(url)) && (
             <Badge color="red" variant="light" size="xs" style={{ flexShrink: 0 }} mt={3} tt="none">
               podejrzana domena
@@ -108,7 +117,7 @@ export function FindingMeta({ finding }: { finding: Finding }) {
   return (
     <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm" verticalSpacing="sm">
       <Meta label="Źródło">
-        <ExternalLink href={finding.url}>
+        <ExternalLink href={finding.url} blocked={finding.blockedUrls?.includes(finding.url)}>
           {PLATFORM_LABEL[finding.platform]}, {KIND_LABEL[finding.kind].toLowerCase()}
         </ExternalLink>
       </Meta>

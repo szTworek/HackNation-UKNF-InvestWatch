@@ -15,6 +15,7 @@ FROM ${NODE_IMAGE}
 WORKDIR /app
 ENV NODE_ENV=production MOCK_PORT=4000
 COPY --from=build /app/dist-mock/server.cjs ./server.cjs
+RUN mkdir -p /state && chown node:node /state
 USER node
 EXPOSE 4000
 HEALTHCHECK --interval=30s --timeout=3s --retries=3 CMD wget -qO- http://127.0.0.1:4000/api/health || exit 1

@@ -217,6 +217,7 @@ export interface Finding {
   status: Status;
   history: HistoryEntry[];
   modelVersion: string;
+  blockedUrls?: string[]; // adresy bez aktywnego linku: lista CERT albo wysokie podejrzenie oszustwa
 }
 
 export interface Thresholds {
@@ -236,6 +237,13 @@ export interface EvalItem {
 // ---------------------------------------------------------------------------
 // Odpowiedzi REST (założenia kontraktu – opisane w frontend/README.md)
 // ---------------------------------------------------------------------------
+
+export interface ApiHealth {
+  status: string;
+  findings: number;
+  dataMode: 'mock' | 'real';
+  demoReplay: boolean;
+}
 
 export interface Page<T> {
   items: T[];

@@ -107,14 +107,14 @@ function columnsFor(key: ModuleKey, rules: Map<string, RuleDef>): Column[] {
         content,
         {
           key: 'viol',
-          title: 'Naruszone reguły',
+          title: 'Reguły do weryfikacji',
           w: 220,
           render: (f) =>
             f.violations.length ? (
               <Tooltip multiline w={300} withArrow label={f.violations.map((id) => rules.get(id)?.name ?? id).join(', ')}>
                 <div>
                   <Text size="sm" fw={600} c="red.8">
-                    {f.violations.length} {f.violations.length === 1 ? 'naruszenie' : f.violations.length < 5 ? 'naruszenia' : 'naruszeń'}
+                    {f.violations.length} do weryfikacji
                   </Text>
                   <Text size="xs" c="dimmed" lineClamp={1}>
                     {f.violations.slice(0, 2).map((id) => rules.get(id)?.name ?? id).join(', ')}

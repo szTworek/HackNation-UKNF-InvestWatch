@@ -1,6 +1,7 @@
 // Mock serwer InvestWatch = kontrakt API dla backendu (docs/frontend-agent.md, sekcja 4).
 
 import { createServer } from 'node:http';
+import { join } from 'node:path';
 import express, { type Request, type Response } from 'express';
 import { Server } from 'socket.io';
 import type {
@@ -41,7 +42,16 @@ import { frameSvg, landingSvg } from './enrich';
 import { campaignGraph, egoGraph } from './graph';
 import { RULES } from './rules';
 import { THRESHOLD_KEYS, rescore } from './scoring';
-import { applyThresholds, createLiveFinding, createWorld, recomputeCampaign } from './seed';
+import {
+  applyRescore,
+  fetchEvalSet,
+  loadRealWorld,
+  type RealData,
+  releaseNext,
+  rescoreViaAi,
+  saveState,
+} from './real';
+import { applyThresholds, createLiveFinding, createWorld, recomputeCampaign, type World } from './seed';
 
 try {
   process.loadEnvFile('.env');
@@ -58,7 +68,31 @@ const CORS_ORIGIN = process.env.MOCK_CORS_ORIGIN ?? '*';
 
 const log = (msg: string) => process.stdout.write(`[mock] ${msg}\n`);
 
-const world = createWorld(SEED, new Date());
+const DATA_MODE = process.env.DATA_MODE ?? 'mock';
+if (DATA_MODE !== 'mock' && DATA_MODE !== 'real') {
+  process.stderr.write(`[api] Nieznany DATA_MODE: ${DATA_MODE} (dozwolone: mock, real)\n`);
+  process.exit(1);
+}
+const DEMO_REPLAY = DATA_MODE === 'real' && process.env.DEMO_REPLAY === '1';
+const AI_URL = (process.env.AI_URL ?? 'http://localhost:8000').replace(/\/$/, '');
+const DATA_DIR = join(process.cwd(), 'mock-server', 'data');
+const REAL_PATH = process.env.REAL_DATA_PATH ?? join(DATA_DIR, 'findings.real.json');
+const STATE_PATH = process.env.STATE_PATH ?? join(DATA_DIR, 'state.json');
+const REPLAY_MIN_MS = 4000;
+const REPLAY_MAX_MS = 8000;
+
+function loadReal(): RealData | null {
+  if (DATA_MODE !== 'real') return null;
+  try {
+    return loadRealWorld(REAL_PATH, STATE_PATH, DEMO_REPLAY, new Date());
+  } catch (e) {
+    process.stderr.write(`[api] ${(e as Error).message}\n`);
+    process.exit(1);
+  }
+}
+
+const real = loadReal();
+const world: World = real?.world ?? createWorld(SEED, new Date());
 const DAY = 24 * 3600 * 1000;
 
 // ---------------------------------------------------------------------------
@@ -237,7 +271,9 @@ function toSummary(f: Finding): FindingSummary {
 }
 
 function csvCell(v: string | number | undefined): string {
-  const s = String(v ?? '').replace(/\r?\n/g, ' ');
+  const raw = String(v ?? '').replace(/\r?\n/g, ' ');
+  // treść ze scrapera jest niezaufana: bez formuł po otwarciu raportu w arkuszu
+  const s = /^[=+\-@\t]/.test(raw) ? `'${raw}` : raw;
   return /[";\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
@@ -263,7 +299,7 @@ app.use((req, res, next) => {
 const notFound = (res: Response, what = 'Nie znaleziono') => res.status(404).json({ error: what });
 
 app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', findings: world.findings.length });
+  res.json({ status: 'ok', findings: world.findings.length, dataMode: DATA_MODE, demoReplay: DEMO_REPLAY });
 });
 
 app.get('/api/findings', (req, res) => {
@@ -286,6 +322,10 @@ function updateStatus(f: Finding, status: Status, comment: string | undefined): 
   return f;
 }
 
+function persistState(): void {
+  if (real) saveState(STATE_PATH, real);
+}
+
 app.patch('/api/findings/status', (req, res) => {
   const body = req.body as Partial<BulkStatusUpdate>;
   if (!Array.isArray(body.ids) || !STATUSES.includes(body.status as Status)) {
@@ -299,6 +339,7 @@ app.patch('/api/findings/status', (req, res) => {
     updated.push(updateStatus(f, body.status as Status, body.comment));
     io.emit('finding:updated', f);
   }
+  persistState();
   res.json({ items: updated });
 });
 
@@ -317,6 +358,7 @@ app.patch('/api/findings/:id/status', (req, res) => {
     return;
   }
   updateStatus(f, status, comment);
+  persistState();
   io.emit('finding:updated', f);
   res.json(f);
 });
@@ -418,7 +460,7 @@ function parseValues(body: unknown): Record<string, number> | null {
   const values = (body as Partial<Thresholds> | undefined)?.values;
   if (!values || typeof values !== 'object') return null;
   const out: Record<string, number> = {};
-  for (const key of THRESHOLD_KEYS) {
+  for (const key of real ? Object.keys(world.thresholds.values) : THRESHOLD_KEYS) {
     const v = (values as Record<string, unknown>)[key];
     if (v === undefined) continue;
     if (typeof v !== 'number' || !Number.isFinite(v) || v < 0 || v > 1) return null;
@@ -433,12 +475,36 @@ app.put('/api/thresholds', (req, res) => {
     res.status(400).json({ error: 'Progi muszą być liczbami z zakresu 0–1' });
     return;
   }
+  if (real) return void saveRealThresholds(real, values, res);
   const t = applyThresholds(world, values, new Date());
   for (const id of world.campaigns.keys()) recomputeCampaign(world, id);
   io.emit('thresholds:updated', t);
   log(`progi zapisane (${t.version})`);
   res.json(t);
 });
+
+const aiUnavailable = (res: Response, e: unknown) => {
+  log(`ai-service: ${(e as Error).message}`);
+  res.status(503).json({ error: 'ai-service jest niedostępny, progi nie zostały zmienione' });
+};
+
+async function saveRealThresholds(data: RealData, values: Record<string, number>, res: Response): Promise<void> {
+  const proposed = { ...world.thresholds.values, ...values };
+  const ids = [...world.byId.keys()];
+  try {
+    const results = await rescoreViaAi(AI_URL, data, proposed, ids, false);
+    await rescoreViaAi(AI_URL, data, proposed, ids.slice(0, 1), true);
+    const n = Number(world.thresholds.version.replace(/\D/g, '')) || 1;
+    world.thresholds = { version: `v${n + 1}`, updatedAt: new Date().toISOString(), values: proposed };
+    applyRescore(data, results);
+    saveState(STATE_PATH, data);
+  } catch (e) {
+    return aiUnavailable(res, e);
+  }
+  io.emit('thresholds:updated', world.thresholds);
+  log(`progi zapisane (${world.thresholds.version})`);
+  res.json(world.thresholds);
+}
 
 app.post('/api/thresholds/preview', (req, res) => {
   const values = parseValues(req.body);
@@ -449,6 +515,18 @@ app.post('/api/thresholds/preview', (req, res) => {
   const proposedValues = { ...world.thresholds.values, ...values };
   const since = Date.now() - 30 * DAY;
   const recent = world.findings.filter((f) => new Date(f.fetchedAt).getTime() >= since);
+  if (real) {
+    rescoreViaAi(AI_URL, real, proposedValues, recent.map((f) => f.id), false)
+      .then((results) => {
+        const preview: ThresholdsPreview = {
+          current: countBy(RISK_LEVELS, recent, (f) => f.riskLevel),
+          proposed: countBy(RISK_LEVELS, recent, (f) => results.get(f.id)?.riskLevel ?? f.riskLevel),
+        };
+        res.json(preview);
+      })
+      .catch((e: unknown) => aiUnavailable(res, e));
+    return;
+  }
   const body: ThresholdsPreview = {
     current: countBy(RISK_LEVELS, recent, (f) => f.riskLevel),
     proposed: countBy(RISK_LEVELS, recent, (f) => rescore(f, proposedValues).riskLevel),
@@ -457,7 +535,16 @@ app.post('/api/thresholds/preview', (req, res) => {
 });
 
 app.get('/api/calibration/eval-set', (_req, res) => {
-  res.json(world.evalSet);
+  if (!real || world.evalSet.length) return void res.json(world.evalSet);
+  fetchEvalSet(AI_URL)
+    .then((items) => {
+      world.evalSet = items;
+      res.json(items);
+    })
+    .catch((e: unknown) => {
+      log(`ai-service: ${(e as Error).message}`);
+      res.status(503).json({ error: 'ai-service jest niedostępny' });
+    });
 });
 
 app.get('/api/reports/module/:file', (req, res) => {
@@ -485,7 +572,7 @@ app.get('/api/reports/module/:file', (req, res) => {
       STATUS_LABEL[f.status],
     ]);
   } else if (moduleId === 2) {
-    header = ['ID', 'Data wykrycia', 'Platforma', 'Firma inwestycyjna', 'Naruszone reguły', 'Treść', 'URL', 'Poziom ryzyka', 'Status'];
+    header = ['ID', 'Data wykrycia', 'Platforma', 'Firma inwestycyjna', 'Reguły do weryfikacji', 'Treść', 'URL', 'Poziom ryzyka', 'Status'];
     rows = items.map((f) => [
       f.id,
       date(f),
@@ -617,9 +704,48 @@ function scheduleEmit(): void {
   }, delay);
 }
 
-httpServer.listen(PORT, () => {
-  log(`API: http://localhost:${PORT}/api, ${world.findings.length} rekordów, ${world.campaigns.size} kampanii`);
-  log(`nowe rekordy co ${Math.round(EMIT_MIN / 1000)}–${Math.round(EMIT_MAX / 1000)} s${fast ? ' (--fast)' : ''}`);
-  scheduleEmit();
-});
+/** DEMO_REPLAY: odsłania prawdziwe rekordy trzymane poza listą. Nie tworzy nowych. */
+function scheduleReplay(data: RealData): void {
+  if (!data.held.length) return;
+  setTimeout(() => {
+    const next = releaseNext(data);
+    if (next) {
+      io.emit('finding:new', next.finding);
+      if (next.campaign) io.emit('campaign:new_member', { campaign: next.campaign, finding: next.finding });
+      if (next.finding.riskLevel === 'HIGH' || next.finding.riskLevel === 'CRITICAL') io.emit('finding:high_risk', next.finding);
+      log(`demo: odsłonięto ${next.finding.id}, zostało ${data.held.length}`);
+    }
+    scheduleReplay(data);
+  }, REPLAY_MIN_MS + Math.random() * (REPLAY_MAX_MS - REPLAY_MIN_MS));
+}
+
+/** Zapisane progi działają po restarcie tylko wtedy, gdy ai-service potrafi je przeliczyć. */
+async function restoreThresholds(data: RealData): Promise<void> {
+  const saved = data.savedThresholds;
+  if (!saved) return;
+  try {
+    const results = await rescoreViaAi(AI_URL, data, saved.values, [...world.byId.keys()], true);
+    world.thresholds = saved;
+    applyRescore(data, results);
+    log(`przywrócono progi ${saved.version}`);
+  } catch (e) {
+    log(`nie przywrócono progów ${saved.version}, działają progi z importu: ${(e as Error).message}`);
+  }
+}
+
+async function start(): Promise<void> {
+  if (real) await restoreThresholds(real);
+  httpServer.listen(PORT, () => {
+    log(`API: http://localhost:${PORT}/api, tryb ${DATA_MODE}, ${world.findings.length} rekordów, ${world.campaigns.size} kampanii`);
+    if (real) {
+      log(`dane z ${real.generatedAt}, model ${real.modelVersion}${DEMO_REPLAY ? `, odtwarzanie demo: ${real.held.length} rekordów` : ''}`);
+      if (DEMO_REPLAY) scheduleReplay(real);
+      return;
+    }
+    log(`nowe rekordy co ${Math.round(EMIT_MIN / 1000)}–${Math.round(EMIT_MAX / 1000)} s${fast ? ' (--fast)' : ''}`);
+    scheduleEmit();
+  });
+}
+
+void start();
 

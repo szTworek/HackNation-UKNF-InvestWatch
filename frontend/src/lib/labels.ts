@@ -231,7 +231,7 @@ export const REGISTER_COLOR: Record<RegisterStatus, string> = {
 };
 
 export const RULE_STATUS_LABEL: Record<RuleStatus, string> = {
-  VIOLATION: 'Naruszenie',
+  VIOLATION: 'Do weryfikacji',
   OK: 'Spełniona',
   NOT_APPLICABLE: 'Nie dotyczy',
   NOT_CHECKED: 'Wymaga analizy wizualnej',

@@ -1,23 +1,21 @@
 """ai-service (FastAPI) – kontrakt z docs/backend-integration.md §4.
 
-Na razie predykcje pochodzą z baseline'u słownikowego (heuristics.py); po treningu podmieniamy `predict_text`
-na klasyfikator embeddingowy – kontrakt i scoring (scoring.py) się nie zmieniają.
+Predykcje pochodzą z klasyfikatora embeddingowego, gdy model przejdzie bramkę jakości, a inaczej z baseline'u
+słownikowego (heuristics.py). Serwis działa lokalnie i nie woła zewnętrznych API.
 
   uv run uvicorn investwatch_ml.api:app --port 8000
 """
 
 from __future__ import annotations
 
-import random
+import re
 import time
-import zlib
 from typing import Any
 
 from fastapi import FastAPI
 from pydantic import BaseModel, ConfigDict, Field
 
-from . import heuristics, indicators, ingest, knf, scoring
-from .labels import FLAG_KEYS
+from . import campaigns, heuristics, indicators, ingest, knf, scoring
 from .text import normalize
 
 import json
@@ -44,7 +42,7 @@ if (MODELS_DIR / "heads.joblib").exists() and os.environ.get("INVESTWATCH_BASELI
 MODEL_VERSION = _CLF.version if _CLF else "baseline-heuristics-0.1"
 app = FastAPI(title="InvestWatch ai-service", version="0.1")
 
-# stan w pamięci (stub): ostatnie predykcje dla /rescore, aktualne progi
+# stan w pamięci: ostatnie predykcje dla /rescore i /explain, aktualne progi
 _PRED: dict[str, dict[str, Any]] = {}
 _THRESHOLDS: dict[str, float] = dict(scoring.DEFAULT_THRESHOLDS)
 
@@ -73,10 +71,37 @@ class RecordsRequest(BaseModel):
     records: list[dict[str, Any]]
 
 
+class ScoringInput(BaseModel):
+    pred: dict[str, Any]
+    entities: list[dict[str, Any]] = Field(default_factory=list)
+    context: dict[str, Any] = Field(default_factory=dict)
+
+
+class RescoreItem(BaseModel):
+    itemId: str
+    scoringInput: ScoringInput
+
+
 class RescoreRequest(BaseModel):
     thresholds: dict[str, Any]
     itemIds: list[str] | None = None
     persist: bool = True  # false: podgląd w panelu kalibracji, bez zmiany aktywnych progów
+    items: list[RescoreItem] | None = None  # zapisane wejście scoringu: działa także po restarcie serwisu
+
+
+class CampaignItem(BaseModel):
+    model_config = ConfigDict(extra="allow")
+    id: str
+    text: str = ""
+    author: str | None = None
+    platform: str | None = None
+    indicators: list[dict[str, Any]] = Field(default_factory=list)
+    scamP: float = 0.0
+    fetchedAt: str | None = None
+
+
+class CampaignsRequest(BaseModel):
+    items: list[CampaignItem]
 
 
 class MediaRequest(BaseModel):
@@ -86,6 +111,7 @@ class MediaRequest(BaseModel):
 
 class ExplainRequest(BaseModel):
     itemId: str
+    scoringInput: ScoringInput | None = None
 
 
 def _full_text(it: Item) -> str:
@@ -132,9 +158,10 @@ def _analyze(it: Item) -> dict[str, Any]:
         "flags": pred["flags"],
         "entities": ents,
         "indicators": inds,
-        "campaignId": None,  # TODO: graf kampanii
+        "campaignId": None,  # uzupełnia POST /campaigns/build na całym zbiorze
         "related": [],
         "modelVersion": MODEL_VERSION,
+        "scoringInput": {"pred": pred, "entities": ents, "context": context},
         **sc,
     }
 
@@ -181,7 +208,10 @@ def rescore(req: RescoreRequest) -> dict[str, Any]:
     values = {**_THRESHOLDS, **{k: float(v) for k, v in scoring.normalize_thresholds(th).items()}}
     if req.persist:
         _THRESHOLDS.update(values)
-    ids = req.itemIds or list(_PRED)
+    if req.items is not None:
+        for it in req.items:
+            _PRED[it.itemId] = it.scoringInput.model_dump()
+    ids = [it.itemId for it in req.items] if req.items is not None else (req.itemIds or list(_PRED))
     out = []
     for i in ids:
         if i in _PRED:
@@ -198,48 +228,58 @@ def thresholds_default() -> dict[str, Any]:
 
 @app.get("/calibration/eval-set")
 def eval_set(n: int = 200) -> list[dict[str, Any]]:
-    """Zbiór walidacyjny z treningu (models/eval_set.json); bez modelu – syntetyczny stub."""
-    if (MODELS_DIR / "eval_set.json").exists():
-        rows = json.loads((MODELS_DIR / "eval_set.json").read_text(encoding="utf-8"))[:n * 10]
-        for row in rows:  # trening zapisuje klucz `scam`, kontrakt używa `scam.p`
-            for part in ("probs", "gold"):
-                if "scam" in row[part]:
-                    row[part]["scam.p"] = row[part].pop("scam")
-        return rows
-    rng = random.Random(7)
-    keys = [f"flags.{k}" for k in FLAG_KEYS] + ["topic.INVESTMENT", "scam.p", "contentType.THIRD_PARTY_PROMO",
-                                                 "contentType.FIRM_OWN_MARKETING", "contentType.SERVICE_OFFER"]
-    items = []
-    for i in range(n):
-        probs, gold = {}, {}
-        for k in keys:
-            base_rate = 0.5 if k in ("topic.INVESTMENT",) else 0.2
-            g = 1 if rng.random() < base_rate else 0
-            p = min(max(rng.gauss(0.72 if g else 0.25, 0.18), 0.0), 1.0)
-            probs[k], gold[k] = round(p, 3), g
-        level = rng.choices([0, 1, 2, 3], weights=[40, 25, 20, 15])[0]
-        risk = min(max(rng.gauss((0.22, 0.52, 0.74, 0.9)[level], 0.1), 0.0), 1.0)
-        for idx, name in enumerate(("MEDIUM", "HIGH", "CRITICAL"), start=1):
-            probs[f"risk.{name}"], gold[f"risk.{name}"] = round(risk, 3), int(level >= idx)
-        items.append({"id": f"eval-{i:03d}", "probs": probs, "gold": gold})
-    return items
+    """Zbiór walidacyjny z treningu (models/eval_set.json). Bez modelu lista jest pusta."""
+    if not (MODELS_DIR / "eval_set.json").exists():
+        return []
+    rows = json.loads((MODELS_DIR / "eval_set.json").read_text(encoding="utf-8"))[:n * 10]
+    for row in rows:  # trening zapisuje klucz `scam`, kontrakt używa `scam.p`
+        for part in ("probs", "gold"):
+            if "scam" in row[part]:
+                row[part]["scam.p"] = row[part].pop("scam")
+    return rows
+
+
+@app.post("/campaigns/build")
+def campaigns_build(req: CampaignsRequest) -> dict[str, Any]:
+    """Grupuje cały zbiór w kampanie. Z modelem używa embeddingów, bez modelu TF-IDF."""
+    embed = _CLF.embedder.encode if _CLF is not None else None
+    return campaigns.build([x.model_dump() for x in req.items], embed)
 
 
 @app.post("/enrich/media")
 def enrich_media(req: MediaRequest) -> dict[str, Any]:
-    """STUB: ASR / OCR / syntetyczny głos – implementacja w kolejnym etapie."""
-    seed = zlib.crc32(req.objectKey.encode())
-    return {"asr": {"used": False, "text": "", "segments": []}, "keyframes": [],
-            "syntheticVoice": {"score": round((seed % 100) / 100, 2), "model": "stub", "segments": [],
-                               "experimental": True}}
+    """Analiza mediów nie jest jeszcze aktywna, więc serwis nie zwraca żadnego wyniku głosu."""
+    return {"active": False, "reason": "Analiza mediów nie jest aktywna.",
+            "asr": {"used": False, "text": "", "segments": []}, "keyframes": [], "syntheticVoice": None}
+
+
+def _quote(evidence: list[dict[str, Any]]) -> str:
+    text = " ".join(re.sub(r"https?://\S+", "", str(evidence[0].get("text") or "")).split()) if evidence else ""
+    return f" (np. „{text[:140]}”)" if text else ""
 
 
 @app.post("/explain")
 def explain(req: ExplainRequest) -> dict[str, Any]:
-    st = _PRED.get(req.itemId)
+    st = req.scoringInput.model_dump() if req.scoringInput else _PRED.get(req.itemId)
     if not st:
         return {"explanation": "Brak analizy dla tego rekordu."}
     sc = scoring.compute(st["pred"], st["entities"], _THRESHOLDS, **st.get("context", {}))
-    names = [scoring.RULES[r["ruleId"]][0] for r in sc["rules"] if r["status"] == "VIOLATION"]
-    txt = ("Wykryto możliwe naruszenia: " + ", ".join(names) + ".") if names else "Nie wykryto naruszeń."
-    return {"explanation": txt + " (stub – docelowo opis generowany przez Bielika)"}
+    parts = []
+    if sc["scam"]["signals"]:
+        parts.append(f"Treść przypomina oszustwo inwestycyjne (prawdopodobieństwo {sc['scam']['p']:.0%}).")
+    violations = [r for r in sc["rules"] if r["status"] == "VIOLATION"]
+    if violations:
+        parts.append("Możliwe naruszenia: "
+                     + "; ".join(scoring.RULES[r["ruleId"]][0] + _quote(r["evidence"]) for r in violations[:5]) + ".")
+    review = [r for r in sc["rules"] if r["ruleId"] == "M3_RECOMMENDATION" and r["status"] == "NOT_CHECKED"]
+    if review:
+        parts.append("Treść zawiera rekomendację instrumentu dla ogółu odbiorców" + _quote(review[0]["evidence"])
+                     + " i wymaga weryfikacji.")
+    missing = [e["name"] for e in st["entities"] if e.get("knfRegister", {}).get("status") == "NOT_FOUND"]
+    if missing and (violations or review or sc["scam"]["signals"]):
+        parts.append("Nie znaleziono w rejestrze KNF: " + ", ".join(missing[:3])
+                     + ". To sygnał do sprawdzenia, nie stwierdzenie naruszenia.")
+    if not parts:
+        parts.append("Przy obecnych progach nie wykryto sygnałów wymagających reakcji.")
+    parts.append(f"Poziom ryzyka: {sc['riskLevel']}. Wynik wymaga weryfikacji przez analityka.")
+    return {"explanation": " ".join(parts)}

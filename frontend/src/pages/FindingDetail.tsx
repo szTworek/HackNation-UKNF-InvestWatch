@@ -307,11 +307,11 @@ function ViolatedRules({ defs, finding: f }: { defs: RuleDef[]; finding: Finding
   return (
     <Paper withBorder p="md">
       <Title order={5} mb="sm">
-        Naruszone reguły
+        Reguły do weryfikacji
       </Title>
       {violations.length === 0 ? (
         <Text size="sm" c="dimmed">
-          Brak naruszeń.
+          Brak reguł do weryfikacji.
         </Text>
       ) : (
         <Stack gap="sm">

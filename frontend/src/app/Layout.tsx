@@ -1,7 +1,10 @@
+import { Badge } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { IconChevronRight, IconSearch } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { api } from '../api/client';
 import { useFindings, useOverview } from '../api/hooks';
 import { useConnectionState } from '../api/socket';
 import { AlertBell, ConnectionIndicator, DateRangeFilter } from '../components/Header';
@@ -50,6 +53,7 @@ export function Layout() {
   const o = useOverview(useMemo(() => ({ from, to }), [from, to])).data;
   const latest = useFindings({ from, to, sort: 'fetchedAt:desc', page: 1, pageSize: 8 });
   const feed = useLiveFeed(latest.data?.items);
+  const health = useQuery({ queryKey: ['health'], queryFn: api.health, staleTime: Infinity });
   const [phrase, setPhrase] = useState('');
   const [fontStep, setFontStep] = useState(readFontStep);
 
@@ -135,6 +139,11 @@ export function Layout() {
             <button type="button" className="iw-tool" aria-label="Powiększ tekst" disabled={fontStep === FONT_SIZES.length - 1} onClick={() => setFontStep((s) => s + 1)}>
               A+
             </button>
+            {health.data?.demoReplay && (
+              <Badge color="yellow" variant="filled" tt="none" title="Rekordy są prawdziwe, symulowany jest tylko moment ich pojawiania się">
+                tryb demo
+              </Badge>
+            )}
             <ConnectionIndicator state={connection} />
             <AlertBell alerts={rt.alerts} unread={rt.unread} onOpen={rt.markAllRead} onClear={rt.clear} />
           </div>

@@ -521,3 +521,20 @@ class GroqTeacher(Teacher):
                 "prompt_tokens": um.get("prompt_tokens"), "output_tokens": um.get("completion_tokens"),
                 "seconds": round(time.time() - t, 2)}
         raise RuntimeError(f"Groq: limit / błąd {r.status_code}: {r.text[:200]}")
+
+
+class OpenRouterTeacher(GroqTeacher):
+    """Darmowe modele OpenRouter, wyłącznie do etykietowania danych treningowych. Aplikacja z nich nie korzysta."""
+
+    URL = "https://openrouter.ai/api/v1/chat/completions"
+    DEFAULT = "google/gemma-4-31b-it:free"
+
+    def __init__(self, model: str | None = None, **kw: Any):
+        load_env()
+        Teacher.__init__(self, model=model or self.DEFAULT, **kw)
+        self.api_key = os.environ.get("OPENROUTER_API_KEY", "")
+        if not self.api_key:
+            raise RuntimeError("Brak OPENROUTER_API_KEY w ml/.env")
+        self.max_doc_chars = kw.get("max_doc_chars", 24000)
+        self.chunk_chars = kw.get("chunk_chars", 12000)
+        self._http = httpx.Client(timeout=120)

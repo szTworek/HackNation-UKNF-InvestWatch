@@ -142,8 +142,8 @@ function Insights({ moduleKey, items, rules, color }: { moduleKey: ModuleKey; it
     case '2':
       return (
         <SimpleGrid cols={{ base: 1, md: 2 }} spacing="xl">
-          <TopList title="Najczęściej naruszane reguły" rows={top(items.flatMap((i) => i.violations.map((v) => ruleName.get(v) ?? v)), 6)} color={color} />
-          <TopList title="Firmy z naruszeniami" rows={top(items.filter((i) => i.violations.length).map((i) => i.firm?.name))} color={color} />
+          <TopList title="Najczęściej wskazywane reguły" rows={top(items.flatMap((i) => i.violations.map((v) => ruleName.get(v) ?? v)), 6)} color={color} />
+          <TopList title="Firmy z regułami do weryfikacji" rows={top(items.filter((i) => i.violations.length).map((i) => i.firm?.name))} color={color} />
         </SimpleGrid>
       );
     case '3':

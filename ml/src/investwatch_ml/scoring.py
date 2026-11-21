@@ -47,6 +47,7 @@ RULES: dict[str, tuple[str, bool]] = {
     "18": ("Nadzór jako argument bezpieczeństwa", True),
     "M1_PROMO": ("Moduł 1: reklama firmy przez podmiot trzeci", True),
     "M3_ADVISORY": ("Moduł 3: możliwe doradztwo bez zezwolenia", True),
+    "M3_RECOMMENDATION": ("Moduł 3: rekomendacja instrumentu do weryfikacji", True),
 }
 
 MARKETING_RULES = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12a", "12b", "13", "14", "15", "16", "17", "18"}
@@ -182,6 +183,22 @@ def compute(pred: dict[str, Any], entities: list[dict[str, Any]], thresholds: di
                     add(rid, "VIOLATION", adv, evidence)
             else:
                 add(rid, "NOT_APPLICABLE")
+        elif rid == "M3_RECOMMENDATION":
+            # rekomendacja dla ogółu to nie porada dopasowana do klienta, więc status to „do weryfikacji”, nie naruszenie
+            rec_p, call_p = ct.get("RECOMMENDATION", 0), fp["SPECIFIC_INSTRUMENT_CALL"]
+            top_type = max(ct, key=ct.get) if ct else ""
+            private = top_type in ("OPINION_DISCUSSION", "NEWS_EDU")  # własna relacja, opinia lub edukacja
+            triggered = rec_p >= _t(th, "contentType.RECOMMENDATION") or on["SPECIFIC_INSTRUMENT_CALL"]
+            instruments_ok = bool(instr_on & ADVISORY_INSTRUMENTS) or not instr_on
+            if triggered and not private and instruments_ok:
+                strength = max(rec_p, call_p)
+                evidence = ev["SPECIFIC_INSTRUMENT_CALL"]
+                if publisher_registered or (not publishers and registered):
+                    add(rid, "OK", 0.1, evidence)
+                else:
+                    add(rid, "NOT_CHECKED", strength, evidence)
+            else:
+                add(rid, "NOT_APPLICABLE")
         else:
             add(rid, "NOT_CHECKED")
 
@@ -200,11 +217,15 @@ def compute(pred: dict[str, Any], entities: list[dict[str, Any]], thresholds: di
             modules.append(1)
         if own_marketing:
             modules.append(2)
-        if any(r["ruleId"] == "M3_ADVISORY" and r["status"] == "VIOLATION" for r in rules):
+        if any((r["ruleId"] == "M3_ADVISORY" and r["status"] == "VIOLATION")
+               or (r["ruleId"] == "M3_RECOMMENDATION" and r["status"] == "NOT_CHECKED") for r in rules):
             modules.append(3)
 
     viol_scores = [r["score"] for r in rules if r["status"] == "VIOLATION"]
     risk = max(viol_scores + [0.0])
+    review = [r["score"] for r in rules if r["ruleId"] == "M3_RECOMMENDATION" and r["status"] == "NOT_CHECKED"]
+    if review:  # samo „do weryfikacji” nie podnosi rekordu powyżej poziomu średniego
+        risk = max(risk, min(review[0], min(0.6, _t(th, "risk.HIGH") - 0.01)))
     if scam_on:
         risk = max(risk, scam_p, _t(th, "risk.CRITICAL"))
     if not is_inv:
