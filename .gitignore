@@ -1,0 +1,11 @@
+.env
+.env.*
+.venv/
+__pycache__/
+scrapers/poc/results/
+.secrets/
+*_state.json
+*.log
+*.zip
+.idea/
+.vscode/

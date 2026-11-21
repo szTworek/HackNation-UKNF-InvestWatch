@@ -1,0 +1,11 @@
+curl-cffi==0.17.0
+httpx==0.28.1
+instaloader==4.16
+playwright==1.65.2
+python-dotenv==1.2.4
+selectolax==1.0.2
+tiktokapi==7.3.5
+youtube-transcript-api==1.2.5
+yt-dlp==2026.10.26
+onnxruntime==1.32.0
+rapidocr==3.10.0

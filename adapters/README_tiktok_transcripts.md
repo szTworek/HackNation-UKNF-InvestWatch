@@ -1,0 +1,3 @@
+# TikTok transcripts
+
+`UKNF/scrapers/poc/results/tiktok_transcripts/<stamp>-docs.json` (from `scrapers/poc/tiktok_transcripts/transcribe.py`) is already in D14 format: `source`, `source_url`, `author`, `published_at`, `fetched_at`, `query_keywords`, `content_keywords`, `text = {"post": ..., "transcript": ...}` (no `transcript` key and `source_meta.transcript.empty = true` when the video has no speech), plus `content_type` and `source_meta` (`video_id`, `duration_s`, `transcript: {method, model, lang, seconds_to_transcribe}`). The `tiktok` adapter should take these records as-is, instead of the `tiktok.embed_ytdlp` records with the same `source_url`.
