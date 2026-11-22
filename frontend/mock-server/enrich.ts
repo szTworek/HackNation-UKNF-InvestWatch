@@ -170,6 +170,12 @@ export function landingSvg(page: LandingPageView, variant: 'desktop' | 'mobile')
   parts.push(`<rect width="${W}" height="${H}" fill="#ffffff"/>`);
   parts.push(`<rect width="${W}" height="40" fill="#e9ecef"/><rect x="${pad}" y="9" width="${W - 2 * pad}" height="22" rx="11" fill="#fff"/>`);
   parts.push(`<text x="${pad + 12}" y="25" font-size="12" fill="#495057" font-family="Arial">${esc(hostOf(page.finalUrl))}</text>`);
+  if (page.redirectChain.length > 1) {
+    // pasek ścieżki przekierowań: od adresu z posta do strony końcowej
+    const hops = page.redirectChain.map(hostOf).filter((h, i, a) => i === 0 || h !== a[i - 1]);
+    parts.push(`<rect y="40" width="${W}" height="22" fill="#fff5f5"/>`);
+    parts.push(`<text x="${pad}" y="55" font-size="${mobile ? 9 : 11}" fill="#c00417" font-family="Arial">${esc(`Przekierowania (${page.redirectChain.length - 1}): ${hops.join(' → ')}`)}</text>`);
+  }
   for (const l of wrap(page.title ?? '', mobile ? 26 : 60)) {
     parts.push(`<text x="${pad}" y="${y - 40}" font-size="${mobile ? 20 : 30}" font-weight="bold" fill="#212529" font-family="Arial">${esc(l)}</text>`);
     y += mobile ? 24 : 36;

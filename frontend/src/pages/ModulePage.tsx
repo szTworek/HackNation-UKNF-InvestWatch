@@ -119,7 +119,7 @@ function Insights({ moduleKey, items, rules, color }: { moduleKey: ModuleKey; it
   const ruleName = new Map(rules.map((r) => [r.id, r.name]));
   switch (moduleKey) {
     case '1': {
-      const noAd = items.filter((i) => !i.adDisclosed).length;
+      const noAd = items.filter((i) => i.adDisclosure === 'MISSING').length;
       return (
         <SimpleGrid cols={{ base: 1, md: 3 }} spacing="xl">
           <TopList title="Promowane firmy" rows={top(items.map((i) => i.firm?.name))} color={color} />

@@ -39,9 +39,10 @@ LEXICON: dict[str, list[str]] = {
     "risk_warning": ["ryzyk", "strat", "traci", "trac", "utrat", "kapital", "dzwigni", "odpowiedzialn"],
     "ad_disclosure": ["reklam", "wspolprac", "sponsor", "partner", "afiliac", "#ad", "#wspolpraca", "materialsponsor"],
     "profit_claim": ["zarab", "zarob", "zysk", "dochod", "odsetk", "procent", "%", "pracowac", "pomnoz", "zwrot", "dywidend"],
-    "lure": ["darmo", "bonus", "prezent", "gratis", "odbierz", "latw", "szybk", "gwarant", "pasywn", "free", "100$", "100€"],
+    # wabik pieniężny; samo „darmowy kurs/webinar/e-book” to nie wabik (frazy niżej łapią „darmowe akcje”)
+    "lure": ["bonus", "gwarant", "pasywn", "100$", "100€", "400zl"],
     "pressure": ["ograniczon", "ostatni", "tylko", "zanim", "spiesz", "wygasa", "koniec"],
-    "private_channel": ["telegram", "whatsapp", "discord", "priv", "wiadomosc", "spolecznosc", "grup", "vip", "t.me", "wa.me"],
+    "private_channel": ["telegram", "whatsapp", "discord", "t.me", "wa.me", "spolecznosc"],
     "service": ["sygnal", "typ", "kopiuj", "mentor", "konsultac", "doradz", "doradc", "zarzadz", "portfel", "strategi",
                 "challenge", "challang", "szkoleni", "webinar", "akademi", "kurs", "analiz"],
     "tax": ["podatk", "podatek", "belk", "zwolnieni", "pit"],
@@ -51,7 +52,9 @@ LEXICON: dict[str, list[str]] = {
 }
 PHRASES: dict[str, list[str]] = {
     "profit_claim": [r"pieniadz\w* (moga )?pracowa", r"pozwol swoim pieniadzom"],
-    "lure": [r"za darmo", r"latwy zarobek", r"bez ryzyka"],
+    "lure": [r"(akcj\w*|\d+ ?(zl|\$|€|eur\w*)) za darmo", r"za darmo\W+\w* ?(akcj|\d)", r"darmow\w* (akcj|\d+ ?(\$|€|zl))",
+             r"latw\w* (zarob|zysk|pieniadz)", r"bez ryzyka", r"szybk\w* (zarob|zysk)", r"zarob\w* \d+", r"pasywn\w* dochod"],
+    "private_channel": [r"napisz (na priv|do nas|wiadomosc)", r"grup\w* (vip|premium|zamknie\w*|inwestycyjn)", r"zostaw (numer|telefon)", r"send message"],
     "pressure": [r"tylko dzis", r"ograniczony czas", r"ostatnie miejsca", r"juz teraz"],
 }
 

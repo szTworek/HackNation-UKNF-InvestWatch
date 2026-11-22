@@ -88,13 +88,16 @@ def to_item(record: dict[str, Any]) -> dict[str, Any] | None:
         "outboundLinks": _links(record.get("links") or []),
         "author": {"handle": author or sponsor or "nieznany", "displayName": author or sponsor},
         "publisher": sponsor or author,
-        "isSponsored": record.get("content_type") == "ad" or meta.get("has_paid_product_placement") is True,
+        # strona produktowa firmy to jej własna komunikacja marketingowa (art. 44), tak jak płatna reklama
+        "isSponsored": record.get("content_type") == "ad" or meta.get("has_paid_product_placement") is True
+        or source == "firm_website",
         "isPolish": _is_polish(full, meta),
         "hashtags": sorted(set(re.findall(r"#\w+", full))),
         "publishedAt": record.get("published_at"),
         "fetchedAt": record.get("fetched_at"),
         "source": source,
         "queryKeywords": record.get("query_keywords") or [],
+        "riskByViewport": meta.get("risk_by_viewport") or meta.get("ocr_layout"),
     }
 
 

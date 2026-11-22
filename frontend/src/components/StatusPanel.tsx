@@ -1,8 +1,9 @@
-import { Button, Group, Select, Stack, Text, Textarea, Timeline } from '@mantine/core';
+import { Anchor, Button, Group, Select, Stack, Text, Textarea, Timeline } from '@mantine/core';
 import { useState } from 'react';
-import type { HistoryEntry, Status } from '../api/types';
+import { Link } from 'react-router-dom';
+import type { HistoryEntry, Revision, RiskLevel, Status } from '../api/types';
 import { fmtDateTime } from '../lib/format';
-import { STATUSES, STATUS_LABEL } from '../lib/labels';
+import { RISK_LABEL, STATUSES, STATUS_LABEL } from '../lib/labels';
 
 interface ChangerProps {
   status: Status;
@@ -37,6 +38,38 @@ export function StatusChanger({ status, loading, onSubmit }: ChangerProps) {
         </Group>
       </Stack>
     </form>
+  );
+}
+
+/** Zmiany treści między wcześniejszą wersją a obecną: zdania dodane i usunięte. */
+export function RevisionDiff({ revision, current }: { revision: Revision; current: RiskLevel }) {
+  return (
+    <Stack gap={6}>
+      <Group gap="xs">
+        <Text size="sm" fw={600}>
+          Treść zmieniona po publikacji
+        </Text>
+        <Text size="xs" c="dimmed">
+          wersja z {fmtDateTime(revision.fetchedAt)}
+          {revision.riskLevel ? `: ryzyko ${RISK_LABEL[revision.riskLevel]} → ${RISK_LABEL[current]}` : ''}
+        </Text>
+      </Group>
+      {revision.removed.map((s) => (
+        <Text key={`r-${s}`} size="sm" px="xs" py={2} style={{ background: 'var(--mantine-color-red-0)', textDecoration: 'line-through' }}>
+          − {s}
+        </Text>
+      ))}
+      {revision.added.map((s) => (
+        <Text key={`a-${s}`} size="sm" px="xs" py={2} style={{ background: 'var(--mantine-color-green-0)' }}>
+          + {s}
+        </Text>
+      ))}
+      {revision.findingId && (
+        <Anchor component={Link} to={`/findings/${encodeURIComponent(revision.findingId)}`} size="xs">
+          Otwórz poprzednią wersję
+        </Anchor>
+      )}
+    </Stack>
   );
 }
 

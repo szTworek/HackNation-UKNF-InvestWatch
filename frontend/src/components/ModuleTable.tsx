@@ -1,3 +1,4 @@
+import { AD_DISCLOSURE_COLOR, AD_DISCLOSURE_LABEL } from '../lib/labels';
 import { ActionIcon, Anchor, Badge, Checkbox, Group, Menu, Table, Text, Tooltip, UnstyledButton } from '@mantine/core';
 import { IconArrowDown, IconArrowUp, IconDots } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
@@ -94,8 +95,8 @@ function columnsFor(key: ModuleKey, rules: Map<string, RuleDef>): Column[] {
           title: 'Oznaczenie reklamy',
           w: 130,
           render: (f) => (
-            <Badge size="sm" variant="light" color={f.adDisclosed ? 'green' : 'red'} tt="none">
-              {f.adDisclosed ? 'Oznaczona' : 'Brak oznaczenia'}
+            <Badge size="sm" variant="light" color={AD_DISCLOSURE_COLOR[f.adDisclosure]} tt="none">
+              {AD_DISCLOSURE_LABEL[f.adDisclosure]}
             </Badge>
           ),
         },

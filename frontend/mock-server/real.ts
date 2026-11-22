@@ -199,6 +199,8 @@ export function applyRescore(real: RealData, results: Map<string, RescoreResult>
     if (!f) continue;
     const index = utf16Index(f.text);
     const rules = r.rules.map((rule) => ({ ...rule, evidence: toUtf16(rule.evidence, index) }));
+    // rekord oceniony przez LLM (ml/scripts/merge_llm.py): moduł, ryzyko i reguły zostają z LLM
+    if ((f as { llm?: unknown }).llm !== undefined) continue;
     Object.assign(f, { rules, modules: r.modules, riskScore: r.riskScore, riskLevel: r.riskLevel, scam: r.scam });
   }
   refreshBlockedUrls(real);

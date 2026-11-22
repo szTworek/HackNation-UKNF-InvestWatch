@@ -187,7 +187,10 @@ export interface HistoryEntry {
   comment?: string;
 }
 
+export type AdDisclosure = 'DISCLOSED' | 'PLATFORM' | 'MISSING' | 'UNKNOWN';
+
 export interface Finding {
+  adDisclosure?: AdDisclosure; // oznaczenie reklamy wyliczone z reguły 2 i typu materiału
   id: string;
   url: string;
   platform: Platform;
@@ -218,6 +221,19 @@ export interface Finding {
   history: HistoryEntry[];
   modelVersion: string;
   blockedUrls?: string[]; // adresy bez aktywnego linku: lista CERT albo wysokie podejrzenie oszustwa
+  revisions?: Revision[]; // wcześniejsze wersje tego samego materiału (edycja po publikacji), od najnowszej
+  demo?: boolean; // rekord demonstracyjny (ml/scripts/add_demo_findings.py)
+}
+
+/** Wcześniejsza wersja treści wykryta przy ponownym skanie. added/removed: zdania względem tej wersji. */
+export interface Revision {
+  findingId?: string;
+  fetchedAt: string;
+  text: string;
+  added: string[];
+  removed: string[];
+  riskLevel?: RiskLevel;
+  modules?: ModuleId[];
 }
 
 export interface Thresholds {
@@ -279,6 +295,7 @@ export interface FindingSummary {
   firm?: { name: string; register: RegisterStatus }; // M1, M2: firma inwestycyjna
   advertiser?: string; // M1: reklamujący (finfluencer, podmiot trzeci)
   adDisclosed: boolean; // M1: materiał oznaczony jako reklama
+  adDisclosure: AdDisclosure;
   advisor?: { name: string; register: RegisterStatus }; // M3: podmiot oferujący doradztwo
   instruments: Instrument[]; // instrumenty z p >= 0,5
   violations: string[]; // M2: id naruszonych reguł

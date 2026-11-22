@@ -77,6 +77,13 @@ services:
       target: runtime-cpu
     environment:
       INVESTWATCH_BASELINE: ${INVESTWATCH_BASELINE:-0}
+      # Silnik LLM: none | groq (GROQ_API_KEY) | ollama (lokalny Bielik: dodaj --profile local-llm)
+      LLM_BACKEND: ${LLM_BACKEND:-none}
+      LLM_MODEL: ${LLM_MODEL:-}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      OLLAMA_URL: ${OLLAMA_URL:-http://ollama:11434}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # Ollama zainstalowana na komputerze zamiast w kontenerze
     # Tylko localhost: serwis nie ma autoryzacji i nie może być publiczny.
     ports:
       - "127.0.0.1:${AI_PORT:-8000}:8000"
@@ -84,7 +91,36 @@ services:
       - ${MODELS_PATH:-./ml/models}:/app/models:ro
       - hf-cache:/cache/huggingface
 
+  # Lokalny LLM: LLM_BACKEND=ollama docker compose --profile local-llm up -d --build
+  ollama:
+    profiles: [local-llm]
+    image: ollama/ollama:0.40.16
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    expose:
+      - "11434"
+    volumes:
+      - ollama-models:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  ollama-pull:
+    profiles: [local-llm]
+    image: ollama/ollama:0.40.16
+    restart: "no"
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    command: ["pull", "${LLM_MODEL:-SpeakLeash/bielik-11b-v3.1-instruct:Q4_K_M}"]
+
 volumes:
+  ollama-models:
   api-state:
   collector-results:
   collector-cache:

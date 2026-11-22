@@ -15,7 +15,7 @@ from typing import Any
 from fastapi import FastAPI
 from pydantic import BaseModel, ConfigDict, Field
 
-from . import campaigns, heuristics, indicators, ingest, knf, scoring
+from . import campaigns, heuristics, indicators, ingest, knf, llm, scoring
 from .text import normalize
 
 import json
@@ -146,7 +146,8 @@ def _analyze(it: Item) -> dict[str, Any]:
     pred = predict_text(text)
     ents = knf.resolve_entities(text, _publisher(it))
     inds = indicators.extract(text, it.outboundLinks)
-    context = {"is_paid_ad": it.isSponsored, "is_polish": it.isPolish, "tax_disclaimer": scoring.has_tax_disclaimer(text)}
+    context = {"is_paid_ad": it.isSponsored, "is_polish": it.isPolish, "tax_disclaimer": scoring.has_tax_disclaimer(text),
+               "visual": (it.model_extra or {}).get("riskByViewport")}
     _PRED[it.id] = {"pred": pred, "entities": ents, "context": context}
     sc = scoring.compute(pred, ents, _THRESHOLDS, **context)
     return {
@@ -166,6 +167,23 @@ def _analyze(it: Item) -> dict[str, Any]:
     }
 
 
+def _with_llm(items: list[Item]) -> list[dict[str, Any]]:
+    """Analiza ai-service, a gdy LLM_BACKEND jest ustawiony, nałożenie wyniku LLM (moduł, ryzyko, pewność)."""
+    analyses = [_analyze(it) for it in items]
+    if not llm.enabled() or not items:
+        return analyses
+    inputs = []
+    for it, a in zip(items, analyses):
+        extra = it.model_extra or {}
+        author = extra.get("author")
+        author = author.get("displayName") or author.get("handle") if isinstance(author, dict) else author
+        inputs.append(llm.build_input(it.id, a["analyzedText"], author, it.publisher, extra.get("source") or it.platform,
+                                      "ad" if it.isSponsored else it.kind, it.url))
+    results = llm.classify(inputs)
+    return [llm.overlay(a, results.get(it.id, {"error": "brak wyniku"}), inp, it.outboundLinks)
+            for it, a, inp in zip(items, analyses, inputs)]
+
+
 @app.get("/health")
 def health() -> dict[str, Any]:
     try:
@@ -175,7 +193,7 @@ def health() -> dict[str, Any]:
     except Exception:
         gpu = None
     reg = knf.register()
-    return {"status": "ok", "modelVersion": MODEL_VERSION, "gpu": gpu,
+    return {"status": "ok", "modelVersion": MODEL_VERSION, "gpu": gpu, "llm": llm.info(),
             "knfRegister": {"entities": len(reg.entities), "generatedAt": reg.generated_at}}
 
 
@@ -192,14 +210,15 @@ def triage(req: ItemsRequest) -> dict[str, Any]:
 
 @app.post("/analyze")
 def analyze(req: ItemsRequest) -> dict[str, Any]:
-    return {"results": [_analyze(it) for it in req.items]}
+    return {"results": _with_llm(req.items)}
 
 
 @app.post("/ingest")
 def ingest_records(req: RecordsRequest) -> dict[str, Any]:
     """Rekordy prosto z kolektora: adapter, rejestr KNF i analiza. Zwraca znormalizowany item razem z wynikiem."""
     items, stats = ingest.to_items(req.records)
-    return {"stats": dict(stats), "results": [{"item": item, "analysis": _analyze(Item(**item))} for item in items]}
+    analyses = _with_llm([Item(**item) for item in items])
+    return {"stats": dict(stats), "results": [{"item": item, "analysis": a} for item, a in zip(items, analyses)]}
 
 
 @app.post("/rescore")

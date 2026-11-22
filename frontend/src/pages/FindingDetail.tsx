@@ -14,7 +14,7 @@ import { ProbBar } from '../components/ProbBar';
 import { ModuleReport } from '../components/ModuleReport';
 import { RiskGauge } from '../components/RiskGauge';
 import { RulesChecklist } from '../components/RulesChecklist';
-import { StatusChanger, StatusHistory } from '../components/StatusPanel';
+import { RevisionDiff, StatusChanger, StatusHistory } from '../components/StatusPanel';
 import { activeFlags, evidenceSpans, firstEvidence, flagThreshold, isScam, snippet, thresholdOf, type ThresholdValues } from '../lib/findings';
 import { fmtPct, fmtProb } from '../lib/format';
 import {
@@ -95,7 +95,9 @@ export function FindingDetail() {
           {f.landingPages.length > 0 && <Tabs.Tab value="landing">Strona docelowa</Tabs.Tab>}
           {(f.media || f.transcript) && <Tabs.Tab value="video">Wideo</Tabs.Tab>}
           <Tabs.Tab value="links">Powiązania</Tabs.Tab>
-          <Tabs.Tab value="history">Historia ({f.history.length})</Tabs.Tab>
+          <Tabs.Tab value="history">
+            Historia ({f.history.length}){f.revisions?.length ? ', treść zmieniona' : ''}
+          </Tabs.Tab>
         </Tabs.List>
 
         <Tabs.Panel value="content" pt="md">
@@ -132,9 +134,16 @@ export function FindingDetail() {
         </Tabs.Panel>
 
         <Tabs.Panel value="history" pt="md">
-          <Paper p="lg" maw={640}>
-            <StatusHistory history={f.history} />
-          </Paper>
+          <Stack maw={720} gap="md">
+            {f.revisions?.map((r) => (
+              <Paper key={r.fetchedAt} p="lg" withBorder>
+                <RevisionDiff revision={r} current={f.riskLevel} />
+              </Paper>
+            ))}
+            <Paper p="lg">
+              <StatusHistory history={f.history} />
+            </Paper>
+          </Stack>
         </Tabs.Panel>
       </Tabs>
 

@@ -169,6 +169,14 @@ def to_finding(item: dict[str, Any], analysis: dict[str, Any], imported_at: str,
         finding["transcript"] = text.split(TRANSCRIPT_MARKER, 1)[1].strip()
     if analysis.get("scoringInput") is not None:
         finding["scoringInput"] = analysis["scoringInput"]
+    if analysis.get("adDisclosure"):
+        finding["adDisclosure"] = analysis["adDisclosure"]
+    llm = analysis.get("llm")
+    if llm and "module" in llm:  # klasyfikacja LLM: moduł, pewność i uzasadnienie widoczne w historii rekordu
+        finding["llm"] = llm
+        label = {"M1": "Moduł 1", "M2": "Moduł 2", "M3": "Moduł 3"}.get(llm["module"], "Poza modułami")
+        finding["history"].append({"at": imported_at, "status": "NEW", "user": "model",
+                                   "comment": f"{label}, pewność {llm['confidence']:.0%} ({llm['model']}): {llm['reason']}"})
     return finding
 
 

@@ -9,6 +9,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from . import visual as visual_rules
 from .labels import FLAG_KEYS
 
 DEFAULT_THRESHOLDS: dict[str, float] = {
@@ -78,7 +79,7 @@ def _t(th: dict[str, float], key: str) -> float:
 
 def compute(pred: dict[str, Any], entities: list[dict[str, Any]], thresholds: dict[str, float] | None = None,
             extra_scam_signals: list[str] | None = None, is_paid_ad: bool = False,
-            is_polish: bool = True, tax_disclaimer: bool = False) -> dict[str, Any]:
+            is_polish: bool = True, tax_disclaimer: bool = False, visual: dict | None = None) -> dict[str, Any]:
     th = {**DEFAULT_THRESHOLDS, **normalize_thresholds(thresholds)}
     fp = {k: v["p"] for k, v in pred["flags"].items()}
     ev = {k: v.get("evidence", []) for k, v in pred["flags"].items()}
@@ -108,6 +109,7 @@ def compute(pred: dict[str, Any], entities: list[dict[str, Any]], thresholds: di
     instr_on = {k for k, p in pred["instruments"].items() if p >= 0.5}
 
     rules: list[dict[str, Any]] = []
+    vis = visual_rules.evaluate_any(visual)
 
     def add(rid: str, status: str, score: float = 0.0, evidence: list | None = None) -> None:
         rules.append({"ruleId": rid, "status": status, "score": round(float(score), 3), "evidence": evidence or []})
@@ -183,6 +185,9 @@ def compute(pred: dict[str, Any], entities: list[dict[str, Any]], thresholds: di
                     add(rid, "VIOLATION", adv, evidence)
             else:
                 add(rid, "NOT_APPLICABLE")
+        elif rid in vis:
+            status, score, evidence = vis[rid]
+            add(rid, status, score, evidence)
         elif rid == "M3_RECOMMENDATION":
             # rekomendacja dla ogółu to nie porada dopasowana do klienta, więc status to „do weryfikacji”, nie naruszenie
             rec_p, call_p = ct.get("RECOMMENDATION", 0), fp["SPECIFIC_INSTRUMENT_CALL"]

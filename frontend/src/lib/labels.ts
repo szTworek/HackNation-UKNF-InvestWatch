@@ -12,6 +12,7 @@ import type {
   RegisterStatus,
   RiskLevel,
   RuleStatus,
+  AdDisclosure,
   ScamSignal,
   Status,
   TopicLabel,
@@ -229,6 +230,19 @@ export const REGISTER_COLOR: Record<RegisterStatus, string> = {
   REGISTERED: 'green',
   NOT_FOUND: 'orange',
   ON_WARNING_LIST: 'red',
+};
+
+export const AD_DISCLOSURE_LABEL: Record<AdDisclosure, string> = {
+  DISCLOSED: 'Oznaczona w treści',
+  PLATFORM: 'Płatna reklama (oznacza platforma)',
+  MISSING: 'Brak oznaczenia',
+  UNKNOWN: 'Nie ustalono',
+};
+export const AD_DISCLOSURE_COLOR: Record<AdDisclosure, string> = {
+  DISCLOSED: 'green',
+  PLATFORM: 'blue',
+  MISSING: 'red',
+  UNKNOWN: 'gray',
 };
 
 export const RULE_STATUS_LABEL: Record<RuleStatus, string> = {

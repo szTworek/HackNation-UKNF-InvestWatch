@@ -1,3 +1,4 @@
+import { AD_DISCLOSURE_COLOR, AD_DISCLOSURE_LABEL } from '../lib/labels';
 import { Badge, Group, Paper, SimpleGrid, Stack, Text } from '@mantine/core';
 import type { Finding, ModuleId, RuleDef } from '../api/types';
 import { MODULE_COLOR } from '../app/theme';
@@ -27,7 +28,7 @@ export function ModuleReport({ finding: f, rules, thresholds }: { finding: Findi
   const advisor = f.entities.find((e) => e.role === 'advisor');
   const ruleName = new Map(rules.map((r) => [r.id, r.name]));
   const violations = f.rules.filter((r) => r.status === 'VIOLATION');
-  const adDisclosed = f.flags.AD_DISCLOSURE.p >= flagThreshold(thresholds, 'AD_DISCLOSURE');
+  const adDisclosure = f.adDisclosure ?? (f.flags.AD_DISCLOSURE.p >= flagThreshold(thresholds, 'AD_DISCLOSURE') ? 'DISCLOSED' : 'MISSING');
   const instruments = Object.entries(f.instruments)
     .filter(([, p]) => p >= 0.5)
     .map(([k]) => INSTRUMENT_LABEL[k as keyof typeof INSTRUMENT_LABEL]);
@@ -48,8 +49,8 @@ export function ModuleReport({ finding: f, rules, thresholds }: { finding: Findi
           </Field>
           <Field label="Reklamujący">{advertiser?.name ?? f.author.displayName ?? f.author.handle}</Field>
           <Field label="Oznaczenie reklamy">
-            <Badge size="sm" variant="light" color={adDisclosed ? 'green' : 'red'} tt="none">
-              {adDisclosed ? 'Oznaczona' : 'Brak oznaczenia'}
+            <Badge size="sm" variant="light" color={AD_DISCLOSURE_COLOR[adDisclosure]} tt="none">
+              {AD_DISCLOSURE_LABEL[adDisclosure]}
             </Badge>
           </Field>
           <Field label="Lokalizacja">
