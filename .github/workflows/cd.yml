@@ -51,6 +51,16 @@ jobs:
             file: ml/Dockerfile
             target: runtime-cpu
     steps:
+      # Duże obrazy (collector ~4,3 GB, ai-service ~2,4 GB) istnieją podczas skanu w trzech kopiach:
+      # w Dockerze, jako tar i jako rozpakowane warstwy Grype. Domyślne ~14 GB wolnego na runnerze nie wystarcza.
+      - name: Free runner disk space
+        if: matrix.name == 'collector' || matrix.name == 'ai-service'
+        run: |
+          df -h /
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/.ghcup \
+            /usr/local/share/boost /opt/hostedtoolcache/CodeQL /usr/local/share/powershell /usr/share/swift
+          docker image prune -af > /dev/null
+          df -h /
       - uses: actions/checkout@v5
       - uses: docker/setup-buildx-action@v3
       - name: Build image

@@ -26,6 +26,10 @@ ENV VITE_API_URL=$VITE_API_URL VITE_WS_URL=$VITE_WS_URL
 RUN npm run build
 
 FROM ${NGINX_IMAGE} AS runtime
+# Poprawki bezpieczeństwa Alpine, których obraz bazowy jeszcze nie ma (skan Grype w CD blokuje high z poprawką).
+USER root
+RUN apk upgrade --no-cache
+USER 101
 # Szablon przetwarzany przez envsubst przy starcie kontenera (obraz nginx -> /etc/nginx/conf.d/default.conf)
 ENV API_UPSTREAM=http://api:4000 NGINX_RESOLVER=127.0.0.11
 COPY nginx.conf /etc/nginx/templates/default.conf.template

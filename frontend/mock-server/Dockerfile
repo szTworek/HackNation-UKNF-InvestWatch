@@ -17,7 +17,11 @@ WORKDIR /app
 ENV NODE_ENV=production MOCK_PORT=4000
 COPY --from=build /app/dist-mock/server.cjs ./server.cjs
 COPY --from=build /app/mock-server/entities.snapshot.json ./mock-server/entities.snapshot.json
-RUN mkdir -p /state && chown node:node /state
+# Poprawki Alpine; npm i corepack są zbędne dla bundla i przynoszą własne podatne zależności (undici, brace-expansion).
+RUN apk upgrade --no-cache \
+    && rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
+       /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack \
+    && mkdir -p /state && chown node:node /state
 USER node
 EXPOSE 4000
 HEALTHCHECK --interval=30s --timeout=3s --retries=3 CMD wget -qO- http://127.0.0.1:4000/api/health || exit 1
