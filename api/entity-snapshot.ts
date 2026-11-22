@@ -1,5 +1,5 @@
 // Mapowanie danych osi podmiotu (kształt data/entity_fixtures.json, snake_case) na kontrakt UI (src/api/entityTypes.ts).
-// Używają go: build-entities.ts (plik entities.snapshot.json dla DATA_MODE=mock) i db.ts (DATA_MODE=real, dane z Postgresa).
+// Używa go db.ts (dane z Postgresa).
 import type {
   EntityAlert,
   EntityFinding,
@@ -106,8 +106,7 @@ function slug(s: string): string {
   );
 }
 
-/** `mock`: wyniki i alerty z klasyfikatora mock-v0 (plik fixtures), w danych z Postgresa false. */
-export function buildSnapshot(fx: Raw, entries: RegistryEntry[], source: string, fixtures: string, mock: boolean) {
+export function buildSnapshot(fx: Raw, entries: RegistryEntry[], source: string, fixtures: string) {
   const byName = new Map(entries.map((e) => [e.name, e]));
 
   const findings: EntityFinding[] = (fx.findings as Raw[]).map((f) => ({
@@ -126,8 +125,7 @@ export function buildSnapshot(fx: Raw, entries: RegistryEntry[], source: string,
     })),
     model: f.model,
     createdAt: f.created_at,
-    // mock-v0 z pliku fixtures: atrapa LLM (reguły słownikowe), daty wyników rozłożone na 30 dni
-    mock,
+    mock: false,
   }));
 
   const items: EntityItem[] = (fx.items as Raw[]).map((i) => ({
@@ -254,7 +252,7 @@ export function buildSnapshot(fx: Raw, entries: RegistryEntry[], source: string,
       title,
       ref: { findingId: a.ref.finding_id, changeId: a.ref.change_id, itemId: findingById.get(a.ref.finding_id)?.itemId ?? null },
       status: a.status,
-      mock,
+      mock: false,
     };
   });
 

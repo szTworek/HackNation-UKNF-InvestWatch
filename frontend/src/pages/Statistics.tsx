@@ -1,12 +1,10 @@
-import { Anchor, Badge, Grid, Group, Paper, SegmentedControl, SimpleGrid, Stack, Table, Text, Title } from '@mantine/core';
-import { useQuery } from '@tanstack/react-query';
+import { Anchor, Grid, Group, Paper, SegmentedControl, SimpleGrid, Stack, Table, Text, Title } from '@mantine/core';
 import { lazy, Suspense, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { api } from '../api/client';
 import type { SourcePlatform } from '../api/entityTypes';
 import { useEntityOverview, useOverview, useTimeseries } from '../api/hooks';
 import type { Timeseries, TimeseriesGroupBy } from '../api/types';
-import { MockBadge, shortUrl } from '../components/EntityParts';
+import { AssessmentStatus, MockBadge, ShowAllChanges, shortUrl, useChangeFilter } from '../components/EntityParts';
 import { KpiCard } from '../components/KpiCard';
 import { ErrorState, Loading } from '../components/PageState';
 import { Pipeline } from '../components/Pipeline';
@@ -31,10 +29,10 @@ export function Statistics() {
   const eo = useEntityOverview();
   const overview = useOverview(range);
   const series = useTimeseries(range, groupBy);
-  const health = useQuery({ queryKey: ['health'], queryFn: api.health, staleTime: Infinity });
 
   const e = eo.data;
   const o = overview.data;
+  const cf = useChangeFilter(e?.recentChanges ?? []);
 
   return (
     <Stack gap="lg">
@@ -141,15 +139,16 @@ export function Statistics() {
                 <Title order={4} mb="md">
                   Zmiany stron WWW
                 </Title>
+                <ShowAllChanges f={cf} />
                 {!e ? (
                   <Loading />
-                ) : !e.recentChanges.length ? (
+                ) : !cf.shown.length ? (
                   <Text size="sm" c="dimmed">
-                    Brak zmian.
+                    {cf.total ? 'Brak istotnych zmian.' : 'Brak zmian.'}
                   </Text>
                 ) : (
                   <Stack gap="sm">
-                    {e.recentChanges.map((c) => (
+                    {cf.shown.map((c) => (
                       <div key={c.id}>
                         <Group gap={6}>
                           <Anchor component={Link} to={`/entities/${c.entityId}?tab=websites&change=${c.id}`} size="sm" fw={600}>
@@ -159,6 +158,7 @@ export function Statistics() {
                             {fmtDate(c.detectedAt)} · {shortUrl(c.url)}
                           </Text>
                           {c.mock && <MockBadge hint="Zmiana wobec zrzutu zrekonstruowanego syntetycznie" />}
+                          <AssessmentStatus a={c.assessment} />
                         </Group>
                         <Text size="sm" lineClamp={2}>
                           {c.summary}
@@ -177,9 +177,6 @@ export function Statistics() {
 
       <Group gap="sm" mt="md">
         <Title order={3}>Strumień treści</Title>
-        <Badge variant="light" color={health.data?.dataMode === 'real' ? 'knf' : 'yellow'}>
-          {health.data?.dataMode === 'real' ? 'dane rzeczywiste (ai-service)' : 'atrapa'}
-        </Badge>
       </Group>
       <Text c="dimmed" mt={-12}>
         Rekordy z monitoringu mediów w wybranym zakresie dat (filtr w nagłówku). Szczegóły rekordu są dostępne z historii decyzji i paska nowych

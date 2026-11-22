@@ -83,22 +83,39 @@ services:
       - ./data/media:/seed/media:ro
       - ./data/monitor:/seed/monitor:ro
 
-  # Jednorazowo przy każdym up: migracje db/migrations, rejestr KNF, podmioty, rekordy i wyniki ai-service (tylko nowe adresy).
-  loader:
-    image: investwatch/uknf-collector:local
+  # Jednorazowo przy każdym up (kilka sekund, aplikacja startuje po nim): migracje, rejestr KNF, podmioty, rekordy, monitor, media.
+  db-init:
+    image: investwatch/uknf-loader:local
     build:
       context: .
-      dockerfile: scrapers/Dockerfile
+      dockerfile: db/Dockerfile
+    command: ["--stage", "init"]
     restart: "no"
     security_opt:
       - no-new-privileges:true
     cap_drop:
       - ALL
-    entrypoint: ["python", "/app/db/load.py"]
     depends_on:
       postgres:
         condition: service_healthy
       minio-init:
+        condition: service_completed_successfully
+    environment:
+      <<: *db-env
+    volumes:
+      - ./data:/app/data:ro
+
+  # W tle przy każdym up: ocena nowych rekordów w ai-service. API pokazuje postęp i nowe wyniki na bieżąco.
+  loader:
+    image: investwatch/uknf-loader:local
+    command: ["--stage", "score"]
+    restart: "no"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    depends_on:
+      db-init:
         condition: service_completed_successfully
       ai-service:
         condition: service_started
@@ -155,19 +172,16 @@ services:
         condition: service_started
       minio:
         condition: service_healthy
-      loader:
+      db-init:
         condition: service_completed_successfully
     read_only: true
     tmpfs:
       - /tmp
     environment:
       <<: *db-env
-      # real: Postgres + MinIO; mock: generator w pamięci (bez bazy)
-      DATA_MODE: ${DATA_MODE:-real}
       AI_URL: http://ai-service:8000
       MINIO_URL: http://minio:9000
       SCRAPE_WORKER_URL: http://scrape-worker:8100
-      MOCK_SEED: ${MOCK_SEED:-42}
       CORS_ORIGIN: ${CORS_ORIGIN:-*}
 
   ai-service:

@@ -79,24 +79,21 @@ def save_finding(cur: psycopg.Cursor, iid: str, finding: dict) -> None:
     """Upsert of the model result; the analyst status and finding_history stay untouched."""
     result = {k: v for k, v in finding.items() if k != "scoringInput"}
     cur.execute(
-        """insert into findings (id, item_id, model_version, analyzed_at, result, scoring_input, modules, risk_score, risk_level,
-                                 scam_p, campaign_id)
-           values (%s, %s, %s, now(), %s, %s, %s, %s, %s, %s, %s)
+        """insert into findings (id, item_id, model_version, analyzed_at, result, scoring_input, modules, risk_score, risk_level)
+           values (%s, %s, %s, now(), %s, %s, %s, %s, %s)
            on conflict (id) do update set result = excluded.result, scoring_input = excluded.scoring_input,
              model_version = excluded.model_version, analyzed_at = excluded.analyzed_at, modules = excluded.modules,
-             risk_score = excluded.risk_score, risk_level = excluded.risk_level, scam_p = excluded.scam_p,
-             campaign_id = excluded.campaign_id, updated_at = now()""",
+             risk_score = excluded.risk_score, risk_level = excluded.risk_level, updated_at = now()""",
         (finding["id"], iid, finding.get("modelVersion"), Jsonb(result), Jsonb(finding.get("scoringInput")),
-         finding.get("modules") or [], finding.get("riskScore"), finding.get("riskLevel"), (finding.get("scam") or {}).get("p"),
-         finding.get("campaignId")),
+         finding.get("modules") or [], finding.get("riskScore"), finding.get("riskLevel")),
     )
     cur.execute("update items set analyzed_at = now() where id = %s", (iid,))
 
 
-def link_item(cur: psycopg.Cursor, iid: str, rec: dict) -> int:
-    """Item -> PoC entity links (db/linking.py). Returns the number of linked entities."""
+def link_item(cur: psycopg.Cursor, iid: str, rec: dict) -> tuple[list[str], str | None]:
+    """Item -> PoC entity links (db/linking.py). Returns (entity ids, entity id when the author is the firm itself)."""
     entity_ids, author_eid = link({**rec, "text": sections(rec.get("text"))})
     for eid in entity_ids:
         cur.execute("insert into item_entities values (%s, %s, %s) on conflict (item_id, entity_id) do nothing",
                     (iid, eid, author_eid is not None))
-    return len(entity_ids)
+    return entity_ids, author_eid

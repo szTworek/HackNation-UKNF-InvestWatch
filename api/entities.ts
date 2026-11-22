@@ -1,9 +1,6 @@
 // Oś podmiotu: endpointy /api/entities*, /api/items/:id, /api/changes/:id, /api/entity-stats/overview.
-// Dane: DATA_MODE=real z Postgresa (db.ts), DATA_MODE=mock z entities.snapshot.json (npm run entities:build). Rekordy, strony i rejestr są prawdziwe;
-// wyniki klasyfikatora (mock-v0) i część historii stron to atrapy oznaczone `mock: true`.
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import express, { type Express } from 'express';
+// Dane z Postgresa (db.ts): tylko zebrane rekordy, oceny ai-service i monitor stron.
+import type { Express } from 'express';
 import type {
   EntityAlert,
   EntityFinding,
@@ -35,16 +32,20 @@ export interface Snapshot {
 
 const MODULES: EntityModule[] = ['M1', 'M2', 'M3'];
 
-export function readSnapshotFile(path = join(process.cwd(), 'entities.snapshot.json')): Snapshot {
-  return JSON.parse(readFileSync(path, 'utf8')) as Snapshot;
-}
-
-/** `fromStorage`: zrzuty stron i grafiki z MinIO (tryb real), w trybie mock z plików repo. */
-export function registerEntityRoutes(app: Express, s: Snapshot, fromStorage: boolean): number {
-  const entityById = new Map(s.entities.map((e) => [e.id, e]));
-  const itemById = new Map(s.items.map((i) => [i.id, i]));
-  const findingsByItem = new Map<string, EntityFinding[]>();
-  for (const f of s.findings) findingsByItem.set(f.itemId, [...(findingsByItem.get(f.itemId) ?? []), f]);
+/** Oś podmiotu z Postgresa (db.ts); zrzuty stron i grafiki z MinIO. Zwraca funkcję podmiany danych (nowe wyniki z bazy). */
+export function registerEntityRoutes(app: Express, initial: Snapshot): (next: Snapshot) => void {
+  let s = initial;
+  let entityById = new Map<string, KnfEntityDetail>();
+  let itemById = new Map<string, EntityItem>();
+  let findingsByItem = new Map<string, EntityFinding[]>();
+  const update = (next: Snapshot) => {
+    s = next;
+    entityById = new Map(s.entities.map((e) => [e.id, e]));
+    itemById = new Map(s.items.map((i) => [i.id, i]));
+    findingsByItem = new Map();
+    for (const f of s.findings) findingsByItem.set(f.itemId, [...(findingsByItem.get(f.itemId) ?? []), f]);
+  };
+  update(initial);
   const withFindings = (i: EntityItem) => ({ ...i, findings: findingsByItem.get(i.id) ?? [] });
   const listRow = (e: KnfEntityDetail): KnfEntity => ({
     id: e.id,
@@ -109,13 +110,8 @@ export function registerEntityRoutes(app: Express, s: Snapshot, fromStorage: boo
     res.json(withFindings(it));
   });
 
-  if (fromStorage) {
-    app.get('/api/screens/:key', objectProxy('screens'));
-    app.get('/api/media/:key', objectProxy('media'));
-  } else {
-    app.use('/api/screens', express.static(join(process.cwd(), '..', 'data', 'monitor', 'screens')));
-    app.use('/api/media', express.static(join(process.cwd(), '..', 'data', 'media')));
-  }
+  app.get('/api/screens/:key', objectProxy('screens'));
+  app.get('/api/media/:key', objectProxy('media'));
 
   app.get('/api/changes/:id', (req, res) => {
     const c = s.changes.find((x) => x.id === req.params.id);
@@ -170,5 +166,5 @@ export function registerEntityRoutes(app: Express, s: Snapshot, fromStorage: boo
     res.json(body);
   });
 
-  return s.entities.length;
+  return update;
 }

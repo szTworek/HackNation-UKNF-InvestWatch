@@ -5,7 +5,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom';
 import type { EntityModule, KnfEntityDetail, SourcePlatform } from '../api/entityTypes';
 import { useEntities, useEntity, useEntityAlerts, useEntityFindings, useEntityItems, useEntityPages } from '../api/hooks';
 import { DistributionBars } from '../components/Charts';
-import { EntityModuleBadge, AlertRows, ChangeTimeline, DiffView, ItemView, MockBadge, RiskMeter, RiskWarningStatus, SeverityBadge, pageChanges, shortUrl } from '../components/EntityParts';
+import { EntityModuleBadge, AlertRows, ChangeTimeline, DiffView, ShowAllChanges, useChangeFilter, ItemView, MockBadge, RiskMeter, RiskWarningStatus, SeverityBadge, pageChanges, shortUrl } from '../components/EntityParts';
 import { FindingsByDayChart, LabeledBars, daysFromFindings } from '../components/EntityCharts';
 import { KpiCard } from '../components/KpiCard';
 import { ErrorState, Loading } from '../components/PageState';
@@ -306,6 +306,7 @@ function OverviewTab({ e }: { e: KnfEntityDetail }) {
 function WebsitesTab({ id, onChange }: { id: string; onChange: (c: string) => void }) {
   const q = useEntityPages(id);
   const changes = useMemo(() => pageChanges(q.data ?? []), [q.data]);
+  const cf = useChangeFilter(changes);
   if (q.isError) return <ErrorState error={q.error} onRetry={() => void q.refetch()} />;
   if (!q.data) return <Loading />;
   if (!q.data.length)
@@ -359,7 +360,8 @@ function WebsitesTab({ id, onChange }: { id: string; onChange: (c: string) => vo
           <Text size="xs" c="dimmed" mb="md">
             Kliknij zmianę, żeby porównać zrzuty obok siebie.
           </Text>
-          <ChangeTimeline changes={changes} onOpen={onChange} />
+          <ShowAllChanges f={cf} />
+          <ChangeTimeline changes={cf.shown} empty={cf.total ? 'Brak istotnych zmian.' : undefined} onOpen={onChange} />
         </Paper>
       </Grid.Col>
     </Grid>

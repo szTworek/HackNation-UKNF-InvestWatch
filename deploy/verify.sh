@@ -37,14 +37,20 @@ for svc in postgres minio; do
   [ "$(docker inspect -f '{{.State.Health.Status}}' "$(compose ps -q "$svc")")" = healthy ]
   echo "ok: $svc healthy"
 done
-[ "$(docker inspect -f '{{.State.ExitCode}}' "$(compose ps -aq loader)")" = 0 ]
-echo "ok: loader zakończony"
+[ "$(docker inspect -f '{{.State.Status}} {{.State.ExitCode}}' "$(compose ps -aq db-init)")" = "exited 0" ]
+echo "ok: db-init zakończony"
 
 check "frontend" "$FRONTEND/"
 check "nginx health" "$FRONTEND/healthz"
 check "API przez nginx" "$FRONTEND/api/health"
 check "lista wyników" "$FRONTEND/api/findings?pageSize=1"
-curl -fsS "$FRONTEND/api/health" | grep -Eq '"findings":[1-9][0-9]*,"dataMode":"real"'
+check "postęp oceny w tle" "$FRONTEND/api/load"
+# aplikacja działa przed końcem oceny; wyniki z loadera dochodzą co kilka sekund
+for _ in $(seq 60); do
+  curl -fsS "$FRONTEND/api/health" | grep -Eq '"findings":[1-9]' && break
+  sleep 5
+done
+curl -fsS "$FRONTEND/api/health" | grep -Eq '"findings":[1-9]'
 echo "ok: rekordy z Postgresa"
 curl -fsS "$FRONTEND/api/entities/xtb" | grep -q '"hasData":true'
 echo "ok: podmiot z Postgresa"

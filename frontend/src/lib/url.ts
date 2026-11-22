@@ -57,7 +57,6 @@ export interface FindingsFilters {
   riskLevel: RiskLevel[];
   status: Status[];
   flag: FlagKey[];
-  scam: boolean;
   sort: string;
   page: number;
   pageSize: number;
@@ -75,7 +74,6 @@ export function parseFindingsFilters(params: URLSearchParams): FindingsFilters {
     riskLevel: list(params, 'riskLevel', RISK_LEVELS),
     status: list(params, 'status', STATUSES),
     flag: list(params, 'flag', ALL_FLAGS),
-    scam: params.get('scam') === '1',
     sort: params.get('sort') ?? DEFAULT_SORT,
     page: Math.max(1, Number(params.get('page')) || 1),
     pageSize: PAGE_SIZES.includes(pageSize) ? pageSize : 25,
@@ -95,8 +93,7 @@ export function useFindingsFilters() {
           for (const [key, value] of Object.entries(patch)) {
             p.delete(key);
             if (Array.isArray(value)) value.forEach((v) => p.append(key, String(v)));
-            else if (value === true) p.set(key, '1');
-            else if (value !== false && value !== '' && value !== undefined && value !== null) p.set(key, String(value));
+            else if (value !== '' && value !== undefined && value !== null) p.set(key, String(value));
           }
           if (!('page' in patch)) p.delete('page');
           if (p.get('sort') === DEFAULT_SORT) p.delete('sort');
@@ -137,7 +134,6 @@ export function toFindingsQuery(f: FindingsFilters, range: { from: string; to: s
     riskLevel: f.riskLevel,
     status: f.status,
     flag: f.flag,
-    scam: f.scam || undefined,
     sort: f.sort,
     page: f.page,
     pageSize: f.pageSize,

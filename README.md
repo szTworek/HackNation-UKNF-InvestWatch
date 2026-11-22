@@ -30,12 +30,11 @@ docker compose -f compose.yaml -f compose.api.yaml --profile scraping up -d --bu
 docker compose -f compose.yaml -f compose.gpu.yaml --profile local-llm up -d --build
 ```
 
-Aplikacja: <http://localhost:8080>. Bez pliku z danymi ustaw `DATA_MODE=mock`, a zobaczysz dane przykładowe.
+Aplikacja: <http://localhost:8080>. Dane trzyma Postgres (rekordy, oceny, statusy, progi, podmioty) i MinIO (grafiki, zrzuty stron); przy każdym `up` jednorazowa usługa `loader` ładuje do nich `data/` i ocenia nowe rekordy w ai-service.
 
 ### Konfiguracja (`.env` w katalogu głównym)
 
 ```env
-DATA_MODE=real            # real: dane z findings.real.json, mock: dane przykładowe
 LLM_BACKEND=groq          # none | groq | ollama
 LLM_MODEL=openai/gpt-oss-120b
 GROQ_API_KEY=
@@ -48,12 +47,13 @@ YOUTUBE_API_KEY=          # opcjonalny
 | `AI_PORT` | `8000` | port ai-service (tylko localhost) |
 | `OLLAMA_URL` | `http://ollama:11434` | Ollama na komputerze: `http://host.docker.internal:11434` |
 | `MODELS_PATH` | `./ml/models` | klasyfikator z treningu |
+| `LOADER_LLM_LIMIT` | `100` | ile rekordów loader ocenia przez LLM w jednym przebiegu |
+| `POSTGRES_PASSWORD`, `MINIO_ROOT_PASSWORD` | wartości deweloperskie | zmień poza komputerem deweloperskim (`.env.example`) |
 
-`.env`, `ml/data/`, `ml/models/` i `findings.real.json` nie są w repozytorium. Dane do aplikacji buduje przy działającym ai-service:
+`.env`, `ml/data/` i `ml/models/` nie są w repozytorium. Kolejna porcja ocen LLM (reszta czeka w bazie):
 
 ```bash
-python ml/scripts/build_findings.py
-docker compose restart api
+docker compose run --rm loader
 ```
 
 ### Wymagania sprzętowe

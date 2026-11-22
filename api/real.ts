@@ -6,7 +6,7 @@ import { computeRelated, indexFinding } from './graph';
 
 const AI_TIMEOUT_MS = 120_000;
 
-type StoredFinding = Finding & { scoringInput?: unknown };
+export type StoredFinding = Finding & { scoringInput?: unknown };
 
 export interface World {
   findings: Finding[]; // posortowane malejąco po fetchedAt
@@ -71,10 +71,6 @@ function withUtf16Evidence(f: Finding): Finding {
 }
 
 export function loadRealWorld(file: RealFile, state: SavedState, now: Date): RealData {
-  if (file.findings.length === 0) {
-    throw new Error('Baza nie zawiera rekordów. Załaduj ją: docker compose run --rm loader');
-  }
-
   const scoringInputs = new Map<string, unknown>();
   const all: Finding[] = file.findings.map(({ scoringInput, ...f }) => {
     if (scoringInput !== undefined) scoringInputs.set(f.id, scoringInput);
@@ -98,7 +94,7 @@ export function loadRealWorld(file: RealFile, state: SavedState, now: Date): Rea
   return { world, scoringInputs, savedThresholds: state.thresholds, generatedAt: file.generatedAt, modelVersion: file.modelVersion };
 }
 
-/** Rekord z przebiegu scrape-workera (worker zapisał go już w Postgresie). Znany adres jest pomijany. */
+/** Nowy rekord z Postgresa (zapisał go loader albo scrape-worker). Znany identyfikator lub adres jest pomijany. */
 export function addRealFinding(real: RealData, raw: StoredFinding): Finding | null {
   const { world } = real;
   if (world.byId.has(raw.id) || world.findings.some((x) => x.url === raw.url)) return null;

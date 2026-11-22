@@ -195,7 +195,8 @@ export interface Thresholds {
 export interface EvalItem {
   // zbiór walidacyjny z ręcznymi etykietami (gold)
   id: string;
-  probs: Record<string, number>; // te same klucze co Thresholds.values
+  url?: string;
+  probs: Record<string, number>; // te same klucze co Thresholds.values, np. 'module.M1'
   gold: Record<string, 0 | 1>;
 }
 
@@ -306,9 +307,21 @@ export interface BulkStatusUpdate extends StatusUpdate {
   ids: string[];
 }
 
+export interface ModuleEval {
+  tp: number;
+  fp: number;
+  fn: number;
+  tn: number;
+  precision: number;
+  recall: number;
+}
+
 export interface ThresholdsPreview {
-  current: Record<RiskLevel, number>;
-  proposed: Record<RiskLevel, number>;
+  // liczba rekordów w module (wszystkie rekordy) i metryki na zbiorze z ręcznymi etykietami
+  current: Record<ModuleId, number>;
+  proposed: Record<ModuleId, number>;
+  eval: Record<ModuleId, { current: ModuleEval; proposed: ModuleEval }>;
+  evalSize: number;
 }
 
 export interface FindingsQuery {
@@ -321,12 +334,26 @@ export interface FindingsQuery {
   flag?: FlagKey[];
   q?: string;
   sort?: string; // 'fetchedAt:desc' | 'riskScore:desc' | 'publishedAt:asc' ...
+  confidence?: number; // podgląd: moduł wg pewności LLM >= confidence zamiast zapisanego progu
   page?: number;
   pageSize?: number;
 }
 
 // Zdarzenia socket.io
+/** Ocena LLM w tle (GET /load, zdarzenie load:progress): done/total = bieżący przebieg, pending = rekordy bez oceny. */
+export interface LoadProgress {
+  running: boolean;
+  done: number;
+  total: number;
+  pending: number;
+  startedAt: string | null;
+  finishedAt: string | null;
+}
+
 export interface ServerToClientEvents {
+  'finding:new': (f: Finding) => void; // każdy nowo oceniony rekord
+  'finding:high_risk': (f: Finding) => void; // nowy rekord HIGH / CRITICAL
+  'load:progress': (p: LoadProgress) => void;
   'finding:updated': (f: Finding) => void;
   'thresholds:updated': (t: Thresholds) => void;
 }

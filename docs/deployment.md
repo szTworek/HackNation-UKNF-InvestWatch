@@ -14,19 +14,21 @@ Dane logowania baz mają domyślne wartości deweloperskie (`.env.example`); poz
 ### Dane (Postgres + MinIO)
 
 ```text
-data/export, data/monitor, rejestr KNF ── loader ──> Postgres  <── api (odczyt, statusy, progi)
-                                  │          └─> ai-service /ingest
+data/export, data/monitor, rejestr KNF ── db-init ──> Postgres  <── api (odczyt, statusy, progi; co 5 s nowe wyniki)
+rekordy bez oceny ── loader (w tle) ── ai-service /ingest ──> Postgres
 data/media, data/monitor/screens ── minio-init ──> MinIO  <── api /api/media, /api/screens
 scrape-worker (przycisk „Zbieranie danych”) ──> Postgres
 ```
 
 - `minio-init` (jednorazowy): buckety `media` i `screens`, kopia plików z `data/`.
-- `loader` (jednorazowy, `db/load.py`): migracje `db/migrations/*.sql`, rejestr KNF, podmioty, rekordy i wyniki `ai-service`. Przy każdym `up` analizuje tylko nowe adresy, statusy analityków zostają. `api` startuje po jego zakończeniu.
-  Z LLM (`LLM_BACKEND=groq`) ocenia najwyżej `LOADER_LLM_LIMIT` rekordów na przebieg (domyślnie 100, po równo ze źródeł); rekordy bez oceny LLM (limit 429) czekają na kolejny przebieg. Następna porcja: `docker compose run --rm loader`, potem `docker compose restart api`.
-- `DATA_MODE=mock` uruchamia API bez bazy (generator w pamięci, podmioty z `frontend/mock-server/entities.snapshot.json`).
+- `db-init` (jednorazowy, kilka sekund, `db/load.py --stage init`): migracje `db/migrations/*.sql`, rejestr KNF, podmioty, rekordy, monitor stron, media. `api` startuje zaraz po nim.
+- `loader` (w tle, `db/load.py --stage score`): ocena rekordów bez wyniku w `ai-service`; statusy analityków zostają. API co 5 s dociąga nowe wyniki z bazy, wysyła je przez socket (`finding:new`, `finding:high_risk`) i pokazuje postęp (`GET /api/load`, zdarzenie `load:progress`).
+  Z LLM (`LLM_BACKEND=groq`) ocenia najwyżej `LOADER_LLM_LIMIT` rekordów na przebieg (domyślnie 100: najpierw rekordy powiązane z 5 podmiotami, po równo ze źródeł); rekordy bez oceny LLM (limit 429) czekają na kolejny przebieg. Następna porcja: `docker compose run --rm loader` (bez restartu API).
+- API (`api/`) nie ma trybu bez bazy: czyta tylko Postgres i MinIO. Rekordy oznaczone `mock` (atrapy monitora) nie są ładowane.
 
 ```bash
-docker compose run --rm loader                              # ponowne ładowanie po nowych plikach w data/
+docker compose run --rm db-init                             # ponowne wczytanie po nowych plikach w data/
+docker compose run --rm loader                              # kolejna porcja ocen
 docker compose exec postgres psql -U investwatch investwatch  # podgląd bazy
 docker compose down -v                                      # czysty stan (usuwa bazę i pliki MinIO)
 ```
@@ -36,10 +38,11 @@ docker compose down -v                                      # czysty stan (usuwa
 | Obraz | Kod | Uwagi |
 |---|---|---|
 | `uknf-frontend` | `frontend/` | nginx, proxy `/api` i `/socket.io` |
-| `uknf-mock-api` | `frontend/mock-server/` | kontrakt API backendu |
+| `uknf-api` | `api/` | backend: REST + socket.io, Postgres, MinIO |
+| `uknf-loader` | `db/` | jednorazowe ładowanie `data/` do Postgresa |
 | `uknf-ai-service` | `ml/` | CPU |
 | `uknf-ai-service-gpu` | `ml/` | CUDA, tylko przez `compose.gpu.yaml` |
-| `uknf-collector` | `scrapers/`, `adapters/`, `preprocessing/`, `db/` | zadania jednorazowe (profil `jobs`), `scrape-worker`, `loader` |
+| `uknf-collector` | `scrapers/`, `adapters/`, `preprocessing/`, `db/` | zadania jednorazowe (profil `jobs`), `scrape-worker` |
 | `pgvector/pgvector:pg16` | `db/migrations/` | Postgres |
 | `bitnamilegacy/minio` | — | MinIO (oficjalne obrazy `minio/minio` nie są już publikowane) |
 

@@ -22,6 +22,7 @@ FROM ${NODE_IMAGE}
 WORKDIR /app
 ENV NODE_ENV=production API_PORT=4000
 COPY --from=build /app/api/dist/server.cjs ./server.cjs
+COPY eval_decisions.json ./eval_decisions.json
 # Poprawki Alpine; npm i corepack są zbędne dla bundla i przynoszą własne podatne zależności (undici, brace-expansion).
 RUN apk upgrade --no-cache \
     && rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \

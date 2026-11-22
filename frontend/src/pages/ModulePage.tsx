@@ -1,18 +1,18 @@
-import { Box, Button, Grid, Group, Menu, MultiSelect, Pagination, Paper, Select, SimpleGrid, Stack, Text, TextInput, Title } from '@mantine/core';
-import { useDebouncedCallback } from '@mantine/hooks';
+import { Box, Button, Grid, Group, Menu, MultiSelect, Pagination, Paper, Select, SimpleGrid, Slider, Stack, Text, TextInput, Title } from '@mantine/core';
+import { useDebouncedCallback, useDebouncedValue } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconChevronDown, IconDownload, IconSearch } from '@tabler/icons-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { api } from '../api/client';
-import { useBulkStatus, useFindings, useRules, useUpdateStatus } from '../api/hooks';
+import { useBulkStatus, useFindings, useRules, useThresholds, useUpdateStatus } from '../api/hooks';
 import type { FindingSummary, FindingsQuery, FlagKey, ModuleId, Platform, RiskLevel, RuleDef, Status } from '../api/types';
 import { MODULE_COLOR } from '../app/theme';
 import { StatusMenuItems } from '../components/FindingsTable';
 import { ModuleTable, type ModuleKey } from '../components/ModuleTable';
 import { ErrorState, Loading } from '../components/PageState';
 import { Meter, Panel } from '../components/Terminal';
-import { fmtInt, todayIso } from '../lib/format';
+import { fmtInt, fmtProb, todayIso } from '../lib/format';
 import {
   ALL_FLAGS,
   FLAG_LABEL,
@@ -167,12 +167,19 @@ export function ModulePage({ moduleKey }: { moduleKey: ModuleKey }) {
   const rangeSearch = useRangeSearch();
   const { from, to } = useDateRange();
   const { filters, update, reset } = useFindingsFilters();
-  const query = useMemo(() => ({ ...toFindingsQuery(filters, { from, to }), ...cfg.base }), [filters, from, to, cfg.base]);
+  // próg pewności modułu: podgląd listy bez zapisu (zapis w Kalibracji)
+  const savedThreshold = useThresholds().data?.values[`module.M${moduleKey}`] ?? 0.5;
+  const [threshold, setThreshold] = useState<number | null>(null);
+  const [debouncedThreshold] = useDebouncedValue(threshold, 200);
+  const confidence = debouncedThreshold !== null && Math.abs(debouncedThreshold - savedThreshold) > 1e-9 ? debouncedThreshold : undefined;
+  const base = useMemo(() => ({ ...cfg.base, confidence }), [cfg.base, confidence]);
+  const query = useMemo(() => ({ ...toFindingsQuery(filters, { from, to }), ...base }), [filters, from, to, base]);
   const findings = useFindings(query);
   // podsumowanie: wszystkie rekordy modułu w zakresie dat (lekkie wiersze)
-  const all = useFindings({ from, to, ...cfg.base, page: 1, pageSize: 200, sort: 'fetchedAt:desc' });
+  const all = useFindings({ from, to, ...base, page: 1, pageSize: 200, sort: 'fetchedAt:desc' });
+  const atSaved = useFindings({ from, to, ...cfg.base, page: 1, pageSize: 1 });
   // liczniki z pola total, niezależne od limitu strony
-  const countBase = { from, to, ...cfg.base, page: 1, pageSize: 1 };
+  const countBase = { from, to, ...base, page: 1, pageSize: 1 };
   const newToday = useFindings({ ...countBase, from: todayIso(), to: todayIso() });
   const highRisk = useFindings({ ...countBase, riskLevel: ['HIGH', 'CRITICAL'] });
   const waiting = useFindings({ ...countBase, status: ['NEW'] });
@@ -243,6 +250,45 @@ export function ModulePage({ moduleKey }: { moduleKey: ModuleKey }) {
         <Kpi label="Czeka na decyzję" value={waiting.data?.total} color={cfg.color} />
       </SimpleGrid>
 
+
+      <Paper p="sm">
+        <Group gap="md" wrap="nowrap">
+          <Text size="sm" fw={600} style={{ flexShrink: 0 }}>
+            Próg pewności modelu
+          </Text>
+          <Slider
+            flex={1}
+            maw={420}
+            min={0}
+            max={1}
+            step={0.01}
+            value={threshold ?? savedThreshold}
+            onChange={setThreshold}
+            label={fmtProb}
+            aria-label="Próg pewności modelu"
+            color={confidence === undefined ? cfg.color : 'orange'}
+            size="sm"
+          />
+          <Text size="sm" fw={600} w={40} className="iw-num">
+            {fmtProb(threshold ?? savedThreshold)}
+          </Text>
+          <Text size="sm" c="dimmed">
+            {confidence === undefined
+              ? `Zapisany próg. Rekordów w module: ${fmtInt(atSaved.data?.total ?? 0)}.`
+              : `Podgląd: ${fmtInt(atSaved.data?.total ?? 0)} → ${fmtInt(all.data?.total ?? 0)} rekordów (zapisany próg ${fmtProb(savedThreshold)}).`}
+          </Text>
+          {confidence !== undefined && (
+            <Group gap="xs" style={{ flexShrink: 0 }}>
+              <Button variant="default" size="xs" onClick={() => setThreshold(null)}>
+                Przywróć
+              </Button>
+              <Button component={Link} to="/calibration" variant="light" size="xs">
+                Zapisz w kalibracji
+              </Button>
+            </Group>
+          )}
+        </Group>
+      </Paper>
 
       <Panel
         title={`Rekordy (${fmtInt(total)})`}

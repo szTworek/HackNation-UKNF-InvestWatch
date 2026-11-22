@@ -1,8 +1,14 @@
-import { Box, Group, Text, Tooltip } from '@mantine/core';
+import { Box, Button, Group, Indicator, Popover, ScrollArea, Stack, Text, Tooltip, UnstyledButton } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
-import { IconCalendar } from '@tabler/icons-react';
+import { IconBell, IconCalendar } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { api } from '../api/client';
 import type { ConnectionState } from '../api/socket';
-import { daysAgoIso, todayIso } from '../lib/format';
+import { ALERT_COLOR, useAlerts } from '../app/realtime';
+import { daysAgoIso, fmtDateTime, todayIso } from '../lib/format';
+import { RISK_LABEL } from '../lib/labels';
 
 // ---------------------------------------------------------------------------
 // Połączenie WebSocket
@@ -28,6 +34,89 @@ export function ConnectionIndicator({ state }: { state: ConnectionState }) {
         )}
       </Group>
     </Tooltip>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Ocena LLM w tle (GET /load + zdarzenie load:progress)
+// ---------------------------------------------------------------------------
+
+export function LoadIndicator() {
+  const p = useQuery({ queryKey: ['load'], queryFn: api.load, retry: false, staleTime: Infinity }).data;
+  if (!p || (!p.running && p.pending === 0)) return null;
+  return (
+    <Text size="xs" c="dimmed" role="status" style={{ whiteSpace: 'nowrap' }}>
+      {p.running ? `Ocena w tle: ${p.done}/${p.total}` : `Czeka na ocenę: ${p.pending}`}
+    </Text>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Alerty wysokiego ryzyka (zdarzenie finding:high_risk)
+// ---------------------------------------------------------------------------
+
+export function AlertBell() {
+  const { alerts, unread, markRead, markAllRead } = useAlerts();
+  const [opened, setOpened] = useState(false);
+  const navigate = useNavigate();
+  return (
+    <Popover opened={opened} onChange={setOpened} position="bottom-end" width={380} shadow="md" withinPortal>
+      <Popover.Target>
+        <Indicator label={unread} size={16} color="red" disabled={unread === 0} offset={6}>
+          <button type="button" className="iw-tool" aria-label={`Alerty wysokiego ryzyka, nieprzeczytane: ${unread}`} onClick={() => setOpened((o) => !o)}>
+            <IconBell size={20} stroke={1.6} style={{ verticalAlign: 'middle' }} />
+          </button>
+        </Indicator>
+      </Popover.Target>
+      <Popover.Dropdown p={0}>
+        <Group justify="space-between" px="sm" py={8} style={{ borderBottom: '1px solid var(--iw-border)' }}>
+          <Text size="sm" fw={600}>
+            Alerty wysokiego ryzyka
+          </Text>
+          <Button variant="subtle" size="compact-xs" disabled={unread === 0} onClick={markAllRead}>
+            Oznacz wszystkie jako przeczytane
+          </Button>
+        </Group>
+        {alerts.length === 0 ? (
+          <Text size="sm" c="dimmed" p="sm">
+            Brak alertów od otwarcia strony.
+          </Text>
+        ) : (
+          <ScrollArea.Autosize mah={420}>
+            <Stack gap={0}>
+              {alerts.map((a) => (
+                <UnstyledButton
+                  key={a.id}
+                  px="sm"
+                  py={8}
+                  style={{ borderBottom: '1px solid var(--iw-border-soft)', background: a.read ? undefined : 'var(--iw-soft)' }}
+                  onClick={() => {
+                    markRead(a.id);
+                    setOpened(false);
+                    navigate(`/findings/${a.id}`);
+                  }}
+                >
+                  <Group gap={8} wrap="nowrap" align="flex-start">
+                    <Box mt={6} w={8} h={8} style={{ borderRadius: 2, flexShrink: 0, background: `var(--mantine-color-${ALERT_COLOR[a.riskLevel] ?? 'orange'}-6)` }} aria-hidden />
+                    <div style={{ minWidth: 0 }}>
+                      <Text size="sm" fw={a.read ? 400 : 600} truncate>
+                        {a.entity}
+                      </Text>
+                      <Text size="xs" lineClamp={2}>
+                        {a.title}
+                      </Text>
+                      <Text size="xs" c="dimmed">
+                        {RISK_LABEL[a.riskLevel]} · {fmtDateTime(a.receivedAt)}
+                      </Text>
+                    </div>
+                  </Group>
+                </UnstyledButton>
+              ))}
+            </Stack>
+          </ScrollArea.Autosize>
+        )}
+      </Popover.Dropdown>
+    </Popover>
   );
 }
 

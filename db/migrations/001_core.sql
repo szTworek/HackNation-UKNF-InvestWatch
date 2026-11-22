@@ -1,6 +1,7 @@
 -- InvestWatch core schema (docs/backend-integration.md §5a, D4: Postgres = record envelope + text, MinIO = binaries).
 -- Applied in order by db/load.py (compose service `loader`) on every start. Idempotent.
 
+-- One row per loader stage run (db/load.py --stage init|score); finished_at null = still running.
 create table if not exists load_runs (
   id bigserial primary key,
   started_at timestamptz not null,
@@ -8,6 +9,9 @@ create table if not exists load_runs (
   model_version text,
   stats jsonb
 );
+alter table load_runs add column if not exists stage text;
+alter table load_runs add column if not exists total int;
+alter table load_runs add column if not exists done int;
 
 -- Collector record envelope (D2/D12): one row per source_url.
 create table if not exists items (
@@ -43,8 +47,6 @@ create table if not exists findings (
   modules int[],
   risk_score real,
   risk_level text,
-  scam_p real,
-  campaign_id text,
   status text not null default 'NEW',
   updated_at timestamptz not null default now()
 );

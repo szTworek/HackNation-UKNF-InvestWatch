@@ -294,6 +294,7 @@ export function thresholdLabel(key: string): string {
   if (prefix === 'flags' && name in FLAG_LABEL) return FLAG_LABEL[name as FlagKey];
   if (prefix === 'contentType' && name in CONTENT_TYPE_LABEL) return CONTENT_TYPE_LABEL[name as ContentType];
   if (prefix === 'risk' && name in RISK_LABEL) return `Poziom: ${RISK_LABEL[name as RiskLevel].toLowerCase()}`;
+  if (prefix === 'module' && /^M[123]$/.test(name)) return MODULE_SHORT[Number(name[1]) as ModuleId];
   return key;
 }
 

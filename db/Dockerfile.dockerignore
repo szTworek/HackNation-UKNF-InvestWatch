@@ -1,0 +1,5 @@
+*
+!db
+!ml/scripts/build_findings.py
+!ml/src/investwatch_ml/knf_register.json
+**/__pycache__

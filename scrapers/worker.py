@@ -141,7 +141,7 @@ def persist(record: dict, finding: dict) -> None:
 
         with store.connect() as conn, conn.cursor() as cur:
             iid = store.upsert_item(cur, record, "worker")
-            store.link_item(cur, iid, record)
+            store.link_item(cur, iid, record)  # nowy rekord od razu trafia na oś podmiotu
             store.save_finding(cur, iid, finding)
     except Exception as e:
         log(f"Postgres: {type(e).__name__}: {str(e)[:100]}")

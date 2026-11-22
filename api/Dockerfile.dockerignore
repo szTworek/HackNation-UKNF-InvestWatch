@@ -3,6 +3,7 @@
 !frontend/src/api/types.ts
 !frontend/src/api/entityTypes.ts
 !frontend/src/lib/labels.ts
+!eval_decisions.json
 api/node_modules
 api/dist
 api/data

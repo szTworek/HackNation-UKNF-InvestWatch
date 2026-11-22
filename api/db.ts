@@ -5,7 +5,7 @@ import type { RegistryEntry } from '../frontend/src/api/entityTypes';
 import type { HistoryEntry, Thresholds } from '../frontend/src/api/types';
 import type { Snapshot } from './entities';
 import { buildSnapshot } from './entity-snapshot';
-import type { RealFile, SavedState } from './real';
+import type { RealFile, SavedState, StoredFinding } from './real';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Row = Record<string, any>;
@@ -23,8 +23,9 @@ const MAXLINES = 60;
 
 const rows = async (sql: string, params: unknown[] = []): Promise<Row[]> => (await pool.query(sql, params)).rows;
 
-export async function loadRealFile(): Promise<{ file: RealFile; state: SavedState }> {
-  const [run] = await rows('select finished_at, model_version from load_runs order by id desc limit 1');
+export async function loadRealFile(): Promise<{ file: RealFile; state: SavedState; cursor: string | null }> {
+  const [run] = await rows('select finished_at, model_version from load_runs where finished_at is not null and model_version is not null order by id desc limit 1');
+  const [{ cursor }] = await rows('select max(updated_at)::text as cursor from findings');
   const thresholds = await rows('select id, version, values, updated_at, active from thresholds order by id');
   const findings = await rows('select id, result, scoring_input, status from findings');
   const history = await rows('select finding_id, at, status, "user", comment from finding_history order by id');
@@ -48,7 +49,46 @@ export async function loadRealFile(): Promise<{ file: RealFile; state: SavedStat
     findings: findings.map((f) => ({ ...f.result, scoringInput: f.scoring_input ?? undefined })),
   };
   const state: SavedState = { statuses, thresholds: active && active.id !== thresholds[0]?.id ? toThresholds(active) : undefined };
-  return { file, state };
+  return { file, state, cursor };
+}
+
+/** Wyniki zapisane po `cursor` (updated_at), od najstarszego: loader i scrape-worker piszą do bazy, API je dociąga. */
+export async function findingsSince(cursor: string | null): Promise<{ findings: StoredFinding[]; cursor: string | null }> {
+  const found = await rows(
+    `select id, result, scoring_input, updated_at::text as cursor from findings
+      where $1::timestamptz is null or updated_at > $1::timestamptz order by updated_at limit 500`,
+    [cursor],
+  );
+  return { findings: found.map((f) => ({ ...f.result, scoringInput: f.scoring_input ?? undefined })), cursor: found.at(-1)?.cursor ?? cursor };
+}
+
+export interface LoadProgress {
+  running: boolean; // ocena w tle trwa
+  done: number; // ocenione w bieżącym (albo ostatnim) przebiegu
+  total: number; // do oceny w tym przebiegu
+  pending: number; // rekordy w bazie bez oceny (czekają na kolejne przebiegi)
+  startedAt: string | null;
+  finishedAt: string | null;
+}
+
+/** Postęp oceny w tle (db/load.py --stage score). */
+export async function loadProgress(): Promise<LoadProgress> {
+  const [run] = await rows("select started_at, finished_at, total, done from load_runs where stage = 'score' order by id desc limit 1");
+  const [{ n }] = await rows('select count(*)::int as n from items where analyzed_at is null');
+  return {
+    running: !!run && !run.finished_at,
+    done: run?.done ?? 0,
+    total: run?.total ?? 0,
+    pending: n,
+    startedAt: run?.started_at ?? null,
+    finishedAt: run?.finished_at ?? null,
+  };
+}
+
+/** Progi z importu (zapisuje je loader przy pierwszej ocenie), gdy API wystartowało przed nim. */
+export async function firstThresholds(): Promise<Thresholds | null> {
+  const [t] = await rows('select version, values, updated_at from thresholds order by id limit 1');
+  return t ? { version: t.version, updatedAt: t.updated_at, values: t.values } : null;
 }
 
 export async function saveStatuses(updates: { id: string; entry: HistoryEntry }[]): Promise<void> {
@@ -77,7 +117,7 @@ export async function saveStatuses(updates: { id: string; entry: HistoryEntry }[
 /** Nowa aktywna wersja progów i przeliczone kolumny ryzyka. Pełny wynik (result) zostaje z importu: po restarcie przelicza go ai-service. */
 export async function saveThresholds(
   t: Thresholds,
-  scores: { id: string; modules: number[]; risk_score: number; risk_level: string; scam_p: number }[],
+  scores: { id: string; modules: number[]; risk_score: number; risk_level: string }[],
 ): Promise<void> {
   const client = await pool.connect();
   try {
@@ -86,8 +126,8 @@ export async function saveThresholds(
     await client.query('insert into thresholds (version, values, updated_at, active) values ($1, $2, $3, true)', [t.version, t.values, t.updatedAt]);
     await client.query(
       `update findings f set modules = array(select jsonb_array_elements_text(v.modules)::int), risk_score = v.risk_score,
-         risk_level = v.risk_level, scam_p = v.scam_p, updated_at = now()
-       from jsonb_to_recordset($1::jsonb) as v(id text, modules jsonb, risk_score real, risk_level text, scam_p real)
+         risk_level = v.risk_level, updated_at = now()
+       from jsonb_to_recordset($1::jsonb) as v(id text, modules jsonb, risk_score real, risk_level text)
        where f.id = v.id`,
       [JSON.stringify(scores)],
     );
@@ -120,31 +160,62 @@ function lastDays(end: string, n: number): string[] {
 
 const SEVERITY: Record<string, string> = { CRITICAL: 'high', HIGH: 'high', MEDIUM: 'medium' };
 const OPEN = new Set(['NEW', 'IN_REVIEW']);
-const ruleKey = (id: string) => (/^\d+$/.test(id) ? `R${id.padStart(2, '0')}` : id);
+const RULE_KEY: Record<string, string> = { M1_PROMO: 'M1.PROMO', M3_ADVISORY: 'M3.ADV', M3_RECOMMENDATION: 'M3.REC' };
+const ruleKey = (id: string) => {
+  const n = /^(\d+)/.exec(id);
+  return n ? `R${n[1].padStart(2, '0')}` : (RULE_KEY[id] ?? id);
+};
 
-/** Wyniki osi podmiotu z ocen ai-service (tabela findings) dla każdego powiązanego podmiotu i modułu. */
+/** Reguły modułu: M3 doradztwo (albo rekomendacja do weryfikacji), M1/M2 naruszenia reguł z 18 i promocji. */
+function moduleRules(module: string, rules: Row[]): Row[] {
+  return rules.filter((r) => {
+    if (module === 'M3') return (r.ruleId === 'M3_ADVISORY' && r.status === 'VIOLATION') || (r.ruleId === 'M3_RECOMMENDATION' && r.status === 'NOT_CHECKED');
+    return r.status === 'VIOLATION' && (/^\d/.test(r.ruleId) || (module === 'M1' && r.ruleId === 'M1_PROMO'));
+  });
+}
+
+/** Cytat dowodu odszukany w sekcjach tekstu rekordu (offsety ai-service dotyczą tekstu analizowanego, nie sekcji). */
+function ruleHit(rule: Row, text: Record<string, string>): Row {
+  const quote = rule.evidence?.[0]?.text as string | undefined;
+  const sections = Object.entries(text ?? {});
+  const found = quote ? sections.find(([, t]) => t.includes(quote)) : undefined;
+  const at = found && quote ? found[1].indexOf(quote) : -1;
+  return {
+    rule_id: ruleKey(rule.ruleId),
+    label: ruleKey(rule.ruleId),
+    evidence: quote ?? 'Brak wymaganej informacji w treści.',
+    section: found?.[0] ?? sections[0]?.[0] ?? 'text',
+    span: at >= 0 && quote ? [at, at + quote.length] : null,
+  };
+}
+
+/** Wyniki osi podmiotu z ocen ai-service (tabela findings): M2 tylko dla własnych materiałów podmiotu, M1 i M3 dla autorów trzecich. */
 function entityFindings(rows: Row[]): Row[] {
   return rows.flatMap((f) =>
-    (f.result.modules as number[]).map((m) => ({
-      id: `${f.id}-${f.entity_id}-M${m}`,
-      item_id: f.item_id,
-      entity_id: f.entity_id,
-      module: `M${m}`,
-      score: f.result.riskScore,
-      severity: SEVERITY[f.result.riskLevel] ?? 'low',
-      rule_hits: (f.result.rules as Row[])
-        .filter((r) => r.status === 'VIOLATION')
-        .map((r) => ({ rule_id: ruleKey(r.ruleId), label: ruleKey(r.ruleId), evidence: r.evidence?.[0]?.text ?? '', section: r.evidence?.[0]?.section ?? null, span: null })),
-      model: f.result.llm?.model ?? f.result.modelVersion,
-      created_at: f.result.publishedAt ?? f.result.fetchedAt,
-      open: OPEN.has(f.status),
-    })),
+    (f.result.modules as number[]).flatMap((m) => {
+      const module = `M${m}`;
+      if ((module === 'M2') !== Boolean(f.author_is_entity)) return [];
+      const rules = moduleRules(module, f.result.rules as Row[]);
+      if (!rules.length) return [];
+      return [{
+        id: `${f.id}-${f.entity_id}-${module}`,
+        item_id: f.item_id,
+        entity_id: f.entity_id,
+        module,
+        score: Math.round(Math.max(...rules.map((r) => Number(r.score) || 0)) * 1000) / 1000,
+        severity: SEVERITY[f.result.riskLevel] ?? 'low',
+        rule_hits: [...new Map(rules.map((r) => [ruleKey(r.ruleId), ruleHit(r, f.text)])).values()],
+        model: f.result.llm?.model ?? f.result.modelVersion,
+        created_at: f.result.publishedAt ?? f.result.fetchedAt,
+        open: OPEN.has(f.status),
+      }];
+    }),
   );
 }
 
 /** Oś podmiotu z Postgresa: tylko zebrane dane (rekordy, wyniki ai-service, monitor stron), KPI liczone tutaj. */
 export async function loadEntitySnapshot(): Promise<Snapshot> {
-  const [run] = await rows('select finished_at from load_runs order by id desc limit 1');
+  const [run] = await rows('select finished_at from load_runs where finished_at is not null order by id desc limit 1');
   const registry = await rows('select * from knf_entities order by name');
   const entities = await rows('select * from entities order by id');
   const items = await rows(
@@ -152,7 +223,10 @@ export async function loadEntitySnapshot(): Promise<Snapshot> {
        from items i join item_entities ie on ie.item_id = i.id group by i.id`,
   );
   const findings = entityFindings(
-    await rows('select f.id, f.item_id, f.result, f.status, ie.entity_id from findings f join item_entities ie on ie.item_id = f.item_id'),
+    await rows(
+      `select f.id, f.item_id, f.result, f.status, ie.entity_id, ie.author_is_entity, i.text
+         from findings f join item_entities ie on ie.item_id = f.item_id join items i on i.id = f.item_id`,
+    ),
   );
   const pages = await rows('select * from monitored_pages');
   const snapshots = await rows('select * from page_snapshots');
@@ -239,7 +313,7 @@ export async function loadEntitySnapshot(): Promise<Snapshot> {
     sourceUrl: r.source_url,
   }));
   // podmioty bez danych nie mają modules/platforms, uzupełnia je GET /api/entities/:id (jak przy pliku)
-  return buildSnapshot(fx, entries, 'postgres: knf_entities', 'postgres', false) as unknown as Snapshot;
+  return buildSnapshot(fx, entries, 'postgres: knf_entities', 'postgres') as unknown as Snapshot;
 }
 
 /** Plik z MinIO (bucket media albo screens) przez API: przeglądarka nie ma dostępu do sieci Compose. */

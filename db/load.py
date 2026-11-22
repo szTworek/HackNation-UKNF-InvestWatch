@@ -1,4 +1,7 @@
-"""Loader: repo data -> Postgres (compose service `loader`, one-shot, idempotent).
+"""Loader: repo data -> Postgres, in two one-shot, idempotent stages.
+
+--stage init (compose service `db-init`, seconds; the app starts after it): steps 1-3 and 5.
+--stage score (compose service `loader`, in the background while the app runs): step 4, progress in load_runs.
 
 1. migrations db/migrations/*.sql,
 2. KNF registry -> knf_entities,
@@ -11,7 +14,7 @@
    did not score (e.g. 429) stay pending instead of being stored with the keyword baseline,
 5. media_objects from data/media and data/monitor/screens (files are copied to MinIO by the `minio-init` service).
 
-Run: python db/load.py [--ai-url http://ai-service:8000]
+Run: python db/load.py --stage init|score [--ai-url http://ai-service:8000]
 """
 import argparse
 import json
@@ -82,8 +85,8 @@ def jsonl(path: Path) -> list[dict]:
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()] if path.exists() else []
 
 
-def load_entities(conn, records: list[dict]) -> tuple[dict[str, str], Counter]:
-    """Entities, items with their entity links and monitor data. Returns {source_url: item id}."""
+def load_entities(conn, records: list[dict]) -> tuple[dict[str, str], dict[str, tuple], Counter]:
+    """Entities, items with their entity links and monitor data. Returns {source_url: item id}, {source_url: links}."""
     from linking import GROUPS, HANDLES
 
     n: Counter = Counter()
@@ -98,10 +101,11 @@ def load_entities(conn, records: list[dict]) -> tuple[dict[str, str], Counter]:
         for eid, g in GROUPS.items():
             cur.execute("insert into entities values (%s, %s, %s, %s, %s)",
                         (eid, g["name"], g["registry"], g["domains"], Jsonb(HANDLES.get(eid, {}))))
-        ids = {}
+        ids, links = {}, {}
         for rec in records:
             ids[rec["source_url"]] = iid = store.upsert_item(cur, rec, "export")
-            n["itemLinks"] += store.link_item(cur, iid, rec)
+            links[rec["source_url"]] = store.link_item(cur, iid, rec)
+            n["itemLinks"] += len(links[rec["source_url"]][0])
         for p in pages:
             cur.execute("insert into monitored_pages values (%s, %s, %s, %s) on conflict do nothing",
                         (p["page_id"], p["entity_id"], p["url"], p.get("label")))
@@ -128,7 +132,7 @@ def load_entities(conn, records: list[dict]) -> tuple[dict[str, str], Counter]:
             n["changes"] += 1
     n.update(entities=len(GROUPS), items=len(ids), pages=len(pages),
              skippedMock=len(all_snapshots) - len(snapshots) + len(all_changes) - len(changes))
-    return ids, n
+    return ids, links, n
 
 
 def wait_for_ai(ai_url: str, tries: int = 60) -> dict:
@@ -143,7 +147,26 @@ def wait_for_ai(ai_url: str, tries: int = 60) -> dict:
     raise RuntimeError("unreachable")
 
 
-def load_findings(conn, ai_url: str, records: list[dict], ids: dict[str, str], imported_at: str) -> Counter:
+def for_ai(rec: dict, links: tuple) -> dict:
+    """Own material of a PoC firm goes to ai-service with the KNF registry entry as publisher (module 2)."""
+    from linking import GROUPS
+
+    author_eid = links[1] if links else None
+    return {**rec, "sponsor": GROUPS[author_eid]["registry"][0]} if author_eid and not rec.get("sponsor") else rec
+
+
+def db_links(conn) -> tuple[dict[str, str], dict[str, tuple]]:
+    """Item ids and entity links written by the init stage: {source_url: id}, {source_url: (entity ids, author entity)}."""
+    with conn.cursor() as cur:
+        cur.execute("""select i.url, i.id, coalesce(array_agg(ie.entity_id order by ie.entity_id) filter (where ie.entity_id is not null), '{}'),
+                              coalesce(bool_or(ie.author_is_entity), false)
+                         from items i left join item_entities ie on ie.item_id = i.id group by i.id""")
+        rows = cur.fetchall()
+    return {url: iid for url, iid, _, _ in rows}, {url: (eids, eids[0] if own and eids else None) for url, _, eids, own in rows}
+
+
+def load_findings(conn, ai_url: str, records: list[dict], ids: dict[str, str], links: dict[str, tuple], imported_at: str,
+                  run_id: int) -> Counter:
     stats: Counter = Counter()
     health = wait_for_ai(ai_url)
     thresholds = bf.request("GET", f"{ai_url}/thresholds/default", timeout=10)
@@ -157,14 +180,20 @@ def load_findings(conn, ai_url: str, records: list[dict], ids: dict[str, str], i
     conn.commit()
     pending = [r for r in records if r["source_url"] not in done]
     use_llm = bool((health.get("llm") or {}).get("model"))
-    todo = interleave(pending)[:LLM_LIMIT] if use_llm else pending
+    # rekordy powiązane z podmiotami najpierw: z nich powstaje oś podmiotu
+    linked = [r for r in pending if links.get(r["source_url"], ([], None))[0]]
+    ordered = interleave(linked) + interleave([r for r in pending if not links.get(r["source_url"], ([], None))[0]])
+    todo = ordered[:LLM_LIMIT] if use_llm else ordered
     batch = LLM_BATCH if use_llm else bf.BATCH_SIZE
     log(f"rekordy: {len(records)}, czeka na analizę: {len(pending)}, w tym przebiegu: {len(todo)} (LLM: {use_llm})")
+    with conn.cursor() as cur:
+        cur.execute("update load_runs set total = %s, done = 0, model_version = %s where id = %s", (len(todo), health["modelVersion"], run_id))
+    conn.commit()
     cert = bf.load_cert_domains()
     topic_threshold = thresholds["values"].get("topic.INVESTMENT", 0.5)
     for i in range(0, len(todo), batch):
         chunk = todo[i:i + batch]
-        response = bf.request("POST", f"{ai_url}/ingest", {"records": chunk})
+        response = bf.request("POST", f"{ai_url}/ingest", {"records": [for_ai(r, links.get(r["source_url"])) for r in chunk]})
         returned = {x["item"]["url"] for x in response["results"]}
         retry: set[str] = set()
         stats["rejected"] += len(chunk) - len(returned)
@@ -185,6 +214,7 @@ def load_findings(conn, ai_url: str, records: list[dict], ids: dict[str, str], i
             # odrzucone przez /ingest (za krótkie, duplikat treści) też są przeanalizowane; czekają tylko te bez oceny LLM
             cur.executemany("update items set analyzed_at = now() where id = %s",
                             [(ids[r["source_url"]],) for r in chunk if r["source_url"] not in retry])
+            cur.execute("update load_runs set done = %s where id = %s", (min(i + batch, len(todo)), run_id))
         conn.commit()
         log(f"{min(i + batch, len(todo))}/{len(todo)}")
         if retry and any("429" in str((x["analysis"].get("llm") or {}).get("error")) for x in response["results"]):
@@ -226,31 +256,37 @@ def load_media(conn) -> Counter:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--stage", choices=("init", "score"), required=True)
     ap.add_argument("--ai-url", default=os.environ.get("AI_URL", "http://localhost:8000"))
     args = ap.parse_args()
     started = datetime.now(timezone.utc)
     imported_at = started.isoformat(timespec="seconds").replace("+00:00", "Z")
+    stats: Counter = Counter()
     with store.connect() as conn:
         store.migrate(conn)
-        stats: Counter = Counter(registry=load_registry(conn))
-        conn.commit()
         records, read_stats = bf.load_records()
-        ids, linked = load_entities(conn, records)
-        stats.update(linked)
-        conn.commit()
-        found = load_findings(conn, args.ai_url.rstrip("/"), records, ids, imported_at)
-        model_version = found.pop("modelVersion")
-        stats.update(found)
-        stats.update(load_media(conn))
-        stats.update({f"read.{k}": v for k, v in read_stats.items()})
         with conn.cursor() as cur:
-            cur.execute("insert into load_runs (started_at, finished_at, model_version, stats) values (%s, now(), %s, %s)",
-                        (started, model_version, Jsonb(dict(stats))))
+            cur.execute("insert into load_runs (stage, started_at) values (%s, %s) returning id", (args.stage, started))
+            run_id = cur.fetchone()[0]
+        conn.commit()
+        if args.stage == "init":
+            stats["registry"] = load_registry(conn)
+            _, _, linked = load_entities(conn, records)
+            stats.update(linked)
+            stats.update(load_media(conn))
+            stats.update({f"read.{k}": v for k, v in read_stats.items()})
+        else:
+            ids, links = db_links(conn)
+            found = load_findings(conn, args.ai_url.rstrip("/"), records, ids, links, imported_at, run_id)
+            found.pop("modelVersion")
+            stats.update(found)
+        with conn.cursor() as cur:
+            cur.execute("update load_runs set finished_at = now(), stats = %s where id = %s", (Jsonb(dict(stats)), run_id))
             cur.execute("select count(*) from findings")
             total = cur.fetchone()[0]
         conn.commit()
-    log(json.dumps({"findings": total, **dict(sorted(stats.items()))}, ensure_ascii=False))
-    return 0 if total else 1
+    log(json.dumps({"stage": args.stage, "findings": total, **dict(sorted(stats.items()))}, ensure_ascii=False))
+    return 0
 
 
 if __name__ == "__main__":

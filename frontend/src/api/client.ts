@@ -6,6 +6,7 @@ import type {
   FindingSummary,
   FindingsQuery,
   Graph,
+  LoadProgress,
   HistoryPage,
   IndicatorFindings,
   IndicatorType,
@@ -106,6 +107,7 @@ export const api = {
   setJobSchedule: (body: { enabled?: boolean; intervalMin?: number }) =>
     request<JobStatus>('/jobs/schedule', { method: 'PUT', ...json(body) }),
   health: () => request<ApiHealth>('/health'),
+  load: () => request<LoadProgress>('/load'),
   findings: (q: FindingsQuery) => request<Page<FindingSummary>>(`/findings${buildQuery({ ...q })}`),
   finding: (id: string) => request<Finding>(`/findings/${encodeURIComponent(id)}`),
   updateStatus: (id: string, body: StatusUpdate) =>
