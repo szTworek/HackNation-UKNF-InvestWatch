@@ -35,7 +35,7 @@ jobs:
           from adapters import bing_ads, google_ads, meta_ads, tiktok, youtube
           from playwright.sync_api import sync_playwright
           with sync_playwright() as p:
-              for channel in ('chromium', 'chrome'):
+              for channel in (None, 'chrome'):
                   browser = p.chromium.launch(channel=channel, headless=True)
                   page = browser.new_page()
                   page.set_content('<h1>ok</h1>')
