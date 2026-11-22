@@ -42,6 +42,12 @@ SOURCES = [
     ("tiktok_posts.embed_ytdlp", "TikTok", ["@xtbpl", "@kacper_snela", "@profit_investing", "@wladcamonet", "@mr_pankracy"], 1),
     ("google_ads.atc_rpc", "Google", ["XTB", "mBank", "eToro", "Plus500", "Trading 212", "bossa.pl"], 1),
 ]
+# Filmy na zapytanie (YouTube) albo na konto (TikTok); każdy dostaje transkrypcję przed filtrem języka.
+VIDEO_MODE = os.environ.get("SCRAPE_VIDEOS", "0") == "1"  # tryb filmowy: transkrypcje, model Whispera pobierany dopiero tu
+VIDEOS = int(os.environ.get("VIDEOS_MAX_PER_QUERY", "3"))
+VIDEO_LIMIT = {"youtube_posts.ytdlp": "n", "tiktok_posts.embed_ytdlp": "per_user"}
+CLIP_S = 600  # z długich filmów YouTube tylko pierwsze 10 minut audio
+_whisper = None
 META = ("fb_ads.ad_library_web", "Meta", ["apartament inwestycyjny gwarantowany zysk", "zysk bez ryzyka", "pasywny dochód inwestycja",
                                           "grupa vip trading", "typy giełdowe", "pko inwestycje", "mbank inwestycje", "xtb społeczność"], 2)
 
@@ -114,6 +120,48 @@ def enrich_image(raw: dict) -> dict:
     except Exception as e:  # pojedyncza grafika nie przerywa przebiegu
         log(f"OCR: {type(e).__name__}: {str(e)[:100]}")
     return raw
+
+
+def transcribe(record: dict) -> None:
+    """Sekcja transcript filmu: napisy YouTube, a bez nich audio + faster-whisper (jak youtube_/tiktok_transcripts)."""
+    global _whisper
+    import tempfile
+
+    import yt_dlp
+    from common import ua
+    from yt_dlp.utils import download_range_func
+
+    vid = record["source_meta"].get("video_id")
+    if record["source"] == "youtube":
+        try:
+            from youtube_transcript_api import YouTubeTranscriptApi
+
+            record["text"]["transcript"] = " ".join(s.text for s in YouTubeTranscriptApi().fetch(vid, languages=["pl", "en"]))
+            return
+        except Exception:
+            pass
+    with tempfile.TemporaryDirectory() as tmp:
+        opts = {"quiet": True, "no_warnings": True, "format": "bestaudio/best", "http_headers": {"User-Agent": ua()},
+                "outtmpl": f"{tmp}/{vid}.%(ext)s", "socket_timeout": 30, "retries": 2}
+        if record["source"] == "youtube":
+            opts["download_ranges"] = download_range_func(None, [(0, CLIP_S)])
+        with yt_dlp.YoutubeDL(opts) as ydl:
+            audio = ydl.extract_info(record["source_url"], download=True)["requested_downloads"][0]["filepath"]
+        if _whisper is None:
+            from faster_whisper import WhisperModel
+
+            _whisper = WhisperModel("small", device="cpu", compute_type="int8")
+        # dekodowanie przez ffmpeg: faster-whisper 1.2.1 przekazuje do PyAV 19 argument, którego ten już nie ma
+        import subprocess
+
+        import numpy as np
+
+        pcm = subprocess.run(["ffmpeg", "-nostdin", "-i", audio, "-f", "f32le", "-ac", "1", "-ar", "16000", "-"],
+                             capture_output=True, check=True).stdout
+        segs, _ = _whisper.transcribe(np.frombuffer(pcm, np.float32), language=None, vad_filter=True, beam_size=1)
+        text = " ".join(s.text.strip() for s in segs).strip()
+    if text:
+        record["text"]["transcript"] = text
 
 
 def to_record(raw: dict) -> dict | None:
@@ -210,7 +258,8 @@ def run(trigger: str, include_meta: bool) -> None:
         for collector, label, query in jobs:
             live.update(phase="scraping", current=f"{label}: {query}")
             try:
-                for raw in registry.collector(collector)(query, {}):
+                limit = {VIDEO_LIMIT[collector]: VIDEOS} if VIDEO_MODE and collector in VIDEO_LIMIT else {}
+                for raw in registry.collector(collector)(query, {}, **limit):
                     stats["fetched"] += 1
                     try:
                         record = to_record(raw)
@@ -228,6 +277,15 @@ def run(trigger: str, include_meta: bool) -> None:
                 log(traceback.format_exc(limit=2))
             live["done"] += 1
         stats["new"] = len(fresh)
+        videos = [r for r in fresh if VIDEO_MODE and r["source"] in ("youtube", "tiktok") and not r["text"].get("transcript")]
+        for i, r in enumerate(videos, 1):
+            live.update(phase="transcription", current=f"transkrypcja {i}/{len(videos)}")
+            try:
+                transcribe(r)
+            except Exception as e:
+                log(f"transkrypcja {r['source_url']}: {type(e).__name__}: {str(e)[:100]}")
+        if VIDEO_MODE:
+            stats["transcribed"] = sum(bool(r["text"].get("transcript")) for r in fresh if r["source"] in ("youtube", "tiktok"))
         live.update(phase="language", current="filtr języka")
         polish: list[dict] = []
         if fresh:

@@ -232,6 +232,8 @@ services:
       AI_URL: http://ai-service:8000
       API_URL: http://api:4000
       JOBS_DIR: /jobs
+      SCRAPE_VIDEOS: ${SCRAPE_VIDEOS:-0}
+      VIDEOS_MAX_PER_QUERY: ${VIDEOS_MAX_PER_QUERY:-3}
     volumes:
       - job-state:/jobs
       - collector-results:/app/scrapers/poc/results

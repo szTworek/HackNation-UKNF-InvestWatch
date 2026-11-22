@@ -1,5 +1,6 @@
 # Kolektory InvestWatch (Playwright + Chrome, yt-dlp, faster-whisper, RapidOCR).
 # Build z katalogu głównego repo: docker build -f scrapers/Dockerfile -t investwatch-collector .
+# Model Whispera nie jest w obrazie: pobiera go dopiero tryb filmowy workera (SCRAPE_VIDEOS=1) do /cache/huggingface.
 # Domyślnie: python -m registry [kolektor] [zapytanie]. Sesje, klucze i wyniki są poza obrazem.
 FROM python:3.12-slim
 
