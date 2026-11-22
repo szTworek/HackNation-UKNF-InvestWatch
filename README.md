@@ -20,6 +20,7 @@ Wymagany Docker z Compose.
 |---|---|---|
 | **LLM przez API (Groq)** | `docker compose -f compose.yaml -f compose.api.yaml up -d --build` | nie |
 | API + przycisk „Zbieranie danych” | `docker compose -f compose.yaml -f compose.api.yaml --profile scraping up -d --build` | nie |
+| Zbieranie + tryb filmowy (transkrypcje) | `$env:SCRAPE_VIDEOS=1; docker compose -f compose.yaml -f compose.api.yaml --profile scraping up -d --build` (bash: `SCRAPE_VIDEOS=1 docker compose ...`) albo `SCRAPE_VIDEOS=1` w `.env` | nie |
 | **On-premise, Bielik 11B w Ollama** | `docker compose -f compose.yaml -f compose.gpu.yaml --profile local-llm up -d --build` | NVIDIA, testowane na 12 GB VRAM |
 
 Aplikacja: <http://localhost:8080>. Przy każdym `up` usługi `db-init` i `loader` ładują `data/` do Postgresa i MinIO, a nowe rekordy oceniają w tle.
@@ -40,7 +41,8 @@ docker compose down -v             # czysty stan
 | `OLLAMA_URL` | `http://ollama:11434` | Ollama na hoście: `http://host.docker.internal:11434` |
 | `LOADER_LLM_LIMIT` | `100` | rekordów ocenianych przez LLM w jednym przebiegu |
 | `YOUTUBE_API_KEY` | — | opcjonalnie, kolektor YouTube |
-| `VIDEOS_MAX_PER_QUERY` | `3` | filmów YouTube na zapytanie i TikTok na konto w przebiegu zbierania; każdy z transkrypcją |
+| `SCRAPE_VIDEOS` | `0` | tryb filmowy `scrape-worker`: `1` włącza transkrypcję filmów YouTube i TikTok; model Whispera (ok. 500 MB) pobiera się dopiero przy pierwszym przebiegu, nie przy buildzie |
+| `VIDEOS_MAX_PER_QUERY` | `3` | w trybie filmowym: filmów YouTube na zapytanie i TikTok na konto |
 | `POSTGRES_PASSWORD`, `MINIO_ROOT_PASSWORD` | deweloperskie | zmień poza komputerem deweloperskim |
 | `FRONTEND_PORT`, `AI_PORT` | `8080`, `8000` | porty, publikowane tylko na `127.0.0.1` |
 
@@ -66,7 +68,7 @@ Każda usługa to osobny katalog i obraz (`frontend/`, `api/`, `ml/`, `scrapers/
 - **Kolejka przebiegów:** `scrape-worker` planuje kolektory × zapytania z rotacją, trzyma kolejkę rekordów czekających na LLM
 - **Harmonogram:** wbudowany cron w `scrape-worker` (interwał w minutach, włączany z panelu). Meta tylko ręcznie, bo regulamin dopuszcza automatyzację wyłącznie przez API.
 - **Kolektory:** Playwright, httpx, yt-dlp, oficjalne API (YouTube, Microsoft Ad Library). Rotacja User-Agent, `robots.txt` na stronach firm, odrzucanie cookies.
-- **Preprocessing:** ekstrakcja tekstu z HTML, normalizacja, deduplikacja po znormalizowanym URL, filtr języka, OCR grafik (RapidOCR), transkrypcja każdego filmu YouTube i TikTok (napisy YouTube, a bez nich faster-whisper; limit `VIDEOS_MAX_PER_QUERY`).
+- **Preprocessing:** ekstrakcja tekstu z HTML, normalizacja, deduplikacja po znormalizowanym URL, filtr języka, OCR grafik (RapidOCR), w trybie filmowym (`SCRAPE_VIDEOS=1`) transkrypcja każdego filmu YouTube i TikTok (napisy YouTube, a bez nich faster-whisper; limit `VIDEOS_MAX_PER_QUERY`).
 
 ## Moduły analityczne
 
