@@ -52,6 +52,16 @@ Klucze API są w opcjonalnym `.env`, a sesje Playwright w `.secrets/` (tylko do 
 
 Model włącza się przy co najmniej 500 dokumentach treningowych i przykładach scamu w walidacji; inaczej działa baseline. Pliki modelu kopiuje się do `models/`.
 
+### Szybki build (tylko API LLM)
+
+Bez torcha, modeli lokalnych i kolektorów z Chrome. Wymaga `GROQ_API_KEY` w `.env`.
+
+```bash
+docker compose -f compose.yaml -f compose.api.yaml up -d --build
+# z przyciskiem zbierania danych (dodatkowy obraz ok. 4 GB):
+docker compose -f compose.yaml -f compose.api.yaml --profile scraping up -d --build
+```
+
 ## Pipeline
 
 ```text

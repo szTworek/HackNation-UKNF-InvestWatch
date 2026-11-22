@@ -1,6 +1,6 @@
 // Oś podmiotu: endpointy /api/entities*, /api/items/:id, /api/changes/:id, /api/entity-stats/overview.
-// Dane z entities.snapshot.json (npm run entities:build). Rekordy, strony i rejestr są prawdziwe;
-// wyniki klasyfikatora (mock-v0) i część historii stron to atrapy oznaczone `mock: true`.
+// Dane z entities.snapshot.json (npm run entities:build): zebrane rekordy, strony, rejestr KNF
+// oraz wyniki modelu ai-service i weryfikacji LLM.
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import express, { type Express } from 'express';

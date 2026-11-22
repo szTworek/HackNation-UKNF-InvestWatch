@@ -68,7 +68,7 @@ function Report({ id }: { id: string }) {
               Wygenerowano {fmtDateTime(new Date().toISOString())}
             </Text>
             <Text size="xs" c="dimmed">
-              Klasyfikator: mock-v0 (atrapa LLM)
+              Ocena: model ai-service i weryfikacja LLM
             </Text>
           </div>
         </Group>
@@ -253,9 +253,8 @@ function Report({ id }: { id: string }) {
           </>
         )}
         <Text size="xs" c="dimmed" pt="sm" style={{ borderTop: '1px solid var(--iw-border)' }}>
-          Wyniki pochodzą z klasyfikatora-atrapy (reguły słownikowe, model „mock-v0”) i nie są rozstrzygnięciem nadzorczym. Reguły R01–R18 według art.
-          44 rozporządzenia delegowanego (UE) 2017/565. Rekordy, strony i rejestr KNF są prawdziwe; daty wyników i część historii stron są
-          syntetyczne.
+          Wyniki pochodzą z modelu ai-service i weryfikacji LLM, wymagają oceny analityka i nie są rozstrzygnięciem nadzorczym. Reguły R01–R18 według
+          art. 44 rozporządzenia delegowanego (UE) 2017/565.
         </Text>
       </Stack>
     </Paper>

@@ -64,7 +64,6 @@ export function Statistics() {
               <Paper p="lg" h="100%">
                 <Group gap={8} mb="md">
                   <Title order={4}>Wyniki dziennie</Title>
-                  <MockBadge hint="Wyniki z klasyfikatora mock-v0; daty rozłożone syntetycznie na 30 dni" />
                 </Group>
                 <Suspense fallback={<Loading />}>{e ? <FindingsByDayChart data={e.findingsByDay} height={280} /> : <Loading />}</Suspense>
               </Paper>
@@ -73,7 +72,6 @@ export function Statistics() {
               <Paper p="lg" h="100%">
                 <Group gap={8}>
                   <Title order={4}>Podmiot × moduł</Title>
-                  <MockBadge hint="Wyniki z klasyfikatora mock-v0 (reguły słownikowe zamiast LLM)" />
                 </Group>
                 <Text size="xs" c="dimmed" mb="sm">
                   Średni wynik klasyfikatora (0–100)
@@ -126,7 +124,6 @@ export function Statistics() {
               <Paper p="lg" h="100%">
                 <Group gap={8} mb="md">
                   <Title order={4}>Najczęstsze naruszenia</Title>
-                  <MockBadge hint="Wyniki z klasyfikatora mock-v0 (reguły słownikowe zamiast LLM)" />
                 </Group>
                 <Suspense fallback={<Loading />}>
                   {e ? (

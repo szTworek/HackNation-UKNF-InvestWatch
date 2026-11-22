@@ -4,6 +4,7 @@
 #   dev         – CPU, instalacja editable, kod montowany z hosta, uvicorn --reload (compose.dev.yaml)
 #   runtime-gpu – torch CUDA 12.8 (compose.gpu.yaml)
 #   runtime-cpu – domyślny, lekki obraz bez bibliotek NVIDIA
+#   runtime-api – najszybszy build: LLM przez API, bez torcha i embeddera (compose.api.yaml)
 # Modele NIE są w obrazie: montowane do /app/models.
 FROM python:3.12-slim AS base
 COPY --from=ghcr.io/astral-sh/uv:0.9.22 /uv /usr/local/bin/uv
@@ -32,6 +33,25 @@ RUN --mount=type=cache,target=/root/.cache/uv sh -eu -c '\
 
 FROM base AS deps-gpu
 RUN --mount=type=cache,target=/root/.cache/uv uv sync --frozen --no-dev --no-install-project
+
+FROM base AS deps-api
+# Tylko zależności serwisu, w wersjach z uv.lock.
+RUN --mount=type=cache,target=/root/.cache/uv sh -eu -c '\
+    uv export --frozen --no-dev --no-hashes --no-emit-project --no-annotate --no-header \
+      | grep -vE "^(torch|triton|nvidia-|cuda-)" > /tmp/constraints.txt; \
+    uv venv /opt/venv; \
+    uv pip install -c /tmp/constraints.txt fastapi "uvicorn[standard]" httpx pydantic rapidfuzz langdetect \
+      networkx numpy scikit-learn; \
+    rm /tmp/constraints.txt'
+
+FROM deps-api AS runtime-api
+COPY src ./src
+RUN --mount=type=cache,target=/root/.cache/uv uv pip install --no-deps . && rm -rf ./src /usr/local/bin/uv
+USER app
+EXPOSE 8000
+HEALTHCHECK --interval=15s --timeout=5s --start-period=30s --retries=3 \
+  CMD python -c "import urllib.request as u; u.urlopen('http://127.0.0.1:8000/health', timeout=4)"
+CMD ["uvicorn", "investwatch_ml.api:app", "--host", "0.0.0.0", "--port", "8000"]
 
 FROM deps-cpu AS dev
 COPY src ./src

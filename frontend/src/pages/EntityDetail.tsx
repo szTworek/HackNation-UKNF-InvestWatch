@@ -235,7 +235,6 @@ function OverviewTab({ e }: { e: KnfEntityDetail }) {
         <Text size="sm" fw={600}>
           Moduły
         </Text>
-        <MockBadge hint="Wyniki z klasyfikatora mock-v0 (reguły słownikowe zamiast LLM)" />
       </Group>
       <SimpleGrid cols={{ base: 1, md: 3 }}>
         {ENTITY_MODULES.map((m) => (
@@ -275,7 +274,6 @@ function OverviewTab({ e }: { e: KnfEntityDetail }) {
           <Paper p="lg" h="100%">
             <Group gap={8} mb="md">
               <Title order={4}>Wyniki dziennie</Title>
-              <MockBadge hint="Daty wyników rozłożone syntetycznie na 30 dni" />
             </Group>
             {isLoading ? <Loading /> : <FindingsByDayChart data={trend} height={260} />}
           </Paper>
@@ -292,7 +290,6 @@ function OverviewTab({ e }: { e: KnfEntityDetail }) {
       <Paper p="lg">
         <Group gap={8} mb="md">
           <Title order={4}>Najczęstsze naruszenia</Title>
-          <MockBadge hint="Wyniki z klasyfikatora mock-v0 (reguły słownikowe zamiast LLM)" />
         </Group>
         <LabeledBars rows={rules.map(([k, v]) => ({ key: k, label: ruleText(k, v.label), value: v.n, color: ENTITY_MODULE_COLOR[ruleModule(k)] }))} />
       </Paper>
@@ -493,7 +490,6 @@ function FindingsTab({ id, focus, onItem }: { id: string; focus: string | null; 
           w={160}
         />
         <Group gap={6} ml="auto">
-          <MockBadge hint="Klasyfikator mock-v0: reguły słownikowe zamiast LLM" />
           <Text size="sm" c="dimmed">
             {fmtInt(rows.length)} wyników
           </Text>
