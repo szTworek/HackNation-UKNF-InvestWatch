@@ -15,7 +15,7 @@ from typing import Any
 from fastapi import FastAPI
 from pydantic import BaseModel, ConfigDict, Field
 
-from . import campaigns, heuristics, indicators, ingest, knf, llm, scoring
+from . import campaigns, heuristics, indicators, ingest, knf, language, llm, scoring
 from .text import normalize
 
 import json
@@ -211,6 +211,16 @@ def triage(req: ItemsRequest) -> dict[str, Any]:
 @app.post("/analyze")
 def analyze(req: ItemsRequest) -> dict[str, Any]:
     return {"results": _with_llm(req.items)}
+
+
+class LanguageRequest(BaseModel):
+    texts: list[str]
+
+
+@app.post("/language")
+def detect_language(req: LanguageRequest) -> dict[str, Any]:
+    """Filtr języka przed LLM: niepolskie rekordy nie zużywają limitu modelu."""
+    return {"polish": [language.is_polish(t) for t in req.texts]}
 
 
 @app.post("/ingest")

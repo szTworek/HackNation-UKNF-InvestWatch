@@ -63,6 +63,7 @@ services:
       DATA_MODE: ${DATA_MODE:-mock}
       AI_URL: http://ai-service:8000
       STATE_PATH: /state/state.json
+      SCRAPE_WORKER_URL: http://scrape-worker:8100
       MOCK_SEED: ${MOCK_SEED:-42}
       MOCK_CORS_ORIGIN: ${MOCK_CORS_ORIGIN:-*}
     volumes:
@@ -90,6 +91,36 @@ services:
     volumes:
       - ${MODELS_PATH:-./ml/models}:/app/models:ro
       - hf-cache:/cache/huggingface
+
+  # Przycisk „Zbieranie danych” i harmonogram. Bez opublikowanych portów: steruje nim tylko usługa api.
+  scrape-worker:
+    <<: *service
+    image: investwatch/uknf-collector:local
+    build:
+      context: .
+      dockerfile: scrapers/Dockerfile
+    init: true
+    shm_size: 1gb
+    entrypoint: ["python", "/app/scrapers/worker.py"]
+    depends_on:
+      - ai-service
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      AI_URL: http://ai-service:8000
+      API_URL: http://api:4000
+      JOBS_DIR: /jobs
+    volumes:
+      - job-state:/jobs
+      - collector-results:/app/scrapers/poc/results
+      - collector-cache:/cache/huggingface
+      - ${SECRETS_PATH:-./.secrets}:/app/.secrets:ro
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://127.0.0.1:8100/health', timeout=4)"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
 
   # Lokalny LLM: LLM_BACKEND=ollama docker compose --profile local-llm up -d --build
   ollama:
@@ -121,6 +152,7 @@ services:
 
 volumes:
   ollama-models:
+  job-state:
   api-state:
   collector-results:
   collector-cache:

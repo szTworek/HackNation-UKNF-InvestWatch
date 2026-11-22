@@ -5,6 +5,7 @@ import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-do
 import { useEntities, useOverview } from '../api/hooks';
 import { useConnectionState } from '../api/socket';
 import { ConnectionIndicator, DateRangeFilter } from '../components/Header';
+import { JobControl } from '../components/JobControl';
 import { fmtInt } from '../lib/format';
 import { useDateRange, useRangeSearch } from '../lib/url';
 
@@ -134,6 +135,7 @@ export function Layout() {
             <button type="button" className="iw-tool" aria-label="Powiększ tekst" disabled={fontStep === FONT_SIZES.length - 1} onClick={() => setFontStep((s) => s + 1)}>
               A+
             </button>
+            <JobControl />
             <ConnectionIndicator state={connection} />
           </div>
         </div>

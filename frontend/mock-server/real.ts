@@ -4,7 +4,7 @@
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import type { Campaign, EvalItem, Evidence, Finding, HistoryEntry, Indicator, RiskLevel, Status, Thresholds } from '../src/api/types';
-import { indexFinding } from './graph';
+import { computeRelated, indexFinding } from './graph';
 import { Rng } from './rng';
 import { defaultThresholdValues } from './scoring';
 import { recomputeCampaign, type World } from './seed';
@@ -152,6 +152,23 @@ export function loadRealWorld(path: string, statePath: string, now: Date): RealD
   };
   refreshBlockedUrls(real);
   return real;
+}
+
+/** Rekord z przebiegu scrape-workera. Znany adres jest pomijany, a zapisany status analityka zostaje. */
+export function addRealFinding(real: RealData, raw: StoredFinding, statePath: string): Finding | null {
+  const { world } = real;
+  if (world.byId.has(raw.id) || world.findings.some((x) => x.url === raw.url)) return null;
+  const { scoringInput, ...rest } = raw;
+  if (scoringInput !== undefined) real.scoringInputs.set(rest.id, scoringInput);
+  real.certBlocked.set(rest.id, rest.blockedUrls ?? []);
+  const saved = readState(statePath).statuses?.[rest.id];
+  const f = withUtf16Evidence(saved ? { ...rest, status: saved.status, history: saved.history } : rest);
+  world.findings.unshift(f);
+  world.byId.set(f.id, f);
+  world.seq += 1;
+  indexFinding(world, f);
+  f.related = computeRelated(world, f);
+  return f;
 }
 
 export function saveState(path: string, real: RealData): void {

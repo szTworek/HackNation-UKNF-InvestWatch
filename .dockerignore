@@ -2,6 +2,8 @@
 !adapters
 !preprocessing
 !scrapers
+!scripts/convert_fb_ads_web.py
+!ml/scripts/build_findings.py
 scrapers/poc/results
 **/__pycache__
 **/*.pyc

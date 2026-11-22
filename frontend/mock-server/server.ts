@@ -43,6 +43,7 @@ import { campaignGraph, egoGraph } from './graph';
 import { RULES } from './rules';
 import { THRESHOLD_KEYS, rescore } from './scoring';
 import {
+  addRealFinding,
   applyRescore,
   fetchEvalSet,
   loadRealWorld,
@@ -301,6 +302,52 @@ app.use((req, res, next) => {
 });
 
 const notFound = (res: Response, what = 'Nie znaleziono') => res.status(404).json({ error: what });
+
+// ---------------------------------------------------------------------------
+// Zbieranie danych: pośrednik do scrape-workera (usługa dostępna tylko w sieci Compose)
+// ---------------------------------------------------------------------------
+
+const WORKER_URL = (process.env.SCRAPE_WORKER_URL ?? 'http://scrape-worker:8100').replace(/\/$/, '');
+
+async function proxyWorker(res: Response, path: string, method: string, body?: unknown): Promise<void> {
+  try {
+    const r = await fetch(`${WORKER_URL}${path}`, {
+      method,
+      headers: body === undefined ? undefined : { 'Content-Type': 'application/json' },
+      body: body === undefined ? undefined : JSON.stringify(body),
+      signal: AbortSignal.timeout(8000),
+    });
+    res.status(r.status).json(await r.json());
+  } catch {
+    res.status(503).json({ error: 'Usługa zbierania danych jest niedostępna' });
+  }
+}
+
+app.get('/api/jobs', (_req, res) => void proxyWorker(res, '/status', 'GET'));
+app.post('/api/jobs/run', (req, res) => void proxyWorker(res, '/run', 'POST', { includeMeta: req.body?.includeMeta === true }));
+app.put('/api/jobs/schedule', (req, res) =>
+  void proxyWorker(res, '/schedule', 'PUT', { enabled: req.body?.enabled, intervalMin: req.body?.intervalMin }));
+app.get('/api/jobs/known', (_req, res) => {
+  res.json({ urls: world.findings.map((f) => f.url) });
+});
+
+let jobCursor = 0;
+async function pullJobFindings(data: RealData): Promise<void> {
+  try {
+    for (;;) {
+      const r = await fetch(`${WORKER_URL}/findings?after=${jobCursor}`, { signal: AbortSignal.timeout(8000) });
+      if (!r.ok) return;
+      const page = (await r.json()) as { items: Parameters<typeof addRealFinding>[1][]; next: number };
+      if (!page.items.length) return;
+      let added = 0;
+      for (const item of page.items) if (addRealFinding(data, item, STATE_PATH)) added += 1;
+      jobCursor = page.next;
+      if (added) log(`job: dodano ${added} rekordów`);
+    }
+  } catch {
+    // worker wyłączony albo jeszcze startuje: spróbujemy przy kolejnym odpytaniu
+  }
+}
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', findings: world.findings.length, dataMode: DATA_MODE });
@@ -717,6 +764,8 @@ async function start(): Promise<void> {
     log(`API: http://localhost:${PORT}/api, tryb ${DATA_MODE}, ${world.findings.length} rekordów, ${world.campaigns.size} kampanii`);
     if (real) {
       log(`dane z ${real.generatedAt}, model ${real.modelVersion}`);
+      void pullJobFindings(real);
+      setInterval(() => void pullJobFindings(real), 5000).unref();
     }
   });
 }

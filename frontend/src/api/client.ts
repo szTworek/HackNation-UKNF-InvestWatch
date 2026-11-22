@@ -98,7 +98,22 @@ export interface CampaignsQuery extends DateRange {
 
 const json = (body: unknown): RequestInit => ({ body: JSON.stringify(body) });
 
+export interface JobStatus {
+  run: { running: boolean; phase: string; trigger: string | null; startedAt: string | null; done: number; total: number; current: string | null };
+  schedule: { enabled: boolean; intervalMin: number; nextRunAt: string | null };
+  last: { trigger: string; includeMeta: boolean; startedAt: string; finishedAt: string; stats: Record<string, number>; errors: string[] } | null;
+  pending: number;
+  collected: number;
+  intervals: number[];
+  sources: string[];
+  manualOnly: string[];
+}
+
 export const api = {
+  jobs: () => request<JobStatus>('/jobs'),
+  runJob: (includeMeta: boolean) => request<JobStatus>('/jobs/run', { method: 'POST', ...json({ includeMeta }) }),
+  setJobSchedule: (body: { enabled?: boolean; intervalMin?: number }) =>
+    request<JobStatus>('/jobs/schedule', { method: 'PUT', ...json(body) }),
   health: () => request<ApiHealth>('/health'),
   findings: (q: FindingsQuery) => request<Page<FindingSummary>>(`/findings${buildQuery({ ...q })}`),
   finding: (id: string) => request<Finding>(`/findings/${encodeURIComponent(id)}`),
