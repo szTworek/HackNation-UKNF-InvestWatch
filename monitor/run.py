@@ -15,10 +15,12 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 from monitor.diff import compare
-from monitor.extract import normalize, risk_warning, sha256
-from monitor.fetch import fetch_page, fetch_robots
+from monitor.extract import normalize, page_legibility, risk_warning, sha256, style_blocks, style_sha256
+from monitor.fetch import VIEWPORT, fetch_page, fetch_robots
 
-DATA = Path(__file__).resolve().parents[1] / "data" / "monitor"
+REPO = Path(__file__).resolve().parents[1]
+DATA = REPO / "data" / "monitor"
+SCREENS = DATA / "screens"
 PAGES, SNAPSHOTS, CHANGES, RUNS = (DATA / n for n in ("pages.json", "snapshots.jsonl", "changes.jsonl", "runs.jsonl"))
 
 
@@ -49,11 +51,22 @@ def last_snapshots():
 def snapshot(page, res, fetched_at):
     lines = normalize(res.get("lines") or [])
     text = "\n".join(lines)
-    return {"id": "snp_" + hashlib.sha1(f"{page['page_id']}|{fetched_at}".encode()).hexdigest()[:12],
-            "page_id": page["page_id"], "entity_id": page["entity_id"], "url": page["url"], "fetched_at": fetched_at,
+    sid = "snp_" + hashlib.sha1(f"{page['page_id']}|{fetched_at}".encode()).hexdigest()[:12]
+    vp = f"{VIEWPORT[0]}x{VIEWPORT[1]}"
+    blocks = {vp: style_blocks(res["blocks"], res.get("screenshot"))} if res.get("blocks") else None
+    legibility, check = page_legibility(blocks) if blocks else (None, None)
+    screenshots = None
+    if res.get("screenshot"):
+        SCREENS.mkdir(exist_ok=True)
+        path = SCREENS / f"{sid}_{vp}.png"
+        path.write_bytes(res["screenshot"])
+        screenshots = {vp: path.relative_to(REPO).as_posix()}
+    return {"id": sid, "page_id": page["page_id"], "entity_id": page["entity_id"], "url": page["url"], "fetched_at": fetched_at,
             "text_sha256": sha256(text), "text": text,
             "risk_warning": risk_warning(lines, res.get("warn"), res.get("vh")) if lines else
             {"present": False, "cfd_loss_pct": None, "text": None, "above_fold": None},
+            "blocks": blocks, "style_sha256": style_sha256(blocks) if blocks else None,
+            "legibility": legibility, "legibility_check": check, "screenshots": screenshots,
             "http_status": res.get("http_status"), "final_url": res.get("final_url"), "mock": False}
 
 

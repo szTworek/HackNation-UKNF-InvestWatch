@@ -77,7 +77,7 @@ def _latest_snapshot(s, page_id):
     return None if snap is None else {c.name: getattr(snap, c.name) for c in Snapshot.__table__.columns}
 
 
-def _alerts_from(s, findings, changes, names):
+def _alerts_from(s, findings, names):
     new = 0
     for f in findings:
         if f["severity"] != "high":
@@ -89,18 +89,6 @@ def _alerts_from(s, findings, changes, names):
             "entity_id": f["entity_id"], "kind": "finding", "severity": "high",
             "title": f"{names[f['entity_id']]} {f['module']}: {top} ({item.platform}, {item.author or 'unknown author'})",
             "ref": {"finding_id": f["id"], "change_id": None}, "status": "new", "mock": f["mock"]})
-    for c in changes:
-        kinds = set(c.get("kinds") or [])
-        if not kinds & {"risk_warning_changed", "risk_warning_removed", "page_removed"}:
-            continue
-        sev = "high" if kinds & {"risk_warning_removed", "page_removed"} else "medium"
-        page = s.get(Page, c["page_id"])
-        where = (page.url if page else c["page_id"]).split("//", 1)[-1]
-        new += _add_if_missing(s, Alert, {
-            "id": "alr_" + hashlib.sha1(c["id"].encode()).hexdigest()[:12], "created_at": c["detected_at"],
-            "entity_id": c["entity_id"], "kind": "page_change", "severity": sev,
-            "title": f"{c.get('summary') or ', '.join(sorted(kinds))} on {where}",
-            "ref": {"finding_id": None, "change_id": c["id"]}, "status": "new", "mock": bool(c.get("mock"))})
     return new
 
 
@@ -139,11 +127,7 @@ def run_scan():
         changes = list(m_changes)
         if MOCK_HISTORY:
             real_change_entities = {c.get("entity_id") for c in m_changes}
-            monitor_ids = {c["id"] for c in m_changes}
             for old in s.scalars(select(Change).where(Change.id.like("chg_mock_%"), Change.entity_id.in_(real_change_entities))):
-                for a in s.scalars(select(Alert).where(Alert.kind == "page_change", Alert.entity_id == old.entity_id)):
-                    if a.ref.get("change_id") == old.id and old.id not in monitor_ids:
-                        s.delete(a)
                 s.delete(old)
             mp, ms, mc = mockgen.mock_pages(pages, lambda pid: _latest_snapshot(s, pid))
             keep = {c["page_id"] for c in mc if c["entity_id"] not in real_change_entities}
@@ -186,7 +170,7 @@ def run_scan():
         for a in s.scalars(select(Alert).where(Alert.kind == "finding")):
             if s.get(Finding, a.ref.get("finding_id")) is None:
                 s.delete(a)
-        alerts_new = _alerts_from(s, all_findings, [c for c in changes if c.get("entity_id") in names], names)
+        alerts_new = _alerts_from(s, all_findings, names)
         _social_handles(s)
         s.commit()
         return {"items_new": items_new, "findings_new": findings_new, "alerts_new": alerts_new}

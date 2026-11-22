@@ -2,6 +2,8 @@
 import difflib
 import hashlib
 
+from monitor.extract import STYLE_FIELDS
+
 MAX_LINES = 50
 
 
@@ -9,13 +11,41 @@ def change_id(page_id, to_snapshot):
     return "chg_" + hashlib.sha1(f"{page_id}|{to_snapshot}".encode()).hexdigest()[:12]
 
 
-def _short(t, n=80):
-    return t if len(t) <= n else t[: n - 1] + "…"
+def measured(a, b):
+    """Legibility measurements of the matched block, only when they differ (absent on snapshots without them)."""
+    out = {}
+    for name, field in (("contrast", "contrast_ratio"), ("rel_size", "rel_font_size")):
+        if a.get(field) != b.get(field):
+            out[name + "_before"], out[name + "_after"] = a.get(field), b.get(field)
+    return out
+
+
+def style_changes(prev, cur):
+    """Blocks matched by normalized text (n-th occurrence to n-th occurrence) per viewport; viewports missing in prev are skipped."""
+    out = []
+    for vp, blocks in cur.items():
+        fold = int(vp.split("x")[1])
+        before = {}
+        for b in prev.get(vp) or []:
+            before.setdefault(b["text"], []).append(b)
+        seen = {}
+        for b in blocks:
+            i = seen[b["text"]] = seen.get(b["text"], -1) + 1
+            olds = before.get(b["text"]) or []
+            if i >= len(olds):
+                continue
+            a = olds[i]
+            for f in STYLE_FIELDS + ("above_fold",):
+                va, vb = (a["y"] < fold, b["y"] < fold) if f == "above_fold" else (a[f], b[f])
+                if va != vb:
+                    out.append({"text": b["text"][:120], "viewport": vp, "field": f, "before": va, "after": vb, **measured(a, b)})
+    return out
 
 
 def compare(prev, cur, detected_at, mock=False):
-    """Return PageChange dict or None when text_sha256 is equal."""
-    if prev["text_sha256"] == cur["text_sha256"]:
+    """Return PageChange dict or None when text_sha256 is equal and style_sha256 is equal or unknown (no blocks)."""
+    styled = bool(prev.get("style_sha256") and cur.get("style_sha256"))
+    if prev["text_sha256"] == cur["text_sha256"] and (not styled or prev["style_sha256"] == cur["style_sha256"]):
         return None
     a, b = prev["text"].splitlines(), cur["text"].splitlines()
     sm = difflib.SequenceMatcher(None, a, b, autojunk=False)
@@ -25,36 +55,9 @@ def compare(prev, cur, detected_at, mock=False):
             removed += a[i1:i2]
         if op in ("replace", "insert"):
             added += b[j1:j2]
-    rp, rc = prev["risk_warning"], cur["risk_warning"]
-    kinds, parts = [], []
-    removed_page = not cur["text"] and cur.get("http_status") in (404, 410)
-    if removed_page:
-        kinds.append("page_removed")
-        parts.append(f"Page removed (HTTP {cur.get('http_status')})")
-    else:
-        kinds.append("text")
-    if rp["present"] and not rc["present"] and not removed_page:
-        kinds.append("risk_warning_removed")
-        parts.append("Risk warning removed")
-    elif rc["present"] and not rp["present"]:
-        kinds.append("risk_warning_changed")
-        parts.append("Risk warning added")
-    elif rp["present"] and rc["present"] and (rp["text"] != rc["text"] or rp["cfd_loss_pct"] != rc["cfd_loss_pct"]):
-        kinds.append("risk_warning_changed")
-        if rp["cfd_loss_pct"] != rc["cfd_loss_pct"]:
-            parts.append(f"CFD loss percentage {rp['cfd_loss_pct']}% -> {rc['cfd_loss_pct']}%")
-        if rp["text"] != rc["text"]:
-            la, lb = len(rp["text"] or ""), len(rc["text"] or "")
-            verb = "shortened" if lb < la * 0.8 else "extended" if lb > la * 1.2 else "changed"
-            parts.append(f"Risk warning text {verb} ({la} -> {lb} chars)")
-    if rp.get("above_fold") is True and rc.get("above_fold") is False:
-        parts.append("Risk warning moved below the fold")
-    if not removed_page:
-        txt = f"{len(added)} lines added, {len(removed)} removed"
-        if added and len(parts) == 0:
-            txt += f": \"{_short(added[0])}\""
-        parts.append(txt)
+    styles = style_changes(prev["blocks"], cur["blocks"]) if styled else []
     return {"id": change_id(cur["page_id"], cur["id"]), "page_id": cur["page_id"], "entity_id": cur["entity_id"],
             "from_snapshot": prev["id"], "to_snapshot": cur["id"], "detected_at": detected_at,
-            "kinds": kinds, "summary": "; ".join(parts),
-            "added_lines": added[:MAX_LINES], "removed_lines": removed[:MAX_LINES], "mock": mock}
+            "summary": f"{len(added)} lines added, {len(removed)} removed, {len(styles)} style changes",
+            "added_lines": added[:MAX_LINES], "removed_lines": removed[:MAX_LINES], "style_changes": styles[:MAX_LINES],
+            "assessment": None, "mock": mock}

@@ -3,7 +3,7 @@
 // wyniki klasyfikatora (mock-v0) i część historii stron to atrapy oznaczone `mock: true`.
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Express } from 'express';
+import express, { type Express } from 'express';
 import type {
   EntityAlert,
   EntityFinding,
@@ -12,6 +12,7 @@ import type {
   EntityOverview,
   KnfEntity,
   KnfEntityDetail,
+  LegibilityStatus,
   MonitoredPage,
   PageChange,
   PageSnapshot,
@@ -103,6 +104,9 @@ export function registerEntityRoutes(app: Express, path = join(process.cwd(), 'm
     res.json(withFindings(it));
   });
 
+  app.use('/api/screens', express.static(join(process.cwd(), '..', 'data', 'monitor', 'screens')));
+  app.use('/api/media', express.static(join(process.cwd(), '..', 'data', 'media')));
+
   app.get('/api/changes/:id', (req, res) => {
     const c = s.changes.find((x) => x.id === req.params.id);
     if (!c) return res.status(404).json({ error: 'Nie znaleziono zmiany' });
@@ -132,6 +136,10 @@ export function registerEntityRoutes(app: Express, path = join(process.cwd(), 'm
       },
       findingsByDay: s.findingsByDay,
       itemsByPlatform: s.itemsByPlatform,
+      legibility: s.items.reduce(
+        (acc, i) => (i.legibilityCheck ? { ...acc, [i.legibilityCheck.status]: acc[i.legibilityCheck.status] + 1 } : acc),
+        { ok: 0, problem: 0, no_disclosure: 0 } as Record<LegibilityStatus, number>,
+      ),
       heatmap: withData.map((e) => ({
         entityId: e.id,
         name: e.name,

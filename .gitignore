@@ -12,3 +12,4 @@ scrapers/poc/results/
 !.env.example
 /models/
 app/frontend/
+data/monitor/screens/

@@ -90,5 +90,106 @@
   "1169833278583569: ERROR: [facebook:ads] 1169833278583569: Unable to get verification cookie: HTTP Error 429: Too Many Requests (caused by <HTTPError 429: Too Many Reque",
   "1750096442326783: ERROR: [facebook:ads] 1750096442326783: Unable to get verification cookie: HTTP Error 429: Too Many Requests (caused by <HTTPError 429: Too Many Reque",
   "4339262876354123: ERROR: [facebook:ads] 4339262876354123: Unable to get verification cookie: HTTP Error 429: Too Many Requests (caused by <HTTPError 429: Too Many Reque"
- ]
+ ],
+ "media": {
+  "XTB": {
+   "scrolls_done": 6,
+   "media_found": 97,
+   "media_saved": 97,
+   "login_wall": true,
+   "body_chars": 49824,
+   "returned": 97,
+   "attached": 0
+  },
+  "XTB kod": {
+   "scrolls_done": 4,
+   "media_found": 50,
+   "media_saved": 50,
+   "login_wall": true,
+   "body_chars": 25137,
+   "returned": 50,
+   "attached": 30
+  },
+  "XTB polecenie": {
+   "scrolls_done": 1,
+   "media_found": 0,
+   "media_saved": 0,
+   "login_wall": true,
+   "body_chars": 815,
+   "returned": 0,
+   "attached": 0
+  },
+  "eToro": {
+   "scrolls_done": 6,
+   "media_found": 122,
+   "media_saved": 122,
+   "login_wall": true,
+   "body_chars": 138408,
+   "returned": 122,
+   "attached": 1
+  },
+  "eToro kod": {
+   "scrolls_done": 1,
+   "media_found": 14,
+   "media_saved": 14,
+   "login_wall": true,
+   "body_chars": 25606,
+   "returned": 14,
+   "attached": 4
+  },
+  "Plus500": {
+   "scrolls_done": 6,
+   "media_found": 107,
+   "media_saved": 107,
+   "login_wall": true,
+   "body_chars": 148607,
+   "returned": 107,
+   "attached": 6
+  },
+  "Trading 212": {
+   "scrolls_done": 6,
+   "media_found": 104,
+   "media_saved": 104,
+   "login_wall": true,
+   "body_chars": 71126,
+   "returned": 104,
+   "attached": 46
+  },
+  "Trading 212 polecenie": {
+   "scrolls_done": 1,
+   "media_found": 0,
+   "media_saved": 0,
+   "login_wall": true,
+   "body_chars": 815,
+   "returned": 0,
+   "attached": 0
+  },
+  "Trading 212 kod": {
+   "scrolls_done": 1,
+   "media_found": 1,
+   "media_saved": 1,
+   "login_wall": true,
+   "body_chars": 1028,
+   "returned": 1,
+   "attached": 0
+  },
+  "Revolut inwestowanie": {
+   "scrolls_done": 4,
+   "media_found": 53,
+   "media_saved": 53,
+   "login_wall": true,
+   "body_chars": 25717,
+   "returned": 53,
+   "attached": 43
+  },
+  "Revolut akcje": {
+   "scrolls_done": 6,
+   "media_found": 95,
+   "media_saved": 95,
+   "login_wall": true,
+   "body_chars": 34837,
+   "returned": 95,
+   "attached": 13
+  }
+ }
 }

@@ -69,7 +69,7 @@ KNOWN_GAPS = """\
 - Opisy z yt-dlp i z biblioteki reklam Meta bywają ucięte (kończą się „…”).
 - Meta: {meta_skipped} reklam pominięto, bo Meta je usunęła lub wyłączyła za naruszenie Standardów dotyczących reklam; treść reklamy nie jest dostępna, a Meta nie podaje konkretnej reguły. Notka i reklamodawca są w `raw/meta_ads_entities_v1.jsonl` i `raw/meta_ads_sample_v1.jsonl` (`source_meta.notice`).
 - `raw/`: surowe wyjście kolektorów (`data/samples/*.jsonl`), w tym filmy YouTube/TikTok bez transkryptu i usunięte reklamy Meta. Pola `source_meta.firm`, `firms_mentioned`, `advertiser_is_firm`, `lang_hint_pl` w plikach `*_entities_v1`.
-- Obrazy, audio i segmenty transkryptów z czasami nie są w paczce.
+- Audio i segmenty transkryptów z czasami nie są w paczce. Obrazy reklam też nie: w paczce są tylko nazwy miniatur w `media[].key` (pliki leżą w repozytorium, w `data/media/`), a oryginały zostają u nas. Rekordy bez obrazu nie mają pomiarów czytelności: miniatury mamy tylko dla reklam Google i Meta ({media_records} rekordów, {media_images} obrazów).
 - YouTube i TikTok: w paczce są tylko filmy z transkryptem. Pominięte filmy bez transkryptu: {no_transcript}.
 """
 
@@ -122,13 +122,18 @@ def main():
             for rec in records:
                 f.write(json.dumps(rec, ensure_ascii=False) + "\n")
         keys = collections.Counter(k for r in records for k in r["text"])
+        status = collections.Counter(r["source_meta"]["legibility_check"]["status"] for r in records
+                                     if r["source_meta"].get("legibility_check"))
         stats[name] = {"records": len(records), "skipped_empty_text": skipped, "duplicates": dup,
                        "text_keys": dict(keys), "source": records[0]["source"] if records else None,
-                       "non_pl": sum(1 for r in records if r["source_meta"].get("lang_hint_pl") is False)}
+                       "non_pl": sum(1 for r in records if r["source_meta"].get("lang_hint_pl") is False),
+                       "with_media": sum(1 for r in records if r["media"]), "images": sum(len(r["media"]) for r in records),
+                       "legibility": dict(status)}
         skipped_total[name] = skipped
         if name == "youtube":
             example = next((r for r in records if "transcript" in r["text"]), records[0])
-        print(f"{name}: {len(records)} records, skipped empty text {skipped}, duplicates {dup}, text keys {dict(keys)}")
+        print(f"{name}: {len(records)} records, skipped empty text {skipped}, duplicates {dup}, text keys {dict(keys)}, "
+              f"media {stats[name]['with_media']} records / {stats[name]['images']} images, legibility {dict(status)}")
 
     rows = "\n".join(
         f"| `{n}/records.jsonl` | `{s['source']}` | {s['records']} | {', '.join(f'`{k}` ({c})' for k, c in s['text_keys'].items())} |"
@@ -156,6 +161,7 @@ Pola obowiązkowe:
 - `query_keywords`: zapytanie albo domena, które znalazły rekord, np. `["forex"]`, `["xtb.com"]`.
 - `content_keywords`: słowa kluczowe treści, na razie `[]`.
 - `text`: obiekt `{{nazwa_sekcji: tekst}}`. Cała treść sekcji to jeden string.
+- `media`: lista obrazów reklamy (`[]`, gdy ich nie ma): `{{"type": "image", "key": "<plik>.webp", "width", "height", "ocr", "source": "creative|thumbnail"}}`. `key` to miniatura w `data/media/` (webp, dłuższy bok ≤ 600 px).
 
 Klucze `text`:
 
@@ -165,6 +171,12 @@ Klucze `text`:
 
 Pola opcjonalne: `sponsor`, `links`, `content_type` (`video` / `ad`) i `source_meta` (metadane platformy, np. `video_id`, `statistics`, `advertiser_id`, `ocr.mean_confidence`; `collector` to kolektor, który pobrał rekord).
 
+Rekordy z obrazem mają w `source_meta` pomiary czytelności oznaczeń (deterministyczne, bez LLM, próg i reguła w `preprocessing/legibility.py`):
+
+- `ocr_lines`: po jednej pozycji na linię OCR: `{{text, box, box_height_px, rel_font_size, contrast_ratio, is_disclosure}}`. `rel_font_size` liczony względem dominującej wysokości linii na tym obrazie, `contrast_ratio` to kontrast WCAG tekstu do tła w ramce linii.
+- `legibility`: `{{disclosure_in_text, disclosure_on_image, image_width, image_height, dominant_line_px, lines, disclosure_lines}}`.
+- `legibility_check`: `{{status: "ok|problem|no_disclosure", failures: [{{rule, metric, value, threshold, text}}]}}`.
+
 Przykład (YouTube, stringi skrócone tu do 120 znaków):
 
 ```json
@@ -173,7 +185,7 @@ Przykład (YouTube, stringi skrócone tu do 120 znaków):
 
 ## Znane braki
 
-{KNOWN_GAPS.format(meta_skipped=stats['meta_ads']['skipped_empty_text'], non_pl=stats['google_ads']['non_pl'], google=stats['google_ads']['records'], skipped=skipped_str, no_transcript=', '.join(f'{n} {len(u)}' for n, u in no_transcript.items() if u) or '0')}"""
+{KNOWN_GAPS.format(meta_skipped=stats['meta_ads']['skipped_empty_text'], non_pl=stats['google_ads']['non_pl'], google=stats['google_ads']['records'], skipped=skipped_str, no_transcript=', '.join(f'{n} {len(u)}' for n, u in no_transcript.items() if u) or '0', media_records=sum(s['with_media'] for s in stats.values()), media_images=sum(s['images'] for s in stats.values()))}"""
     (OUT / "README.md").write_text(readme, encoding="utf-8", newline="\n")
 
     with zipfile.ZipFile(ZIP, "w", zipfile.ZIP_DEFLATED) as z:

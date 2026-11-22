@@ -10,7 +10,7 @@ import re
 from datetime import datetime, timedelta
 
 from monitor.diff import compare
-from monitor.extract import WARNING_RE, risk_warning, sha256
+from monitor.extract import WARNING_RE, page_legibility, risk_warning, sha256, style_blocks, style_sha256
 from monitor.run import CHANGES, PAGES, SNAPSHOTS, append_jsonl, read_jsonl
 
 PROMO_RE = re.compile(r"bonus|0\s?% prowizji|bez prowizji|oprocentowan|odsetk|darmow|cashback|nagrod|promocj|zarabiaj|free", re.I)
@@ -73,6 +73,28 @@ SCENARIOS = [
     (loss_77, ["plus500-forex", "plus500-indices", "trading212-help-cfd"]),
     (promo_added, ["trading212-help-cfd", "trading212-help-fees", "trading212-help-cfd-loss"]),
 ]
+
+
+# Style-only demo changes: (page_id candidates, regex of the restyled line, style before, style after).
+# Blocks are synthetic (one per line); only the first matching line is restyled.
+STYLE_DEMO = [
+    (["xtb-commodities", "xtb-interest", "xtb-instrument-spec"], WARNING_RE,
+     {"font_size_px": 14, "color": "#1a1a1a"}, {"font_size_px": 9, "color": "#b0b0b0"}),
+    (["revolut-etfs", "revolut-crypto", "revolut-legal"], PROMO_RE,
+     {"font_weight": 400, "background_color": "#ffffff"}, {"font_weight": 700, "background_color": "#ffe600"}),
+]
+
+
+def styled_snapshot(base, fetched_at, rx, patch):
+    lines = base["text"].splitlines()
+    hit = next(i for i, l in enumerate(lines) if rx.search(l))
+    s = mock_snapshot(base, lines, fetched_at)
+    s["blocks"] = {"1366x768": style_blocks([{"text": l, "font_size_px": 16, "font_weight": 400, "color": "#1a1a1a",
+                                              "background_color": "#ffffff", "opacity": 1, "x": 0, "y": 40 * i, "w": 1366,
+                                              "h": 32, **(patch if i == hit else {})} for i, l in enumerate(lines)])}
+    s["style_sha256"] = style_sha256(s["blocks"])
+    s["legibility"], s["legibility_check"] = page_legibility(s["blocks"])
+    return s
 
 
 T212_WARN = ("Kontrakty CFD są złożonymi instrumentami i wiążą się z wysokim ryzykiem szybkiej utraty środków pieniężnych "
@@ -157,6 +179,18 @@ def main():
             used.add(pid)
             print(f"{fn.__name__:32} {pid}: " + " | ".join(c["summary"] for c in new_changes if c["page_id"] == pid))
             break
+    for candidates, rx, before, after in STYLE_DEMO:
+        pid = next((p for p in candidates if p not in used and p in first_real and rx.search(first_real[p]["text"])), None)
+        if not pid:
+            continue
+        base = first_real[pid]
+        a = styled_snapshot(base, shift(base["fetched_at"], 5, 3), rx, before)
+        b = styled_snapshot(base, shift(base["fetched_at"], 2, 3), rx, after)
+        c = compare(a, b, b["fetched_at"], mock=True)
+        new_snaps += [a, b]
+        new_changes.append(c)
+        used.add(pid)
+        print(f"{'style_demo':32} {pid}: {c['summary']}")
     pages = {p["page_id"]: p for p in json.loads(PAGES.read_text(encoding="utf-8"))}
     t_ref = max(s["fetched_at"] for s in snaps if not s.get("mock"))
     bs, bc = seed_blocked(snaps, pages, t_ref)

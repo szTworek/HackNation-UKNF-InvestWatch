@@ -6,7 +6,7 @@ import { api } from '../api/client';
 import type { SourcePlatform } from '../api/entityTypes';
 import { useEntityOverview, useOverview, useTimeseries } from '../api/hooks';
 import type { Timeseries, TimeseriesGroupBy } from '../api/types';
-import { ChangeKindBadges, MockBadge, shortUrl } from '../components/EntityParts';
+import { MockBadge, shortUrl } from '../components/EntityParts';
 import { KpiCard } from '../components/KpiCard';
 import { ErrorState, Loading } from '../components/PageState';
 import { Pipeline } from '../components/Pipeline';
@@ -101,6 +101,25 @@ export function Statistics() {
                     <Loading />
                   )}
                 </Suspense>
+                {e && (
+                  <>
+                    <Title order={5} mt="lg" mb={2}>
+                      Czytelność oznaczeń
+                    </Title>
+                    <Text size="xs" c="dimmed" mb="sm">
+                      Rekordy z obrazem reklamy, stałe progi (R04, R05, R08)
+                    </Text>
+                    <Suspense fallback={<Loading />}>
+                      <DistributionBars
+                        data={[
+                          { label: 'Oznaczenie czytelne', value: e.legibility.ok },
+                          { label: 'Oznaczenie słabo widoczne', value: e.legibility.problem },
+                          { label: 'Brak oznaczenia', value: e.legibility.no_disclosure },
+                        ]}
+                      />
+                    </Suspense>
+                  </>
+                )}
               </Paper>
             </Grid.Col>
             <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>
@@ -147,7 +166,6 @@ export function Statistics() {
                         <Text size="sm" lineClamp={2}>
                           {c.summary}
                         </Text>
-                        <ChangeKindBadges kinds={c.kinds} />
                       </div>
                     ))}
                   </Stack>

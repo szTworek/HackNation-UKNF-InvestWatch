@@ -233,6 +233,39 @@ def meta(scrolls="6"):
     write("meta_ads", docs, notes)
 
 
+def meta_media(scrolls="6", only=None):
+    """Re-run the Ad Library queries only to attach creative images / video posters / card screenshots (image_refs)
+    to ads already collected. `only`: comma-separated queries, to resume after a stop."""
+    from fb_ads.ad_library_web import collect
+    seen = existing("meta_ads", lambda d: d["source_meta"]["library_id"])
+    media_dir = POC_DIR / "results" / "fb_ads.ad_library_web" / "images"
+    notes = {}
+    for qs in META_QUERIES.values():
+        for q in qs:
+            if only and q not in only.split(","):
+                continue
+            n = {}
+            try:
+                page = retry(lambda: list(collect(q, n, scrolls=int(scrolls), media_dir=media_dir)))
+            except Exception as e:
+                notes[q] = {"error": str(e)[:200]}
+                continue
+            if n.get("body_chars", 0) < 500:
+                notes[q] = {**n, "error": "empty page (block?)"}
+                print(q, notes[q], flush=True)
+                continue
+            attached = 0
+            for d in page:
+                old = seen.get(d["source_meta"]["ad_id"])
+                if old and d["source_meta"].get("image_refs") and not old["source_meta"].get("image_refs"):
+                    old["source_meta"].update(image_refs=d["source_meta"]["image_refs"], image_source=d["source_meta"]["image_source"])
+                    attached += 1
+            notes[q] = {**n, "returned": len(page), "attached": attached}
+            print(q, notes[q], flush=True)
+            write("meta_ads", list(seen.values()), {"media": notes})
+            pause(4, 6)
+
+
 def meta_video(limit="40"):
     """Full ad text for video ads via fb_ads.ytdlp_by_id (replaces ad_body)."""
     from fb_ads.ytdlp_by_id import collect
@@ -256,4 +289,4 @@ def meta_video(limit="40"):
 
 
 if __name__ == "__main__":
-    {"meta": meta, "meta_video": meta_video, "bing": bing, "youtube": youtube, "tiktok": tiktok}[sys.argv[1]](*sys.argv[2:])
+    {"meta": meta, "meta_media": meta_media, "meta_video": meta_video, "bing": bing, "youtube": youtube, "tiktok": tiktok}[sys.argv[1]](*sys.argv[2:])

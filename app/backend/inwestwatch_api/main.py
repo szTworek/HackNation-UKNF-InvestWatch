@@ -5,11 +5,12 @@ from datetime import datetime, timedelta, timezone
 from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from .classifier import RULES
-from .config import SCAN_INTERVAL_MIN, SCAN_ON_STARTUP
+from .config import DATA, MONITOR_DIR, SCAN_INTERVAL_MIN, SCAN_ON_STARTUP
 from .db import Alert, Change, Entity, Finding, Item, ItemEntity, Page, SessionLocal, Snapshot, init_db
 from .scan import run_scan
 
@@ -31,6 +32,8 @@ async def lifespan(_app):
 
 app = FastAPI(title="InvestWatch API", version="0", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+app.mount("/api/screens", StaticFiles(directory=MONITOR_DIR / "screens", check_dir=False), name="screens")
+app.mount("/api/media", StaticFiles(directory=DATA / "media", check_dir=False), name="media")
 
 
 def db():
@@ -123,7 +126,7 @@ def entity_pages(eid: str, s: Session = Depends(db)):
         snap = s.scalars(select(Snapshot).where(Snapshot.page_id == p.page_id).order_by(Snapshot.fetched_at.desc())).first()
         changes = s.scalars(select(Change).where(Change.page_id == p.page_id).order_by(Change.detected_at.desc())).all()
         out.append({"page_id": p.page_id, "url": p.url, "label": p.label, "mock": p.mock,
-                    "last_snapshot": row(snap) if snap else None, "changes": [row(c) for c in changes]})
+                    "last_snapshot": row(snap, ("blocks",)) if snap else None, "changes": [row(c) for c in changes]})
     return out
 
 

@@ -11,7 +11,7 @@ Realne dane z kolektorów PoC (YouTube, TikTok, reklamy Google, Meta i Microsoft
 | `google_ads/records.jsonl` | `google_ads_transparency` | 440 | `ocr` (426), `ad_body` (14) |
 | `meta_ads/records.jsonl` | `meta_ad_library` | 234 | `ad_body` (234), `title` (118), `link_description` (106), `cta` (133) |
 | `bing_ads/records.jsonl` | `microsoft_ad_library` | 300 | `title` (300), `ad_body` (252) |
-| `firm_web/records.jsonl` | `firm_website` | 11 | `page` (11), `risk_disclaimer` (11) |
+| `firm_web/records.jsonl` | `firm_website` | 9 | `page` (9), `risk_disclaimer` (9) |
 
 ## Format rekordu
 
@@ -25,6 +25,7 @@ Pola obowiązkowe:
 - `query_keywords`: zapytanie albo domena, które znalazły rekord, np. `["forex"]`, `["xtb.com"]`.
 - `content_keywords`: słowa kluczowe treści, na razie `[]`.
 - `text`: obiekt `{nazwa_sekcji: tekst}`. Cała treść sekcji to jeden string.
+- `media`: lista obrazów reklamy (`[]`, gdy ich nie ma): `{"type": "image", "key": "<plik>.webp", "width", "height", "ocr", "source": "creative|thumbnail"}`. `key` to miniatura w `data/media/` (webp, dłuższy bok ≤ 600 px).
 
 Klucze `text`:
 
@@ -33,6 +34,12 @@ Klucze `text`:
 - reklamy: `title`, `ad_body`, `cta`, `link_description`, a dla reklam obrazkowych `ocr`.
 
 Pola opcjonalne: `sponsor`, `links`, `content_type` (`video` / `ad`) i `source_meta` (metadane platformy, np. `video_id`, `statistics`, `advertiser_id`, `ocr.mean_confidence`; `collector` to kolektor, który pobrał rekord).
+
+Rekordy z obrazem mają w `source_meta` pomiary czytelności oznaczeń (deterministyczne, bez LLM, próg i reguła w `preprocessing/legibility.py`):
+
+- `ocr_lines`: po jednej pozycji na linię OCR: `{text, box, box_height_px, rel_font_size, contrast_ratio, is_disclosure}`. `rel_font_size` liczony względem dominującej wysokości linii na tym obrazie, `contrast_ratio` to kontrast WCAG tekstu do tła w ramce linii.
+- `legibility`: `{disclosure_in_text, disclosure_on_image, image_width, image_height, dominant_line_px, lines, disclosure_lines}`.
+- `legibility_check`: `{status: "ok|problem|no_disclosure", failures: [{rule, metric, value, threshold, text}]}`.
 
 Przykład (YouTube, stringi skrócone tu do 120 znaków):
 
@@ -52,6 +59,7 @@ Przykład (YouTube, stringi skrócone tu do 120 znaków):
     "description": "📢Zapraszam na Telegram - https://t.me/+3E835iPYZf0zNjg0\n📩Kontakt: bunkierinwestora@gmail.com\n\n#inwestycje #akcje #xtb #d…",
     "transcript": "Ile musisz mieć akcję XTB, żeby zarabiać 1000 zł miesięcznie z dividend? Wyobraź sobie, że co miesiąc pada tobie 1000 zł…"
   },
+  "media": [],
   "sponsor": null,
   "links": [],
   "content_type": "video",
@@ -103,5 +111,5 @@ Przykład (YouTube, stringi skrócone tu do 120 znaków):
 - Opisy z yt-dlp i z biblioteki reklam Meta bywają ucięte (kończą się „…”).
 - Meta: 132 reklam pominięto, bo Meta je usunęła lub wyłączyła za naruszenie Standardów dotyczących reklam; treść reklamy nie jest dostępna, a Meta nie podaje konkretnej reguły. Notka i reklamodawca są w `raw/meta_ads_entities_v1.jsonl` i `raw/meta_ads_sample_v1.jsonl` (`source_meta.notice`).
 - `raw/`: surowe wyjście kolektorów (`data/samples/*.jsonl`), w tym filmy YouTube/TikTok bez transkryptu i usunięte reklamy Meta. Pola `source_meta.firm`, `firms_mentioned`, `advertiser_is_firm`, `lang_hint_pl` w plikach `*_entities_v1`.
-- Obrazy, audio i segmenty transkryptów z czasami nie są w paczce.
+- Audio i segmenty transkryptów z czasami nie są w paczce. Obrazy reklam też nie: w paczce są tylko nazwy miniatur w `media[].key` (pliki leżą w repozytorium, w `data/media/`), a oryginały zostają u nas. Rekordy bez obrazu nie mają pomiarów czytelności: miniatury mamy tylko dla reklam Google i Meta (644 rekordów, 644 obrazów).
 - YouTube i TikTok: w paczce są tylko filmy z transkryptem. Pominięte filmy bez transkryptu: youtube 297, tiktok 5.

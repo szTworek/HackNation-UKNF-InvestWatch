@@ -40,7 +40,7 @@ with TestClient(app) as c:
     check(c.get("/api/items/itm_missing").status_code == 404, "GET /api/items/missing -> 404")
     chg = next(ch for p in c.get("/api/entities/xtb/pages").json() for ch in p["changes"])
     d = c.get(f"/api/changes/{chg['id']}").json()
-    check(d["from"] and d["to"], f"GET /api/changes/{chg['id']} kinds={d['kinds']}")
+    check(d["from"] and d["to"], f"GET /api/changes/{chg['id']} summary={d['summary']!r}")
     alerts = c.get("/api/alerts", params={"status": "new"}).json()
     check(len(alerts) > 0, f"GET /api/alerts?status=new n={len(alerts)}")
     check(all(a["entity_id"] == "etoro" for a in c.get("/api/alerts", params={"entity_id": "etoro", "severity": "high"}).json()),

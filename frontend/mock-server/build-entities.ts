@@ -15,6 +15,7 @@ import type {
   KnfCategory,
   KnfEntity,
   KnfEntityDetail,
+  LegibilityCheck,
   PageChange,
   PageSnapshot,
   RegistryEntry,
@@ -97,17 +98,16 @@ const PLATFORM_PL: Record<string, string> = {
   website: 'Strona WWW',
 };
 
+function legibilityCheck(raw: Raw | null | undefined): LegibilityCheck | null {
+  if (!raw) return null;
+  return {
+    status: raw.status,
+    failures: (raw.failures as Raw[]).map((f) => ({ rule: f.rule, metric: f.metric, value: f.value, threshold: f.threshold, text: f.text })),
+  };
+}
+
 function summaryPl(s: string): string {
-  return s
-    .replace(/CFD loss percentage (\d+)% -> (\d+)%/g, 'odsetek strat na CFD $1% → $2%')
-    .replace(/Risk warning text shortened \((\d+) -> (\d+) chars\)/g, 'skrócono tekst ostrzeżenia ($1 → $2 znaków)')
-    .replace(/Risk warning text changed \((\d+) -> (\d+) chars\)/g, 'zmieniono tekst ostrzeżenia ($1 → $2 znaków)')
-    .replace(/Risk warning removed( from top of page)?/g, 'usunięto ostrzeżenie o ryzyku')
-    .replace(/Risk warning added/g, 'dodano ostrzeżenie o ryzyku')
-    .replace(/Advertised interest rate ([\d,]+%) -> ([\d,]+%)/g, 'reklamowane oprocentowanie $1 → $2')
-    .replace(/(\d+) lines? added, (\d+) removed/g, '+$1 / −$2 linii')
-    .replace(/New line:/g, 'nowa linia:')
-    .replace(/^./, (c) => c.toUpperCase());
+  return s.replace(/(\d+) lines? added, (\d+) removed(?:, (\d+) style changes)?/g, (_m, a, r, st) => `+${a} / −${r} linii${st ? `, ${st} zmian stylu` : ''}`);
 }
 
 const LIST_CATEGORY: Record<string, KnfCategory> = {
@@ -201,6 +201,27 @@ function main(): void {
     publishedAt: i.published_at,
     fetchedAt: i.fetched_at,
     text: i.text,
+    media: i.media ?? [],
+    ocrLines: ((i.ocr_lines ?? []) as Raw[]).map((l) => ({
+      text: l.text,
+      box: l.box,
+      boxHeightPx: l.box_height_px,
+      relFontSize: l.rel_font_size,
+      contrastRatio: l.contrast_ratio ?? null,
+      isDisclosure: l.is_disclosure,
+    })),
+    legibility: i.legibility
+      ? {
+          disclosureInText: i.legibility.disclosure_in_text,
+          disclosureOnImage: i.legibility.disclosure_on_image ?? null,
+          imageWidth: i.legibility.image_width ?? null,
+          imageHeight: i.legibility.image_height ?? null,
+          dominantLinePx: i.legibility.dominant_line_px ?? null,
+          lines: i.legibility.lines ?? null,
+          disclosureLines: i.legibility.disclosure_lines ?? null,
+        }
+      : null,
+    legibilityCheck: legibilityCheck(i.legibility_check),
     mock: i.mock,
   }));
   const itemById = new Map(items.map((i) => [i.id, i]));
@@ -226,6 +247,27 @@ function main(): void {
       text: s.risk_warning.text,
       aboveFold: s.risk_warning.above_fold,
     },
+    screenshots: s.screenshots ?? null,
+    legibility: s.legibility
+      ? Object.fromEntries(
+          Object.entries(s.legibility as Record<string, Raw>).map(([vp, l]) => [
+            vp,
+            {
+              dominantFontPx: l.dominant_font_px,
+              disclosureBlocks: ((l.disclosure_blocks ?? []) as Raw[]).map((b) => ({
+                text: b.text,
+                fontSizePx: b.font_size_px,
+                relFontSize: b.rel_font_size,
+                contrastRatio: b.contrast_ratio ?? null,
+                contrastSource: b.contrast_source,
+                y: b.y,
+                aboveFold: b.above_fold,
+              })),
+            },
+          ]),
+        )
+      : null,
+    legibilityCheck: legibilityCheck(s.legibility_check),
     mock: s.mock,
   }));
 
@@ -236,28 +278,32 @@ function main(): void {
     fromSnapshot: c.from_snapshot,
     toSnapshot: c.to_snapshot,
     detectedAt: c.detected_at,
-    kinds: c.kinds,
     summary: summaryPl(c.summary),
     addedLines: c.added_lines,
     removedLines: c.removed_lines,
+    styleChanges: ((c.style_changes ?? []) as Raw[]).map((x) => ({
+      text: x.text,
+      viewport: x.viewport,
+      field: x.field,
+      before: x.before,
+      after: x.after,
+      contrastBefore: x.contrast_before ?? null,
+      contrastAfter: x.contrast_after ?? null,
+      relSizeBefore: x.rel_size_before ?? null,
+      relSizeAfter: x.rel_size_after ?? null,
+    })),
+    assessment: c.assessment ?? null,
     mock: c.mock,
   }));
-  const changeById = new Map(changes.map((c) => [c.id, c]));
   const findingById = new Map(findings.map((f) => [f.id, f]));
 
   const alerts: EntityAlert[] = (fx.alerts as Raw[]).map((a) => {
     let title = a.title as string;
-    let mock = true;
     if (a.ref.finding_id) {
       const f = findingById.get(a.ref.finding_id);
       const it = f && itemById.get(f.itemId);
       const h = f?.ruleHits[0];
       if (f && it && h) title = `${/^R\d/.test(h.ruleId) ? `${h.ruleId} ` : ''}${h.label} — ${it.author} (${PLATFORM_PL[it.platform] ?? it.platform})`;
-    } else if (a.ref.change_id) {
-      const c = changeById.get(a.ref.change_id);
-      const page = c && pages.find((p) => p.pageId === c.pageId);
-      if (c && page) title = `${c.summary} — ${page.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}`;
-      mock = c?.mock ?? true;
     }
     return {
       id: a.id,
@@ -268,7 +314,7 @@ function main(): void {
       title,
       ref: { findingId: a.ref.finding_id, changeId: a.ref.change_id, itemId: findingById.get(a.ref.finding_id)?.itemId ?? null },
       status: a.status,
-      mock,
+      mock: true,
     };
   });
 
