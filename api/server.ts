@@ -12,7 +12,7 @@ import type {
   ContentType,
   Finding,
   FindingSummary,
-  HistoryRow,
+  HistoryPage, HistoryRow,
   FlagKey,
   IndicatorFindings,
   Instrument,
@@ -475,15 +475,21 @@ app.get('/api/stats/timeseries', (req, res) => {
   res.json(body);
 });
 
+// Wpisy importu i klasyfikacji nie są decyzjami analityków.
+const AUTOMATED_USERS = new Set(['system', 'model']);
+
 app.get('/api/history', (req, res) => {
   const { from, to } = dateRange(req.query);
   const user = str(req.query, 'user');
   const rows: HistoryRow[] = [];
+  const users = new Set<string>();
   for (const f of world.findings) {
     for (const h of f.history) {
-      if (h.user === 'system') continue; // tylko decyzje analityków
+      if (AUTOMATED_USERS.has(h.user)) continue;
       const t = new Date(h.at).getTime();
-      if (t < from || t > to || (user && h.user !== user)) continue;
+      if (t < from || t > to) continue;
+      users.add(h.user); // lista do filtra: wszyscy analitycy z okresu, nie tylko z bieżącej strony
+      if (user && h.user !== user) continue;
       const body = (f.kind === 'transcript' && f.transcript ? f.transcript : f.text).replace(/\s+/g, ' ');
       rows.push({ ...h, findingId: f.id, platform: f.platform, author: f.author.handle, snippet: body.slice(0, 140), riskLevel: f.riskLevel });
     }
@@ -491,7 +497,7 @@ app.get('/api/history', (req, res) => {
   rows.sort((a, b) => b.at.localeCompare(a.at));
   const pageSize = Math.min(200, Math.max(1, Number(str(req.query, 'pageSize') ?? 50)));
   const page = Math.max(1, Number(str(req.query, 'page') ?? 1));
-  const body: Page<HistoryRow> = { items: rows.slice((page - 1) * pageSize, page * pageSize), total: rows.length, page, pageSize };
+  const body: HistoryPage = { items: rows.slice((page - 1) * pageSize, page * pageSize), total: rows.length, page, pageSize, users: [...users].sort() };
   res.json(body);
 });
 

@@ -19,7 +19,7 @@ export function History() {
   const q = useMemo(() => ({ from, to, user: user ?? undefined, page, pageSize: PAGE_SIZE }), [from, to, user, page]);
   const history = useHistory(q);
   const users = useMemo(() => {
-    const set = new Set(history.data?.items.map((r) => r.user) ?? []);
+    const set = new Set(history.data?.users ?? []);
     if (user) set.add(user);
     return [...set].sort();
   }, [history.data, user]);

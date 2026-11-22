@@ -178,7 +178,7 @@ SCENARIOS: list[dict[str, Any]] = [
         "history": [
             ("2026-11-21T20:00:00Z", "NEW", "system",
              "ponowny skan: post edytowany po publikacji. Usunięto ostrzeżenie o ryzyku, dodano „gwarantowany zysk”, kod polecający i link do NovaQuant"),
-            ("2026-11-22T08:10:00Z", "IN_REVIEW", "m.nowak", "wcześniejsza wersja była odrzucona jako edukacja; teraz kieruje do kampanii NovaQuant"),
+            ("2026-11-21T21:10:00Z", "IN_REVIEW", "m.nowak", "wcześniejsza wersja była odrzucona jako edukacja; teraz kieruje do kampanii NovaQuant"),
         ],
         "revision_of": "demo-ig-kasia-v1",
         "blocked": True,

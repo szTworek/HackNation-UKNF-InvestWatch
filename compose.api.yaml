@@ -1,0 +1,15 @@
+# Szybki build: klasyfikacja przez API LLM (Groq), bez torcha, modeli lokalnych i kolektorów z Chrome.
+#   docker compose -f compose.yaml -f compose.api.yaml up -d --build
+# Wymaga GROQ_API_KEY w .env. Zbieranie danych (obraz ok. 4 GB) włącza: --profile scraping
+services:
+  ai-service:
+    image: investwatch/uknf-ai-service-api:local
+    build:
+      context: ./ml
+      target: runtime-api
+    environment:
+      INVESTWATCH_BASELINE: "1"
+      LLM_BACKEND: ${LLM_BACKEND:-groq}
+
+  scrape-worker:
+    profiles: [scraping]

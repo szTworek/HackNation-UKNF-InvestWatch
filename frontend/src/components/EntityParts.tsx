@@ -254,7 +254,6 @@ export function ItemView({ id, focusFinding }: { id: string; focusFinding: strin
         <div>
           <Group gap={8} mb={6}>
             <Title order={5}>Wyniki</Title>
-            <MockBadge hint="Klasyfikator mock-v0: reguły słownikowe zamiast LLM" />
           </Group>
           <Stack gap="xs">
             {it.findings.map((f) => (

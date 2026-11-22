@@ -1,0 +1,10 @@
+# Domyślne reguły gitleaks + jeden wyjątek: pole "key" w danych mediów to nazwa pliku w data/media/
+# (20 znaków hex + .webp, patrz contracts/app_api.md), a nie klucz API.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Nazwy plików mediów w polu key"
+targetRules = ["generic-api-key"]
+regexTarget = "match"
+regexes = ['''^key\\?["']\s*:\s*\\?["'][a-f0-9]{20}(?:\.webp)?(?:\\?["'])?$''']

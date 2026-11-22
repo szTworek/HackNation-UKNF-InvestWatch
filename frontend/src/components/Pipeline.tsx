@@ -91,7 +91,7 @@ export function Pipeline({ o }: { o: EntityOverview | undefined }) {
           {ENTITY_MODULES.map((m) => (
             <Block key={m} title={ENTITY_MODULE_LABEL[m]} sub={ENTITY_MODULE_DESC[m]} color={ENTITY_MODULE_COLOR[m]} />
           ))}
-          <Block mock title="Klasyfikator mock-v0" sub="reguły słownikowe zwracają ten sam kształt wyniku co docelowy LLM: moduł, wynik, waga, naruszenia z cytatem i pozycją w tekście" />
+          <Block title="Model ai-service i LLM" sub="klasyfikator tekstu, rejestr KNF i reguły art. 44 zwracają moduł, wynik i naruszenia z cytatem; część rekordów ocenia dodatkowo LLM" />
         </>
       ),
     },
