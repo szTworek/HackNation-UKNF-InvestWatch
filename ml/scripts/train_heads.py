@@ -105,11 +105,17 @@ def main() -> None:
     ap.add_argument("--embedder", default="BAAI/bge-m3")
     ap.add_argument("--out", default="models")
     ap.add_argument("--test-size", type=float, default=0.2)
+    ap.add_argument("--curated", default=None, help="etykiety po naprawie, np. data/curated/labels.jsonl")
+    ap.add_argument("--no-edge", action="store_true", help="bez przypadków granicznych: zostają do oceny")
     args = ap.parse_args()
     out = ML_DIR / args.out
     out.mkdir(parents=True, exist_ok=True)
 
-    labels = load_labels(args.teachers.split(","))
+    if args.curated:
+        labels = {str(r["id"]): [{**r["label"], "_teacher": "curated", "_weight": float(r["weight"])}]
+                  for r in read_jsonl(ML_DIR / args.curated)}
+    else:
+        labels = load_labels(args.teachers.split(","))
     docs: dict[str, Doc] = {}
     for f in (ML_DIR / "data/pool").glob("*.jsonl"):
         if "candidates" in f.name or "skipped" in f.name or "checked" in f.name:
@@ -117,7 +123,8 @@ def main() -> None:
         for r in read_jsonl(f):
             if str(r.get("id")) in labels:
                 docs[str(r["id"])] = Doc(**r)
-    for r in read_jsonl(ML_DIR / "data/gold/edge_cases.jsonl"):  # ręczne przypadki graniczne: tylko trening, większa waga
+    edge_rows = [] if args.no_edge else read_jsonl(ML_DIR / "data/gold/edge_cases.jsonl")
+    for r in edge_rows:  # ręczne przypadki graniczne: tylko trening, większa waga
         docs[r["doc"]["id"]] = Doc(**r["doc"])
         labels[r["doc"]["id"]] = [{**r["label"], "_teacher": "edge", "_weight": 2.0}]
     ids = sorted(docs)
@@ -170,7 +177,7 @@ def main() -> None:
     # --- flagi na poziomie okien: pozytyw = okno nachodzi na dopasowany cytat; negatyw = okna dokumentów bez flagi
     tr_set = set(tr.tolist())
     for f in FLAG_KEYS:
-        Xs, ys = [], []
+        Xs, ys, ws = [], [], []
         for di in tr_set:
             a, b = W_idx[di]
             hits = [(h["start"], h["end"]) for h in lab[di]["flags"] if h["flag"] == f and h.get("start") is not None]
@@ -182,8 +189,9 @@ def main() -> None:
                     continue  # inne okna dokumentu z flagą – niepewne, pomijamy
                 Xs.append(a + wi)
                 ys.append(int(pos))
+                ws.append(float(weights[di]))
         y = np.array(ys)
-        heads.flags[f] = fit_binary(E[Xs], y) if len(Xs) else 0.0
+        heads.flags[f] = fit_binary(E[Xs], y, np.array(ws) if args.curated else None) if len(Xs) else 0.0
         log(f"  flaga {f:30s} okna: {len(y)} (poz. {int(y.sum()) if len(y) else 0})")
 
     # --- ewaluacja na teście (etykiety nauczycieli) + baseline słownikowy
