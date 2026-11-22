@@ -83,7 +83,7 @@ def normalize(rec):
         "source_url": rec["source_url"], "author": rec.get("author"), "sponsor": rec.get("sponsor"),
         "links": rec.get("links") or [], "published_at": iso(rec.get("published_at")),
         "fetched_at": iso(rec.get("fetched_at")), "query_keywords": rec.get("query_keywords") or [],
-        "text": text, "source_meta": sm, "mock": False,
+        "text": text, "media": rec.get("media") or [], "source_meta": sm, "mock": False,
     }
 
 

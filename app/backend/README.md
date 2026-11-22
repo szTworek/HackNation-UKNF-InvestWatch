@@ -35,7 +35,7 @@ Smoke test (throwaway DB, every endpoint):
 2. Items: `data/export/*/records.jsonl`, then `data/samples/*_entities_v1.jsonl` and `firm_web_v1.jsonl` (dedup by `source_url`). Linked by author/sponsor, domains, brand name in text; homonyms excluded (e.g. Shimano/KSW "XTB"). Unlinked records are dropped.
 3. Pages: `data/monitor/pages.json|snapshots.jsonl|changes.jsonl` (optional) + one snapshot per page from `firm_web_v1.jsonl`.
 4. Classifier: `classifier.classify(item) -> list[Finding]`, `mock-v0` keyword rules R01..R18. Routing: author is the entity -> M2; third party with signal/copy-trading hits -> M3; third party promoting the entity -> M1. Swap `classifier.classifier` for an LLM implementation.
-5. Alerts: every `high` finding, every page change with `risk_warning_changed|risk_warning_removed|page_removed`. Alert status (`ack`) survives rescans.
+5. Alerts: every `high` finding (page changes create no alerts until they have an `assessment`). Alert status (`ack`) survives rescans.
 
 `findings_by_day` buckets by the item's `published_at` (fallback: finding `created_at`), so a scan does not pile every real finding onto one day.
 

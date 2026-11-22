@@ -49,17 +49,14 @@ def mock_items():
     return out
 
 
-# entity -> (page path, days ago, kinds, summary, risk before, risk after)
+# entity -> (page path, days ago, risk before, risk after)
 CHANGES = {
-    "xtb": ("https://www.xtb.com/pl", 3, ["text", "risk_warning_changed"], "CFD loss percentage 77% -> 79%",
-            {"present": True, "cfd_loss_pct": 77, "above_fold": True}, None),
-    "etoro": ("https://www.etoro.com/pl/", 6, ["text", "risk_warning_changed"], "Risk warning moved below the fold (mobile 375px)",
-              {"present": True, "cfd_loss_pct": 61, "above_fold": True}, None),
-    "plus500": ("https://lp.plus500.com/main/", 12, ["text"], "Hero banner text changed (new promo)", None, None),
-    "revolut": ("https://www.revolut.com/pl-PL/stock-trading/", 9, ["text", "risk_warning_changed"], "Risk footnote shortened",
-                {"present": True, "cfd_loss_pct": None, "above_fold": False}, None),
-    "trading212": ("https://www.trading212.com/pl", 2, ["text", "risk_warning_removed"], "CFD risk warning removed from header",
-                   {"present": True, "cfd_loss_pct": 74, "above_fold": True}, {"present": False, "cfd_loss_pct": None, "above_fold": None}),
+    "xtb": ("https://www.xtb.com/pl", 3, {"present": True, "cfd_loss_pct": 77, "above_fold": True}, None),
+    "etoro": ("https://www.etoro.com/pl/", 6, {"present": True, "cfd_loss_pct": 61, "above_fold": True}, None),
+    "plus500": ("https://lp.plus500.com/main/", 12, None, None),
+    "revolut": ("https://www.revolut.com/pl-PL/stock-trading/", 9, {"present": True, "cfd_loss_pct": None, "above_fold": False}, None),
+    "trading212": ("https://www.trading212.com/pl", 2, {"present": True, "cfd_loss_pct": 74, "above_fold": True},
+                   {"present": False, "cfd_loss_pct": None, "above_fold": None}),
 }
 
 
@@ -68,7 +65,7 @@ def mock_pages(existing_pages, latest_snapshot):
     now = NOW()
     pages, snaps, changes = [], [], []
     by_url = {p["url"]: p for p in existing_pages}
-    for eid, (url, ago, kinds, summary, before, after) in CHANGES.items():
+    for eid, (url, ago, before, after) in CHANGES.items():
         page = by_url.get(url)
         if not page:
             page = {"page_id": f"{eid}-mock-home", "entity_id": eid, "url": url, "label": f"{GROUPS[eid]['name']} home (mock)", "mock": True}
@@ -87,6 +84,7 @@ def mock_pages(existing_pages, latest_snapshot):
                 "text": (cur.get("text") or "")[:2000] + "\n(mock: previous version)", "risk_warning": prev_rw, "mock": True}
         snaps.append(prev)
         changes.append({"id": f"chg_mock_{eid}", "page_id": page["page_id"], "entity_id": eid, "from_snapshot": prev["id"],
-                        "to_snapshot": cur["id"], "detected_at": _ts(detected), "kinds": kinds, "summary": summary,
-                        "added_lines": [], "removed_lines": ["(mock: previous version)"], "mock": True})
+                        "to_snapshot": cur["id"], "detected_at": _ts(detected), "summary": "0 lines added, 1 removed, 0 style changes",
+                        "added_lines": [], "removed_lines": ["(mock: previous version)"], "style_changes": [], "assessment": None,
+                        "mock": True})
     return pages, snaps, changes

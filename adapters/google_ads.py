@@ -1,4 +1,4 @@
-from .common import build, split_title, to_text
+from .common import build, media, split_title, to_text
 
 
 def _from_string(raw):
@@ -7,4 +7,5 @@ def _from_string(raw):
 
 
 def to_record(raw: dict) -> dict:
-    return build(raw, to_text(raw, _from_string))
+    text = to_text(raw, _from_string)
+    return build(raw, text, *media(raw, text, "creative"))

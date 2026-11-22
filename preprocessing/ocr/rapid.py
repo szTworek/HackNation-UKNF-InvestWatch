@@ -26,6 +26,16 @@ def ocr_image(path):
             "lines": len(txts), "seconds": round(time.perf_counter() - t0, 2)}
 
 
+def ocr_boxes(path):
+    """[(text, [x, y, w, h], score)] per recognised line; box = axis-aligned bounds of the detected quad."""
+    res = engine()(path)
+    out = []
+    for quad, txt, score in zip(res.boxes if res.boxes is not None else [], res.txts or [], res.scores or []):
+        xs, ys = [p[0] for p in quad], [p[1] for p in quad]
+        out.append((txt, [int(min(xs)), int(min(ys)), int(max(xs) - min(xs)), int(max(ys) - min(ys))], float(score)))
+    return out
+
+
 def has_text(doc):
     t = doc.get("text")
     return any(s.get("text") for s in t) if isinstance(t, list) else bool(t)

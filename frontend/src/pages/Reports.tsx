@@ -9,7 +9,7 @@ import { FindingsByDayChart, LabeledBars, daysFromFindings } from '../components
 import { EntityModuleBadge, RiskMeter, SeverityBadge, pageChanges, shortUrl } from '../components/EntityParts';
 import { ErrorState, Loading } from '../components/PageState';
 import { fmtDate, fmtDateTime, fmtInt, fmtProb } from '../lib/format';
-import { CHANGE_KIND_LABEL, ENTITY_MODULES, ENTITY_MODULE_COLOR, ENTITY_MODULE_LABEL, KNF_CATEGORY_LABEL, SOURCE_PLATFORM_LABEL, ruleModule, ruleText } from '../lib/labels';
+import { ENTITY_MODULES, ENTITY_MODULE_COLOR, ENTITY_MODULE_LABEL, KNF_CATEGORY_LABEL, SOURCE_PLATFORM_LABEL, ruleModule, ruleText } from '../lib/labels';
 
 function Report({ id }: { id: string }) {
   const ent = useEntity(id);
@@ -205,7 +205,7 @@ function Report({ id }: { id: string }) {
                             {c.summary}
                           </Text>
                           <Text size="xs" c="dimmed">
-                            {shortUrl(c.url)} · {fmtDate(c.detectedAt)} · {c.kinds.map((k) => CHANGE_KIND_LABEL[k]).join(', ')}
+                            {shortUrl(c.url)} · {fmtDate(c.detectedAt)}
                             {c.mock ? ' · atrapa' : ''}
                           </Text>
                         </div>

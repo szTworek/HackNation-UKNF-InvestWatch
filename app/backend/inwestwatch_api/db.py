@@ -39,6 +39,7 @@ class Item(Base):
     fetched_at: Mapped[str | None] = mapped_column(String(32), nullable=True)
     query_keywords: Mapped[list] = mapped_column(JSON, default=list)
     text: Mapped[dict] = mapped_column(JSON, default=dict)
+    media: Mapped[list] = mapped_column(JSON, default=list)
     source_meta: Mapped[dict] = mapped_column(JSON, default=dict)
     mock: Mapped[bool] = mapped_column(Boolean, default=False)
 
@@ -82,6 +83,11 @@ class Snapshot(Base):
     text_sha256: Mapped[str | None] = mapped_column(String(64), nullable=True)
     text: Mapped[str | None] = mapped_column(String, nullable=True)
     risk_warning: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    blocks: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    style_sha256: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    legibility: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    legibility_check: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    screenshots: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     mock: Mapped[bool] = mapped_column(Boolean, default=False)
 
 
@@ -93,10 +99,11 @@ class Change(Base):
     from_snapshot: Mapped[str | None] = mapped_column(String(64), nullable=True)
     to_snapshot: Mapped[str | None] = mapped_column(String(64), nullable=True)
     detected_at: Mapped[str] = mapped_column(String(32), index=True)
-    kinds: Mapped[list] = mapped_column(JSON, default=list)
+    assessment: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     summary: Mapped[str | None] = mapped_column(String, nullable=True)
     added_lines: Mapped[list] = mapped_column(JSON, default=list)
     removed_lines: Mapped[list] = mapped_column(JSON, default=list)
+    style_changes: Mapped[list] = mapped_column(JSON, default=list)
     mock: Mapped[bool] = mapped_column(Boolean, default=False)
 
 

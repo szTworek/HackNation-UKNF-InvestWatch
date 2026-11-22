@@ -416,12 +416,6 @@ mark.iw-hit sup {
   background: var(--iw-primary);
   box-shadow: 0 0 0 3px #fff;
 }
-.iw-timeline-item[data-color='red']::before {
-  background: var(--iw-red);
-}
-.iw-timeline-item[data-color='orange']::before {
-  background: #c2500a;
-}
 .iw-timeline-card {
   display: block;
   border: 1px solid var(--iw-border);

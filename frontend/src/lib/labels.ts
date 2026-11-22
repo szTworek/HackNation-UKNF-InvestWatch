@@ -16,7 +16,7 @@ import type {
   Status,
   TopicLabel,
 } from '../api/types';
-import type { Channel, ChangeKind, EntityModule, KnfCategory, Severity, SourcePlatform } from '../api/entityTypes';
+import type { Channel, EntityModule, KnfCategory, Severity, SourcePlatform } from '../api/entityTypes';
 
 export const PLATFORMS: Platform[] = ['facebook', 'instagram', 'tiktok', 'youtube', 'x', 'web', 'other'];
 export const MODULES: ModuleId[] = [1, 2, 3];
@@ -361,13 +361,6 @@ export const CHANNEL_LABEL: Record<Channel, string> = { ad: 'Reklama', social: '
 
 export const SEVERITY_LABEL: Record<Severity, string> = { low: 'Niska', medium: 'Średnia', high: 'Wysoka' };
 export const SEVERITY_COLOR: Record<Severity, string> = { low: 'gray', medium: 'yellow', high: 'red' };
-
-export const CHANGE_KIND_LABEL: Record<ChangeKind, string> = {
-  text: 'Zmiana treści',
-  risk_warning_changed: 'Zmiana ostrzeżenia',
-  risk_warning_removed: 'Usunięte ostrzeżenie',
-  page_removed: 'Strona usunięta',
-};
 
 export const TEXT_SECTION_LABEL: Record<string, string> = {
   title: 'Tytuł',

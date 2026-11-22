@@ -77,7 +77,56 @@ export interface EntityItem {
   publishedAt: string | null;
   fetchedAt: string;
   text: Record<string, string>;
+  media: MediaRef[];
+  ocrLines: OcrLine[];
+  legibility: ItemLegibility | null;
+  legibilityCheck: LegibilityCheck | null;
   mock: boolean;
+}
+
+export interface MediaRef {
+  type: 'image';
+  key: string;
+  width: number;
+  height: number;
+  ocr: boolean;
+  source: 'creative' | 'screenshot' | 'thumbnail';
+}
+
+/** Linia OCR obrazu; box w px oryginalnego obrazu [x, y, w, h]. */
+export interface OcrLine {
+  text: string;
+  box: [number, number, number, number];
+  boxHeightPx: number;
+  relFontSize: number;
+  contrastRatio: number | null;
+  isDisclosure: boolean;
+}
+
+export type LegibilityStatus = 'ok' | 'problem' | 'no_disclosure';
+
+/** Niespełniony próg czytelności oznaczenia; `rule` to reguła organizatora (R02…R08). */
+export interface LegibilityFailure {
+  rule: string;
+  metric: 'contrast_ratio' | 'rel_font_size' | 'font_px';
+  value: number;
+  threshold: number;
+  text: string;
+}
+
+export interface LegibilityCheck {
+  status: LegibilityStatus;
+  failures: LegibilityFailure[];
+}
+
+export interface ItemLegibility {
+  disclosureInText: boolean;
+  disclosureOnImage: boolean | null;
+  imageWidth: number | null;
+  imageHeight: number | null;
+  dominantLinePx: number | null;
+  lines: number | null;
+  disclosureLines: number | null;
 }
 
 export interface EntityItemWithFindings extends EntityItem {
@@ -105,10 +154,38 @@ export interface PageSnapshot {
   textSha256: string;
   text: string;
   riskWarning: RiskWarning;
+  screenshots: Record<string, string> | null;
+  legibility: Record<string, SnapshotLegibility> | null;
+  legibilityCheck: LegibilityCheck | null;
   mock: boolean;
 }
 
-export type ChangeKind = 'text' | 'risk_warning_changed' | 'risk_warning_removed' | 'page_removed';
+export interface DisclosureBlock {
+  text: string;
+  fontSizePx: number;
+  relFontSize: number;
+  contrastRatio: number | null;
+  contrastSource: 'css' | 'screenshot';
+  y: number;
+  aboveFold: boolean;
+}
+
+export interface SnapshotLegibility {
+  dominantFontPx: number;
+  disclosureBlocks: DisclosureBlock[];
+}
+
+export interface StyleChange {
+  text: string;
+  viewport: string;
+  field: string;
+  before: string | number | boolean;
+  after: string | number | boolean;
+  contrastBefore: number | null;
+  contrastAfter: number | null;
+  relSizeBefore: number | null;
+  relSizeAfter: number | null;
+}
 
 export interface PageChange {
   id: string;
@@ -117,10 +194,11 @@ export interface PageChange {
   fromSnapshot: string;
   toSnapshot: string;
   detectedAt: string;
-  kinds: ChangeKind[];
   summary: string;
   addedLines: string[];
   removedLines: string[];
+  styleChanges: StyleChange[];
+  assessment: null | unknown;
   mock: boolean;
 }
 
@@ -141,7 +219,7 @@ export interface EntityAlert {
   id: string;
   createdAt: string;
   entityId: string;
-  kind: 'finding' | 'page_change';
+  kind: 'finding';
   severity: Severity;
   title: string;
   ref: { findingId: string | null; changeId: string | null; itemId: string | null };
@@ -169,6 +247,8 @@ export interface EntityOverview {
   };
   findingsByDay: ({ date: string } & Record<EntityModule, number>)[];
   itemsByPlatform: Partial<Record<SourcePlatform, number>>;
+  /** Rekordy z obrazem reklamy wg wyniku sprawdzenia czytelności oznaczenia. */
+  legibility: Record<LegibilityStatus, number>;
   heatmap: ({ entityId: string; name: string } & Record<EntityModule, number>)[];
   topRules: { ruleId: string; label: string; count: number }[];
   recentChanges: RecentChange[];

@@ -22,6 +22,7 @@ NOW = datetime(2026, 11, 21, 22, 0, tzinfo=timezone.utc)
 SOURCES = {"google_ads": ("ad", "google_ads"), "meta_ads": ("ad", "meta_ads"), "bing_ads": ("ad", "bing_ads"),
            "youtube": ("social", "youtube"), "tiktok": ("social", "tiktok")}
 MAXTXT = 1800
+MAXLINES = 60  # OCR lines kept per item (longest creatives have a few hundred)
 
 RULES = {
     "R01": "Firm identification missing", "R02": "Not labelled as advertising", "R03": "Profit claim without risk information",
@@ -155,6 +156,11 @@ def day_in_window(key, published):
     return NOW - timedelta(days=days, hours=r % 20, minutes=r % 59)
 
 
+def trim_lines(lines):
+    """First MAXLINES OCR lines plus every disclosure line further down (legibility_check refers to them)."""
+    return lines[:MAXLINES] + [l for l in lines[MAXLINES:] if l["is_disclosure"]]
+
+
 def load_items():
     items = []
     for src, (channel, platform) in SOURCES.items():
@@ -171,7 +177,9 @@ def load_items():
             items.append({
                 "id": iid, "entity_ids": ids, "channel": channel, "platform": platform, "source_url": rec["source_url"],
                 "author": rec.get("author") or rec.get("sponsor") or "unknown", "author_is_entity": author_eid is not None,
-                "published_at": rec.get("published_at"), "fetched_at": rec["fetched_at"], "text": text, "mock": False,
+                "published_at": rec.get("published_at"), "fetched_at": rec["fetched_at"], "text": text,
+                "media": rec.get("media") or [], "ocr_lines": trim_lines(sm.get("ocr_lines") or []),
+                "legibility": sm.get("legibility"), "legibility_check": sm.get("legibility_check"), "mock": False,
                 "lang_pl": bool(sm.get("lang_hint_pl")), "paid": bool(sm.get("has_paid_product_placement")),
             })
     seen, uniq = set(), []
@@ -220,35 +228,32 @@ def pages_and_changes():
                "fetched_at": r["fetched_at"], "text_sha256": hashlib.sha256(text.encode()).hexdigest(), "text": text,
                "risk_warning": risk_warning(text), "mock": False}
         base_t = NOW - timedelta(days=12)
-        prev_text, kinds, summary, added, removed = text, [], None, [], []
+        prev_text = text
         lines = text.split("\n")
         rw = cur["risk_warning"]
         if rw["cfd_loss_pct"] and page_id in ("xtb-home", "plus500-home", "etoro-cfd"):
             old = rw["cfd_loss_pct"] - (2 if page_id != "plus500-home" else -1)
             prev_text = text.replace(f"{rw['cfd_loss_pct']}%", f"{old}%", 1)
-            kinds, summary = ["text", "risk_warning_changed"], f"CFD loss percentage {old}% -> {rw['cfd_loss_pct']}%"
         elif page_id == "etoro-interest-on-balance":
             prev_text = text.replace("3,80%", "3,50%")
-            kinds, summary = ["text"], "Advertised interest rate 3,50% -> 3,80%"
         elif page_id == "revolut-home" and not rw["present"]:
             warn = "Inwestowanie wiąże się z ryzykiem. Wartość inwestycji może spaść, a Ty możesz odzyskać mniej, niż zainwestowałeś."
             prev_text = lines[0] + "\n" + warn + "\n" + "\n".join(lines[1:])
-            kinds, summary = ["text", "risk_warning_removed"], "Risk warning removed from top of page"
         elif page_id == "xtb-etf":
             idx = min(8, len(lines) - 1)
             prev_text = "\n".join(lines[:idx] + lines[idx + 1:])
-            kinds, summary = ["text"], f"New line: \"{lines[idx][:60]}\""
         prev = {**cur, "id": "snp_" + h(page_id + "prev"), "fetched_at": iso(base_t), "text": prev_text,
                 "text_sha256": hashlib.sha256(prev_text.encode()).hexdigest(), "risk_warning": risk_warning(prev_text), "mock": True}
         snaps += [prev, cur]
-        if kinds:
+        if prev_text != text:
             pl, cl = prev_text.split("\n"), text.split("\n")
             added = [l for l in cl if l not in pl][:10]
             removed = [l for l in pl if l not in cl][:10]
             days_ago = {"xtb-home": 1, "revolut-home": 2, "etoro-interest-on-balance": 5, "xtb-etf": 9}.get(page_id, 3)
             changes.append({"id": "chg_" + h(page_id + "chg"), "page_id": page_id, "entity_id": eid, "from_snapshot": prev["id"],
-                            "to_snapshot": cur["id"], "detected_at": iso(NOW - timedelta(days=days_ago, hours=3)), "kinds": kinds,
-                            "summary": summary, "added_lines": added, "removed_lines": removed, "mock": True})
+                            "to_snapshot": cur["id"], "detected_at": iso(NOW - timedelta(days=days_ago, hours=3)),
+                            "summary": f"{len(added)} lines added, {len(removed)} removed, 0 style changes", "added_lines": added,
+                            "removed_lines": removed, "style_changes": [], "assessment": None, "mock": True})
     return pages, snaps, changes
 
 
@@ -274,13 +279,6 @@ def main():
         title = f"{f['module']} {rh['rule_id']}: {rh['label']} — {item['author']} ({item['platform']})"
         alerts.append({"id": "alr_" + h(f["id"]), "created_at": f["created_at"], "entity_id": f["entity_id"], "kind": "finding",
                        "severity": "high", "title": title, "ref": {"finding_id": f["id"], "change_id": None}, "status": "new"})
-    for c in changes:
-        page = next(p for p in pages if p["page_id"] == c["page_id"])
-        sev_c = "high" if "risk_warning_removed" in c["kinds"] else "medium" if "risk_warning_changed" in c["kinds"] else "low"
-        short = re.sub(r"^https?://(www\.)?", "", page["url"]).rstrip("/")
-        alerts.append({"id": "alr_" + h(c["id"]), "created_at": c["detected_at"], "entity_id": c["entity_id"], "kind": "page_change",
-                       "severity": sev_c, "title": f"{c['summary']} on {short}", "ref": {"finding_id": None, "change_id": c["id"]},
-                       "status": "new"})
     alerts.sort(key=lambda a: a["created_at"], reverse=True)
     for i, a in enumerate(alerts):
         if a["created_at"] < iso(NOW - timedelta(days=6)):
