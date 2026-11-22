@@ -1,0 +1,47 @@
+{
+ "records": 125,
+ "seconds": 589,
+ "by_sponsor": [
+  [
+   "XTB S.A.",
+   76
+  ],
+  [
+   "Revolut Ltd",
+   39
+  ],
+  [
+   "Plus500 Ltd",
+   10
+  ]
+ ],
+ "by_format_textsource": {
+  "image/none": 5,
+  "image/ocr": 63,
+  "text/ocr": 62,
+  "video/none": 1
+ },
+ "pl_hint": 41,
+ "notes": {
+  "plus500.com": {
+   "pages": {
+    "plus500.com": 15
+   },
+   "content_js_errors": 0,
+   "image_errors": 3
+  },
+  "xtb.com": {
+   "pages": {
+    "xtb.com": 76
+   },
+   "content_js_errors": 0,
+   "image_errors": 0
+  },
+  "revolut.com": {
+   "pages": {},
+   "content_js_errors": 0,
+   "image_errors": 0,
+   "error": "HTTP Error 429: "
+  }
+ }
+}

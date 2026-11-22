@@ -1,0 +1,77 @@
+{
+ "kod polecający XTB": {
+  "returned": 25,
+  "new": 25,
+  "firm_mentioned": 24
+ },
+ "XTB opinie": {
+  "returned": 28,
+  "new": 24,
+  "firm_mentioned": 24
+ },
+ "XTB jak zacząć": {
+  "returned": 25,
+  "new": 13,
+  "firm_mentioned": 9
+ },
+ "XTB konto maklerskie": {
+  "returned": 25,
+  "new": 9,
+  "firm_mentioned": 9
+ },
+ "Trading 212 kod": {
+  "returned": 25,
+  "new": 25,
+  "firm_mentioned": 25
+ },
+ "Trading 212 opinie": {
+  "returned": 25,
+  "new": 23,
+  "firm_mentioned": 23
+ },
+ "Trading 212 jak zacząć": {
+  "returned": 25,
+  "new": 16,
+  "firm_mentioned": 16
+ },
+ "eToro opinie": {
+  "returned": 25,
+  "new": 25,
+  "firm_mentioned": 25
+ },
+ "eToro jak zacząć": {
+  "returned": 25,
+  "new": 15,
+  "firm_mentioned": 15
+ },
+ "eToro kod polecający": {
+  "returned": 25,
+  "new": 18,
+  "firm_mentioned": 18
+ },
+ "Plus500 jak zacząć": {
+  "returned": 25,
+  "new": 19,
+  "firm_mentioned": 14
+ },
+ "Plus500 opinie": {
+  "returned": 25,
+  "new": 16,
+  "firm_mentioned": 14
+ },
+ "Revolut inwestowanie": {
+  "returned": 28,
+  "new": 23,
+  "firm_mentioned": 22
+ },
+ "Revolut akcje opinie": {
+  "returned": 25,
+  "new": 11,
+  "firm_mentioned": 11
+ },
+ "Revolut kod polecający": {
+  "returned": 25,
+  "new": 24,
+  "firm_mentioned": 18
+ }
+}

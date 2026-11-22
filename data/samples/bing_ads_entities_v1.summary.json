@@ -1,0 +1,82 @@
+{
+ "XTB@0": {
+  "returned": 24,
+  "kept": 24
+ },
+ "XTB@24": {
+  "returned": 24,
+  "kept": 24
+ },
+ "XTB@48": {
+  "returned": 0,
+  "kept": 0
+ },
+ "xtb.com@0": {
+  "returned": 1,
+  "kept": 0
+ },
+ "eToro@0": {
+  "returned": 2,
+  "kept": 2
+ },
+ "etoro.com@0": {
+  "returned": 0,
+  "kept": 0
+ },
+ "Plus500@0": {
+  "returned": 24,
+  "kept": 0
+ },
+ "Plus500@24": {
+  "returned": 24,
+  "kept": 0
+ },
+ "Plus500@48": {
+  "returned": 24,
+  "kept": 0
+ },
+ "plus500.com@0": {
+  "returned": 0,
+  "kept": 0
+ },
+ "Trading 212@0": {
+  "returned": 0,
+  "kept": 0
+ },
+ "trading212.com@0": {
+  "returned": 0,
+  "kept": 0
+ },
+ "Plus500@72": {
+  "returned": 24,
+  "kept": 24
+ },
+ "Plus500@96": {
+  "returned": 24,
+  "kept": 24
+ },
+ "Revolut@0": {
+  "returned": 24,
+  "kept": 24
+ },
+ "Revolut@24": {
+  "returned": 24,
+  "kept": 24
+ },
+ "Revolut@48": {
+  "returned": 24,
+  "kept": 24
+ },
+ "Revolut@72": {
+  "returned": 24,
+  "kept": 24
+ },
+ "Revolut@96": {
+  "returned": 24,
+  "kept": 24
+ },
+ "revolut.com@0": {
+  "returned": 0,
+  "kept": 0
+ }
+}

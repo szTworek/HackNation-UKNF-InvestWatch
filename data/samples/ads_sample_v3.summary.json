@@ -1,0 +1,83 @@
+{
+ "records": 184,
+ "seconds": 1869,
+ "by_sponsor": [
+  [
+   "Revolut Ltd",
+   75
+  ],
+  [
+   "TRADING 212 MARKETS LTD",
+   35
+  ],
+  [
+   "eToro Group Ltd.",
+   34
+  ],
+  [
+   "XTB S.A.",
+   15
+  ],
+  [
+   "Trading 212 EU GmbH",
+   14
+  ],
+  [
+   "Trading 212 UK Limited",
+   8
+  ],
+  [
+   "Jellyfish U.K. Ltd",
+   2
+  ],
+  [
+   "TRADING 212 AU PTY LTD",
+   1
+  ]
+ ],
+ "by_format_textsource": {
+  "text/ocr": 139,
+  "text/none": 43,
+  "text/content.js": 1,
+  "image/ocr": 43,
+  "video/none": 9,
+  "image/none": 159,
+  "video/ocr": 1
+ },
+ "pl_hint": 13,
+ "notes": {
+  "trading212.com": {
+   "pages": {
+    "trading212.com": 79
+   },
+   "content_js_errors": 2,
+   "image_errors": 17
+  },
+  "revolut.com": {
+   "pages": {},
+   "content_js_errors": 0,
+   "image_errors": 1,
+   "error": "Failed to perform, curl: (28) Connection timed out after 40000 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details."
+  },
+  "plus500.com": {
+   "pages": {},
+   "content_js_errors": 0,
+   "image_errors": 0,
+   "error": "Failed to perform, curl: (56) Connection closed abruptly. See https://curl.se/libcurl/c/libcurl-errors.html first for more details."
+  },
+  "xtb.com": {
+   "pages": {
+    "xtb.com": 76
+   },
+   "content_js_errors": 0,
+   "image_errors": 61
+  },
+  "etoro.com": {
+   "pages": {
+    "etoro.com": 160
+   },
+   "content_js_errors": 1,
+   "image_errors": 124
+  }
+ }
+}
