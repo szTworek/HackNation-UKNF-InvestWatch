@@ -1,6 +1,6 @@
 // Buduje mock-server/entities.snapshot.json: oś podmiotu (rejestr KNF) + zebrane rekordy.
 // Źródła (prawdziwe pliki repo):
-//   - app/frontend/src/mocks/fixtures.json: wynik app/frontend/scripts/build_fixtures.py
+//   - data/entity_fixtures.json: wynik app/backend/scripts/build_fixtures.py
 //     (data/export/*/records.jsonl, data/monitor/*, linkowanie z app/backend/inwestwatch_api/entities.py,
 //     klasyfikator słownikowy mock-v0),
 //   - rejestr KNF: ../data/knf_entities.json (760 wpisów), uzupełniany z ml/src/investwatch_ml/knf_register.json.
@@ -22,7 +22,7 @@ import type {
 
 const FRONT = process.cwd();
 const REPO = join(FRONT, '..');
-const FIXTURES = process.env.ENTITY_FIXTURES ?? join(REPO, 'app', 'frontend', 'src', 'mocks', 'fixtures.json');
+const FIXTURES = process.env.ENTITY_FIXTURES ?? join(REPO, 'data', 'entity_fixtures.json');
 const KNF_FULL = process.env.KNF_FILE ?? join(REPO, '..', 'data', 'knf_entities.json');
 const KNF_ML = join(REPO, 'ml', 'src', 'investwatch_ml', 'knf_register.json');
 const OUT = join(FRONT, 'mock-server', 'entities.snapshot.json');
@@ -327,7 +327,7 @@ function main(): void {
   const ov = fx.overview as Raw;
   const snapshot = {
     generatedAt: fx.generated_at as string,
-    sources: { fixtures: 'app/frontend/src/mocks/fixtures.json', registry: source, registryEntries: entries.length },
+    sources: { fixtures: 'data/entity_fixtures.json', registry: source, registryEntries: entries.length },
     entities: [...withData, ...rest],
     items,
     findings,

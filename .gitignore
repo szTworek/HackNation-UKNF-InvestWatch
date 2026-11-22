@@ -11,3 +11,4 @@ scrapers/poc/results/
 .vscode/
 !.env.example
 /models/
+app/frontend/

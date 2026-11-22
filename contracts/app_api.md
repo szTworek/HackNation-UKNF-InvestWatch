@@ -3,7 +3,7 @@
 Main axis: entity (podmiot) from the KNF registry. Everything (website pages, social posts, ads) is attached to an entity and classified per module.
 PoC scope: 5 entities — `xtb`, `etoro`, `plus500`, `trading212`, `revolut`. LLM is mocked (`model: "mock-v0"`). Mock data allowed, always flagged `mock: true`.
 
-Owners: backend `inwestwatch/app/backend/`, website monitor `inwestwatch/monitor/`, UI `inwestwatch/app/frontend/`. A change to this file is proposed to the lead session, not edited silently.
+Owners: backend `inwestwatch/app/backend/`, website monitor `inwestwatch/monitor/`, UI `inwestwatch/frontend/`. A change to this file is proposed to the lead session, not edited silently.
 
 ## Modules
 

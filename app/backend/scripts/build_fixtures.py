@@ -1,4 +1,4 @@
-"""Build src/mocks/fixtures.json from real sample records (data/export) and website monitor output (data/monitor; falls back to data/samples/firm_web_v1.jsonl).
+"""Build data/entity_fixtures.json from real sample records (data/export) and website monitor output (data/monitor; falls back to data/samples/firm_web_v1.jsonl).
 
 Mock classifier (model "mock-v0"): keyword rules only. Page history before the real snapshot is synthetic (mock: true).
 Run: python scripts/build_fixtures.py
@@ -12,9 +12,9 @@ from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-FRONT = Path(__file__).resolve().parents[1]
-REPO = FRONT.parents[1]
-sys.path.insert(0, str(REPO / "app" / "backend"))
+BACKEND = Path(__file__).resolve().parents[1]
+REPO = BACKEND.parents[1]
+sys.path.insert(0, str(BACKEND))
 from inwestwatch_api.entities import GROUPS, link, registry_entries  # noqa: E402
 
 rnd = random.Random(7)
@@ -323,7 +323,7 @@ def main():
     }
     out = {"generated_at": iso(NOW), "entities": entities, "items": items, "findings": findings, "pages": pages,
            "snapshots": snaps, "changes": changes, "alerts": alerts, "overview": overview}
-    dst = FRONT / "src" / "mocks" / "fixtures.json"
+    dst = REPO / "data" / "entity_fixtures.json"
     dst.parent.mkdir(parents=True, exist_ok=True)
     dst.write_text(json.dumps(out, ensure_ascii=False), encoding="utf-8")
     print(f"items={len(items)} findings={len(findings)} pages={len(pages)} changes={len(changes)} alerts={len(alerts)} "
