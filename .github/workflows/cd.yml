@@ -73,6 +73,18 @@ jobs:
           severity-cutoff: high
           only-fixed: true
           output-format: sarif
+      # Bez code scanningu SARIF nie trafia do zakładki Security, więc wypisujemy znaleziska w logu.
+      - name: Show image findings
+        if: always() && steps.scan.outputs.sarif != ''
+        env:
+          SARIF: ${{ steps.scan.outputs.sarif }}
+        run: |
+          findings=$(jq -r '.runs[]
+            | ([.tool.driver.rules[]?] | map({key: .id, value: ((.properties["security-severity"] // "0") | tonumber)}) | from_entries) as $sev
+            | .results[]? | select(($sev[.ruleId] // 0) >= 7)
+            | "\($sev[.ruleId]) \(.ruleId) \(.message.text | split("\n")[0])"' "$SARIF" | sort -rn | uniq)
+          { echo "### Grype ${{ matrix.name }}: high/critical"; echo '```'; printf '%s\n' "${findings:-brak}"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          printf '%s\n' "${findings:-brak}"
       - name: Upload image scan to Security tab
         if: always() && steps.scan.outputs.sarif != ''
         continue-on-error: true

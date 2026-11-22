@@ -12,6 +12,7 @@ ENV UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=never UV_PROJECT_ENVIRONMENT=/opt/venv
     PATH=/opt/venv/bin:$PATH PYTHONUNBUFFERED=1 \
     INVESTWATCH_MODELS=/app/models HF_HOME=/cache/huggingface
 WORKDIR /app
+RUN apt-get update && apt-get upgrade -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
 COPY pyproject.toml uv.lock ./
 RUN useradd --system --uid 10001 --create-home --home-dir /home/app app \
     && mkdir -p /app/models /cache/huggingface \
