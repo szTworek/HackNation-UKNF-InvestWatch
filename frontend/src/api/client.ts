@@ -9,7 +9,7 @@ import type {
   FindingSummary,
   FindingsQuery,
   Graph,
-  HistoryRow,
+  HistoryPage,
   IndicatorFindings,
   IndicatorType,
   ModuleId,
@@ -127,7 +127,7 @@ export const api = {
   timeseries: (range: DateRange, groupBy: TimeseriesGroupBy) =>
     request<Timeseries>(`/stats/timeseries${buildQuery({ ...range, bucket: 'day', groupBy })}`),
 
-  history: (q: DateRange & { user?: string; page?: number; pageSize?: number }) => request<Page<HistoryRow>>(`/history${buildQuery({ ...q })}`),
+  history: (q: DateRange & { user?: string; page?: number; pageSize?: number }) => request<HistoryPage>(`/history${buildQuery({ ...q })}`),
   rules: () => request<RuleDef[]>('/rules'),
   thresholds: () => request<Thresholds>('/thresholds'),
   saveThresholds: (values: Record<string, number>) => request<Thresholds>('/thresholds', { method: 'PUT', ...json({ values }) }),

@@ -269,7 +269,7 @@ https://krotko.example/nq-kasia
 | Kiedy (UTC) | Status | Kto | Komentarz |
 |---|---|---|---|
 | 2026-11-21 20:00 | NEW | system | ponowny skan: post edytowany po publikacji. Usunięto ostrzeżenie o ryzyku, dodano „gwarantowany zysk”, kod polecający i link do NovaQuant |
-| 2026-11-22 08:10 | IN_REVIEW | m.nowak | wcześniejsza wersja była odrzucona jako edukacja; teraz kieruje do kampanii NovaQuant |
+| 2026-11-21 21:10 | IN_REVIEW | m.nowak | wcześniejsza wersja była odrzucona jako edukacja; teraz kieruje do kampanii NovaQuant |
 
 **Zmiany względem wersji z 2026-11-14:**
 

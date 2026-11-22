@@ -362,6 +362,10 @@ export interface HistoryRow extends HistoryEntry {
   riskLevel: RiskLevel;
 }
 
+export interface HistoryPage extends Page<HistoryRow> {
+  users: string[]; // analitycy z wybranego okresu
+}
+
 export interface StatusUpdate {
   status: Status;
   comment?: string;
