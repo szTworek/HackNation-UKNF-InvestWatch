@@ -421,16 +421,6 @@ function LinksTab({ finding: f }: { finding: Finding }) {
       </Grid.Col>
       <Grid.Col span={{ base: 12, lg: 4 }}>
         <Stack gap="md">
-          {f.campaignId && (
-            <Paper withBorder p="md">
-              <Text size="sm" c="dimmed">
-                Należy do kampanii
-              </Text>
-              <Anchor component={Link} to={`/campaigns/${f.campaignId}${search}`} fw={500}>
-                {f.campaignId}
-              </Anchor>
-            </Paper>
-          )}
           <Paper withBorder p="md">
             <Title order={5} mb="sm">
               Najsilniej powiązane

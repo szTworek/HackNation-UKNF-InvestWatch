@@ -1,9 +1,8 @@
-import { ActionIcon, Anchor, Box, Button, Group, Indicator, Popover, ScrollArea, Stack, Text, Tooltip } from '@mantine/core';
+import { Box, Group, Text, Tooltip } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
-import { IconBell, IconCalendar } from '@tabler/icons-react';
-import { Link } from 'react-router-dom';
+import { IconCalendar } from '@tabler/icons-react';
 import type { ConnectionState } from '../api/socket';
-import { daysAgoIso, fmtRelative, todayIso } from '../lib/format';
+import { daysAgoIso, todayIso } from '../lib/format';
 
 // ---------------------------------------------------------------------------
 // Połączenie WebSocket
@@ -63,89 +62,5 @@ export function DateRangeFilter({ from, to, onChange }: { from: string; to: stri
         }}
       />
     </Group>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Dzwonek alertów
-// ---------------------------------------------------------------------------
-
-export interface AlertItem {
-  key: string;
-  findingId: string;
-  title: string;
-  message: string;
-  at: string;
-  read: boolean;
-  priority: 'campaign' | 'high_risk';
-}
-
-interface BellProps {
-  alerts: AlertItem[];
-  unread: number;
-  onOpen: () => void;
-  onClear: () => void;
-}
-
-export function AlertBell({ alerts, unread, onOpen, onClear }: BellProps) {
-  return (
-    <Popover width={360} position="bottom-end" shadow="md" onOpen={onOpen} withinPortal>
-      <Popover.Target>
-        <Indicator label={unread > 99 ? '99+' : unread} size={16} color="red" disabled={unread === 0} offset={4}>
-          <ActionIcon variant="subtle" color="gray" size="lg" aria-label={`Alerty, nieprzeczytane: ${unread}`}>
-            <IconBell size={20} />
-          </ActionIcon>
-        </Indicator>
-      </Popover.Target>
-      <Popover.Dropdown p={0}>
-        <Group justify="space-between" px="sm" py={8} style={{ borderBottom: '1px solid var(--iw-border)' }}>
-          <Text size="sm" fw={600}>
-            Alerty
-          </Text>
-          {alerts.length > 0 && (
-            <Button variant="subtle" size="compact-xs" onClick={onClear}>
-              Wyczyść
-            </Button>
-          )}
-        </Group>
-        {alerts.length === 0 ? (
-          <Text size="sm" c="dimmed" p="sm">
-            Brak alertów.
-          </Text>
-        ) : (
-          <ScrollArea.Autosize mah={420}>
-            <Stack gap={0}>
-              {alerts.map((a) => (
-                <Anchor
-                  key={a.key}
-                  component={Link}
-                  to={`/findings/${a.findingId}`}
-                  underline="never"
-                  c="inherit"
-                  px="sm"
-                  py={8}
-                  style={{
-                    borderBottom: '1px solid var(--iw-border)',
-                    background: a.read ? undefined : '#eef3f9',
-                  }}
-                >
-                  <Group justify="space-between" wrap="nowrap" gap="xs">
-                    <Text size="sm" fw={500} truncate>
-                      {a.title}
-                    </Text>
-                    <Text size="xs" c="dimmed" style={{ flexShrink: 0 }}>
-                      {fmtRelative(a.at)}
-                    </Text>
-                  </Group>
-                  <Text size="xs" c="dimmed" lineClamp={2}>
-                    {a.message}
-                  </Text>
-                </Anchor>
-              ))}
-            </Stack>
-          </ScrollArea.Autosize>
-        )}
-      </Popover.Dropdown>
-    </Popover>
   );
 }

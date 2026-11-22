@@ -7,12 +7,12 @@ from common import env, envelope
 API = "https://www.googleapis.com/youtube/v3"
 
 
-def collect(query, notes):
+def collect(query, notes, max_results=10):
     key = env("YOUTUBE_API_KEY")
     if not key:
         raise RuntimeError("YOUTUBE_API_KEY missing in UKNF/.env")
     with httpx.Client(timeout=20) as c:
-        s = c.get(f"{API}/search", params={"part": "snippet", "q": query, "type": "video", "maxResults": 10,
+        s = c.get(f"{API}/search", params={"part": "snippet", "q": query, "type": "video", "maxResults": max_results,
                                            "regionCode": "PL", "relevanceLanguage": "pl", "key": key})
         s.raise_for_status()
         ids = [i["id"]["videoId"] for i in s.json()["items"]]

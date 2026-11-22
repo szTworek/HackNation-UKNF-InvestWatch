@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, type CampaignsQuery, type DateRange } from './client';
 import type { BulkStatusUpdate, Finding, FindingsQuery, IndicatorType, Status, TimeseriesGroupBy } from './types';
@@ -127,4 +128,63 @@ export function useSaveThresholds() {
       void qc.invalidateQueries({ queryKey: ['thresholdsPreview'] });
     },
   });
+}
+
+// ---------------------------------------------------------------------------
+// Oś podmiotu (rejestr KNF); dane statyczne ze snapshotu, stąd długi staleTime
+// ---------------------------------------------------------------------------
+
+const ENTITY_STALE = 5 * 60_000;
+
+export function useEntities() {
+  return useQuery({ queryKey: ['entities'], queryFn: api.entities, staleTime: ENTITY_STALE });
+}
+
+export function useEntity(id: string | undefined) {
+  return useQuery({ queryKey: ['entity', id], queryFn: () => api.entity(id ?? ''), enabled: !!id, staleTime: ENTITY_STALE });
+}
+
+export function useEntityItems(id: string | undefined, q: { channel?: string; platform?: string; module?: string; limit?: number }) {
+  return useQuery({
+    queryKey: ['entityItems', id, q],
+    queryFn: () => api.entityItems(id ?? '', q),
+    enabled: !!id,
+    staleTime: ENTITY_STALE,
+    placeholderData: keepPreviousData,
+  });
+}
+
+/** Wszystkie wyniki podmiotu z dołączonym rekordem (do trendu, tabeli wyników i raportu). */
+export function useEntityFindings(id: string | undefined, enabled = true) {
+  const q = useQuery({
+    queryKey: ['entityItems', id, 'all'],
+    queryFn: () => api.entityItems(id ?? '', { limit: 1000 }),
+    enabled: !!id && enabled,
+    staleTime: ENTITY_STALE,
+  });
+  const findings = useMemo(
+    () => (q.data?.items ?? []).flatMap((it) => it.findings.filter((f) => f.entityId === id).map((f) => ({ ...f, item: it }))),
+    [q.data, id],
+  );
+  return { ...q, findings };
+}
+
+export function useEntityPages(id: string | undefined, enabled = true) {
+  return useQuery({ queryKey: ['entityPages', id], queryFn: () => api.entityPages(id ?? ''), enabled: !!id && enabled, staleTime: ENTITY_STALE });
+}
+
+export function useEntityAlerts(id: string | undefined, enabled = true) {
+  return useQuery({ queryKey: ['entityAlerts', id], queryFn: () => api.entityAlerts(id ?? ''), enabled: !!id && enabled, staleTime: ENTITY_STALE });
+}
+
+export function useItem(id: string | null) {
+  return useQuery({ queryKey: ['item', id], queryFn: () => api.item(id ?? ''), enabled: !!id, staleTime: ENTITY_STALE });
+}
+
+export function useChange(id: string | null) {
+  return useQuery({ queryKey: ['change', id], queryFn: () => api.change(id ?? ''), enabled: !!id, staleTime: ENTITY_STALE });
+}
+
+export function useEntityOverview() {
+  return useQuery({ queryKey: ['entityOverview'], queryFn: api.entityOverview, staleTime: ENTITY_STALE });
 }

@@ -5,9 +5,9 @@ import httpx
 from common import envelope, ua
 
 
-def collect(query, notes, top=10):  # top=25 -> HTTP 400
-    r = httpx.get("https://adlibrary.api.bingads.microsoft.com/api/v1/Ads", headers={"User-Agent": ua()}, timeout=30,
-                  params={"searchText": query, "top": top, "skip": 0, "countryCodes": 151})
+def collect(query, notes, top=10, skip=0):  # top max 24 (25 -> HTTP 400)
+    r = httpx.get("https://adlibrary.api.bingads.microsoft.com/api/v1/Ads", headers={"User-Agent": ua()}, timeout=60,
+                  params={"searchText": query, "top": top, "skip": skip, "countryCodes": 151})
     r.raise_for_status()
     js = r.json()
     rows = js.get("value", js if isinstance(js, list) else [])

@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from adapters import bing_ads, google_ads, meta_ads, tiktok, youtube  # noqa: E402
+from adapters import bing_ads, firm_web, google_ads, meta_ads, tiktok, youtube  # noqa: E402
 from adapters.common import validate  # noqa: E402
 
 RES = "scrapers/poc/results/"
@@ -29,36 +29,46 @@ def latest_docs(collector):
 # Per source: inputs in priority order; the first record with a given source_url wins.
 INPUTS = {
     "youtube": (youtube, [
+        "data/samples/youtube_entities_v1.jsonl",
         RES + "youtube_transcripts/20261121-175316-docs.json",
         RES + "youtube_posts.data_api/20261121-175414-docs.json",
         RES + "youtube_posts.ytdlp/20261121-170427-docs.json",
         RES + "youtube.ytdlp_search/20261121-160400-docs.json",
     ]),
-    "tiktok": (tiktok, latest_docs("tiktok_transcripts") + [
+    "tiktok": (tiktok, ["data/samples/tiktok_entities_v1.jsonl"] + latest_docs("tiktok_transcripts") + [
+        RES + "tiktok_transcripts/20261121-180958-docs.json",
         RES + "tiktok_posts.embed_ytdlp/20261121-175100-docs.json",
         RES + "tiktok.embed_ytdlp/20261121-160840-docs.json",
     ]),
     "google_ads": (google_ads, [
+        "data/samples/ads_sample_v3b.jsonl",
+        "data/samples/ads_sample_v3.jsonl",
         "data/samples/ads_sample_v1.jsonl",
         RES + "google_ads.atc_rpc/20261121-172343-docs.json",
         RES + "google_ads.atc_playwright/20261121-171613-docs.json",
     ]),
     "meta_ads": (meta_ads, [
+        "data/samples/meta_ads_entities_v1.jsonl",
         "data/samples/meta_ads_sample_v1.jsonl",
         RES + "fb_ads.ytdlp_by_id/20261121-170511-docs.json",
     ]),
     "bing_ads": (bing_ads, [
+        "data/samples/bing_ads_entities_v1.jsonl",
         RES + "bing_ads.ms_adlib/20261121-175411-docs.json",
+    ]),
+    "firm_web": (firm_web, [
+        "data/samples/firm_web_v1.jsonl",
     ]),
 }
 
 KNOWN_GAPS = """\
 - Brak etykiet (M1/M2/M3, naruszenie/brak naruszenia): to surowe dane, `content_keywords` jest puste (`[]`).
-- Google Ads: filtr regionu PL w Transparency Center nie jest szczelny, część kreacji jest po angielsku albo w innych językach (`source_meta.lang_hint_pl` = false: {non_pl} z {google}).
+- Google Ads: wszystkie kreacje były wyświetlane w Polsce, ale część to kampanie wielorynkowe (np. XTB dla Chile, Słowacji, Węgier, Niemiec) w innych językach. Flaga `source_meta.lang_hint_pl` to prosta heurystyka i zaniża liczbę polskich reklam, bo OCR gubi polskie znaki (false: {non_pl} z {google}).
 - Tekst reklam obrazkowych Google pochodzi z OCR (RapidOCR), a transkrypty YouTube z whispera (faster-whisper small). W obu są błędy, zwłaszcza w polskich znakach i nazwach własnych.
 - `published_at` bywa `null` (np. YouTube z yt-dlp, Bing). `author` bywa `null`.
 - Opisy z yt-dlp i z biblioteki reklam Meta bywają ucięte (kończą się „…”).
-- Meta: 9 reklam pominięto, bo Meta je usunęła lub wyłączyła za naruszenie Standardów dotyczących reklam (5: wyłączone konto reklamodawcy, 4: usunięta reklama); treść reklamy nie jest dostępna, a Meta nie podaje konkretnej reguły. Notka i reklamodawca są w `data/samples/meta_ads_sample_v1.jsonl` (`source_meta.notice`).
+- Meta: {meta_skipped} reklam pominięto, bo Meta je usunęła lub wyłączyła za naruszenie Standardów dotyczących reklam; treść reklamy nie jest dostępna, a Meta nie podaje konkretnej reguły. Notka i reklamodawca są w `raw/meta_ads_entities_v1.jsonl` i `raw/meta_ads_sample_v1.jsonl` (`source_meta.notice`).
+- `raw/`: surowe wyjście kolektorów (`data/samples/*.jsonl`), w tym filmy YouTube/TikTok bez transkryptu i usunięte reklamy Meta. Pola `source_meta.firm`, `firms_mentioned`, `advertiser_is_firm`, `lang_hint_pl` w plikach `*_entities_v1`.
 - Obrazy, audio i segmenty transkryptów z czasami nie są w paczce.
 - YouTube i TikTok: w paczce są tylko filmy z transkryptem. Pominięte filmy bez transkryptu: {no_transcript}.
 """
@@ -126,7 +136,7 @@ def main():
     skipped_str = ", ".join(f"{n} {c}" for n, c in skipped_total.items() if c) or "0"
     readme = f"""# InvestWatch — próbki danych (2026-11-21)
 
-Realne dane z kolektorów PoC (YouTube, TikTok, reklamy Google, Meta i Microsoft/Bing), w jednym formacie rekordu. Jeden rekord JSON na linię (UTF-8). Rekordy są zdeduplikowane po `source_url`.
+Realne dane z kolektorów PoC (YouTube, TikTok, reklamy Google, Meta i Microsoft/Bing, strony firm), w jednym formacie rekordu. Jeden rekord JSON na linię (UTF-8). Rekordy są zdeduplikowane po `source_url`.
 
 ## Pliki
 
@@ -163,13 +173,16 @@ Przykład (YouTube, stringi skrócone tu do 120 znaków):
 
 ## Znane braki
 
-{KNOWN_GAPS.format(non_pl=stats['google_ads']['non_pl'], google=stats['google_ads']['records'], skipped=skipped_str, no_transcript=', '.join(f'{n} {len(u)}' for n, u in no_transcript.items() if u) or '0')}"""
+{KNOWN_GAPS.format(meta_skipped=stats['meta_ads']['skipped_empty_text'], non_pl=stats['google_ads']['non_pl'], google=stats['google_ads']['records'], skipped=skipped_str, no_transcript=', '.join(f'{n} {len(u)}' for n, u in no_transcript.items() if u) or '0')}"""
     (OUT / "README.md").write_text(readme, encoding="utf-8", newline="\n")
 
     with zipfile.ZipFile(ZIP, "w", zipfile.ZIP_DEFLATED) as z:
         z.write(OUT / "README.md", "README.md")
         for name in INPUTS:
             z.write(OUT / name / "records.jsonl", f"{name}/records.jsonl")
+        for f in sorted((ROOT / "data" / "samples").iterdir()):
+            if f.suffix in (".jsonl", ".json", ".md"):
+                z.write(f, f"raw/{f.name}")
     print(f"zip: {ZIP} ({ZIP.stat().st_size} bytes)")
     print(json.dumps(stats, ensure_ascii=False))
 

@@ -7,6 +7,7 @@ COPY package.json package-lock.json .npmrc ./
 RUN npm ci --ignore-scripts --no-audit
 COPY tsconfig.node.json ./
 COPY src/api/types.ts src/api/types.ts
+COPY src/api/entityTypes.ts src/api/entityTypes.ts
 COPY src/lib/labels.ts src/lib/labels.ts
 COPY mock-server mock-server
 RUN npm run build:mock
@@ -15,6 +16,7 @@ FROM ${NODE_IMAGE}
 WORKDIR /app
 ENV NODE_ENV=production MOCK_PORT=4000
 COPY --from=build /app/dist-mock/server.cjs ./server.cjs
+COPY --from=build /app/mock-server/entities.snapshot.json ./mock-server/entities.snapshot.json
 RUN mkdir -p /state && chown node:node /state
 USER node
 EXPOSE 4000

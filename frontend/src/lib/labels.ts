@@ -16,6 +16,7 @@ import type {
   Status,
   TopicLabel,
 } from '../api/types';
+import type { Channel, ChangeKind, EntityModule, KnfCategory, Severity, SourcePlatform } from '../api/entityTypes';
 
 export const PLATFORMS: Platform[] = ['facebook', 'instagram', 'tiktok', 'youtube', 'x', 'web', 'other'];
 export const MODULES: ModuleId[] = [1, 2, 3];
@@ -92,11 +93,11 @@ export const KIND_LABEL: Record<ContentKind, string> = {
   page: 'Strona',
 };
 
-export const MODULE_SHORT: Record<ModuleId, string> = { 1: 'M1', 2: 'M2', 3: 'M3' };
+export const MODULE_SHORT: Record<ModuleId, string> = { 1: 'Finfluencerzy', 2: 'Informacja o ryzyku', 3: 'Shadow advisory' };
 export const MODULE_LABEL: Record<ModuleId, string> = {
-  1: 'M1 Finfluencerzy',
-  2: 'M2 Informacja o ryzyku',
-  3: 'M3 Shadow advisory',
+  1: 'Finfluencerzy',
+  2: 'Informacja o ryzyku',
+  3: 'Shadow advisory',
 };
 
 export const RISK_LABEL: Record<RiskLevel, string> = {
@@ -317,3 +318,70 @@ export function thresholdOrder(key: string): number {
 
 export const SCAM_THRESHOLD_KEY = 'scam.p';
 export const DEFAULT_SCAM_THRESHOLD = 0.6;
+
+// ---------------------------------------------------------------------------
+// Oś podmiotu (rejestr KNF)
+// ---------------------------------------------------------------------------
+
+export const ENTITY_MODULES: EntityModule[] = ['M1', 'M2', 'M3'];
+
+export const ENTITY_MODULE_LABEL: Record<EntityModule, string> = {
+  M1: 'Finfluencerzy',
+  M2: 'Informacja o ryzyku',
+  M3: 'Shadow advisory',
+};
+
+export const ENTITY_MODULE_DESC: Record<EntityModule, string> = {
+  M1: 'Podmiot reklamowany przez finfluencerów i osoby trzecie',
+  M2: 'Materiały własne podmiotu wobec 18 reguł (art. 44 rozp. 2017/565)',
+  M3: 'Rekomendacje autorów spoza rejestru KNF',
+};
+
+export const ENTITY_MODULE_SHORT: Record<EntityModule, string> = { M1: 'Finfluencerzy', M2: 'Informacja o ryzyku', M3: 'Shadow advisory' };
+
+export const ENTITY_MODULE_COLOR: Record<EntityModule, string> = { M1: '#113b6f', M2: '#1e6ac8', M3: '#4b5f7c' };
+
+export const KNF_CATEGORY_LABEL: Record<KnfCategory, string> = {
+  domy_maklerskie: 'Dom maklerski',
+  banki_maklerskie: 'Bank prowadzący działalność maklerską',
+  zagraniczne_oddzialy: 'Oddział firmy zagranicznej',
+  zagraniczne_bez_oddzialu: 'Firma zagraniczna bez oddziału',
+};
+
+export const SOURCE_PLATFORM_LABEL: Record<SourcePlatform, string> = {
+  google_ads: 'Google Ads',
+  meta_ads: 'Meta Ads',
+  bing_ads: 'Bing Ads',
+  youtube: 'YouTube',
+  tiktok: 'TikTok',
+  website: 'Strona WWW',
+};
+
+export const CHANNEL_LABEL: Record<Channel, string> = { ad: 'Reklama', social: 'Social media', website: 'Strona WWW' };
+
+export const SEVERITY_LABEL: Record<Severity, string> = { low: 'Niska', medium: 'Średnia', high: 'Wysoka' };
+export const SEVERITY_COLOR: Record<Severity, string> = { low: 'gray', medium: 'yellow', high: 'red' };
+
+export const CHANGE_KIND_LABEL: Record<ChangeKind, string> = {
+  text: 'Zmiana treści',
+  risk_warning_changed: 'Zmiana ostrzeżenia',
+  risk_warning_removed: 'Usunięte ostrzeżenie',
+  page_removed: 'Strona usunięta',
+};
+
+export const TEXT_SECTION_LABEL: Record<string, string> = {
+  title: 'Tytuł',
+  ad_body: 'Treść reklamy',
+  link_description: 'Opis linku',
+  cta: 'Wezwanie do działania',
+  ocr: 'Tekst z obrazu (OCR)',
+  post: 'Post',
+  transcript: 'Transkrypcja',
+  description: 'Opis',
+  page: 'Tekst strony',
+};
+
+/** Reguły R01–R18 z numerem (art. 44), reguły finfluencerów i advisory samą nazwą. */
+export const ruleText = (ruleId: string, label: string) => (/^R\d/.test(ruleId) ? `${ruleId} · ${label}` : label);
+
+export const ruleModule = (ruleId: string): EntityModule => (ruleId.startsWith('M1') ? 'M1' : ruleId.startsWith('M3') ? 'M3' : 'M2');

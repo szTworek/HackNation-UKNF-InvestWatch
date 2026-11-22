@@ -9,8 +9,6 @@ import { Rng } from './rng';
 import { defaultThresholdValues } from './scoring';
 import { recomputeCampaign, type World } from './seed';
 
-const REPLAY_SIZE = 20;
-const REPLAY_HIGH_RISK = 6;
 const AI_TIMEOUT_MS = 120_000;
 
 type StoredFinding = Finding & { scoringInput?: unknown };
@@ -37,7 +35,6 @@ interface SavedState {
 
 export interface RealData {
   world: World;
-  held: Finding[]; // rekordy trybu DEMO_REPLAY, jeszcze niepokazane
   scoringInputs: Map<string, unknown>;
   certBlocked: Map<string, string[]>;
   savedThresholds?: Thresholds;
@@ -89,18 +86,6 @@ function withUtf16Evidence(f: Finding): Finding {
   return { ...f, flags, rules: f.rules.map((r) => ({ ...r, evidence: toUtf16(r.evidence, index) })) };
 }
 
-function pickReplay(findings: Finding[]): Set<string> {
-  const size = Math.min(REPLAY_SIZE, Math.floor(findings.length / 2));
-  const ordered = [...findings].sort((a, b) => a.id.localeCompare(b.id));
-  const high = ordered.filter((f) => f.riskLevel === 'HIGH' || f.riskLevel === 'CRITICAL').slice(0, Math.min(REPLAY_HIGH_RISK, size));
-  const chosen = new Set(high.map((f) => f.id));
-  for (const f of ordered) {
-    if (chosen.size >= size) break;
-    chosen.add(f.id);
-  }
-  return chosen;
-}
-
 export function refreshBlockedUrls(real: RealData): void {
   const scamThreshold = real.world.thresholds.values['scam.p'] ?? 0.6;
   for (const f of real.world.byId.values()) {
@@ -109,7 +94,7 @@ export function refreshBlockedUrls(real: RealData): void {
   }
 }
 
-export function loadRealWorld(path: string, statePath: string, replay: boolean, now: Date): RealData {
+export function loadRealWorld(path: string, statePath: string, now: Date): RealData {
   if (!existsSync(path)) {
     throw new Error(`DATA_MODE=real: brak pliku ${path}. Zbuduj go poleceniem: python ml/scripts/build_findings.py`);
   }
@@ -134,13 +119,12 @@ export function loadRealWorld(path: string, statePath: string, replay: boolean, 
   });
   all.sort((a, b) => b.fetchedAt.localeCompare(a.fetchedAt));
 
-  const heldIds = replay ? pickReplay(all) : new Set<string>();
   const campaigns = file.campaigns ?? [];
   const world: World = {
     rng: new Rng(0),
     seq: all.length,
-    findings: all.filter((f) => !heldIds.has(f.id)),
-    byId: new Map(all.map((f) => [f.id, f])), // także rekordy odtwarzania, żeby linki „powiązane” działały
+    findings: all,
+    byId: new Map(all.map((f) => [f.id, f])),
     index: new Map(),
     members: new Map(),
     campaigns: new Map(),
@@ -160,7 +144,6 @@ export function loadRealWorld(path: string, statePath: string, replay: boolean, 
 
   const real: RealData = {
     world,
-    held: all.filter((f) => heldIds.has(f.id)),
     scoringInputs,
     certBlocked,
     savedThresholds: state.thresholds,
@@ -169,21 +152,6 @@ export function loadRealWorld(path: string, statePath: string, replay: boolean, 
   };
   refreshBlockedUrls(real);
   return real;
-}
-
-/** Odsłania kolejny prawdziwy rekord w trybie demo. Data pobrania pozostaje prawdziwa. */
-export function releaseNext(real: RealData): { finding: Finding; campaign?: Campaign } | null {
-  const finding = real.held.shift();
-  if (!finding) return null;
-  const { world } = real;
-  world.findings = [finding, ...world.findings].sort((a, b) => b.fetchedAt.localeCompare(a.fetchedAt));
-  indexFinding(world, finding);
-  let campaign: Campaign | undefined;
-  if (finding.campaignId) {
-    world.members.set(finding.campaignId, [...(world.members.get(finding.campaignId) ?? []), finding.id]);
-    campaign = recomputeCampaign(world, finding.campaignId);
-  }
-  return { finding, campaign };
 }
 
 export function saveState(path: string, real: RealData): void {

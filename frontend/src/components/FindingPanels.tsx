@@ -1,7 +1,6 @@
 import { Anchor, Badge, Group, List, Paper, SimpleGrid, Stack, Text, Title } from '@mantine/core';
 import { IconExternalLink } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
 import type { Finding } from '../api/types';
 import { domainOf, scamQuotes, scamSignalTexts, suspiciousDomains, type ThresholdValues } from '../lib/findings';
 import { fmtCompact, fmtDateTime, fmtPct } from '../lib/format';
@@ -127,13 +126,6 @@ export function FindingMeta({ finding }: { finding: Finding }) {
       </Meta>
       <Meta label="Opublikowano">{fmtDateTime(finding.publishedAt)}</Meta>
       <Meta label="Pobrano">{fmtDateTime(finding.fetchedAt)}</Meta>
-      {finding.campaignId && (
-        <Meta label="Kampania">
-          <Anchor component={Link} to={`/campaigns/${finding.campaignId}`} size="sm">
-            {finding.campaignId}
-          </Anchor>
-        </Meta>
-      )}
       <Meta label="Wersja modelu">
         <Text span size="xs" c="dimmed">
           {finding.modelVersion}

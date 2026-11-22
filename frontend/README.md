@@ -9,8 +9,7 @@ Działa na mock serwerze, który jest kontraktem API dla backendu.
 cd frontend
 cp .env.example .env        # opcjonalnie
 npm ci
-npm run dev:all             # mock API :4000 + front :5173 (nowe rekordy co 15–30 s)
-npm run dev:demo            # to samo, nowe rekordy co 3–6 s
+npm run dev:all             # mock API :4000 + front :5173
 ```
 
 Front: http://localhost:5173 · API: http://localhost:4000/api
@@ -24,9 +23,8 @@ Node.js 20.19+ (testowane na 24), npm 10+. Docker do obrazów. Przeglądarka: Ch
 | Zmienna | Domyślnie | Opis |
 |---|---|---|
 | `VITE_API_URL` | `http://localhost:4000/api` | adres REST (wkompilowany przy buildzie) |
-| `VITE_WS_URL` | `http://localhost:4000` | adres socket.io |
+| `VITE_WS_URL` | `http://localhost:4000` | adres socket.io (synchronizacja statusów i progów) |
 | `MOCK_PORT` | `4000` | port mocka |
-| `MOCK_EMIT_MIN_MS` / `MOCK_EMIT_MAX_MS` | `15000` / `30000` | odstęp nowych rekordów |
 | `MOCK_SEED` | `42` | seed generatora danych |
 | `MOCK_CORS_ORIGIN` | `*` | CORS mocka |
 
@@ -80,7 +78,7 @@ Ponad tabelę z `docs/frontend-agent.md` §4:
 - `RuleDef` ma pole `module` (`null` dla 18 reguł, `1`/`3` dla `M1_PROMO`, `M3_ADVISORY`).
 - Raport CSV: UTF-8 z BOM, separator `;` (otwiera się poprawnie w Excelu PL).
 - `Finding` nie ma listy podejrzanych domen. Front oznacza link jako podejrzany, gdy rekord ma sygnał `IMPERSONATION`, `CERT_LIST_DOMAIN` lub `KNF_WARNING_LIST`, a domena linku jest wśród wskaźników rekordu. Lepiej dodać w backendzie `suspicious: boolean` per link.
-- Kolejność zdarzeń socketu dla jednego rekordu: `finding:new` → `campaign:new_member` → `finding:high_risk`. Front pokazuje jeden toast na rekord (alert kampanii ma pierwszeństwo).
+- Zdarzenia socketu: `finding:updated` (zmiana statusu) i `thresholds:updated` (zapis progów). Front odświeża po nich cache, bez powiadomień.
 
 ## Bezpieczeństwo zależności
 

@@ -61,11 +61,8 @@ services:
       - /tmp
     environment:
       DATA_MODE: ${DATA_MODE:-mock}
-      DEMO_REPLAY: ${DEMO_REPLAY:-0}
       AI_URL: http://ai-service:8000
       STATE_PATH: /state/state.json
-      MOCK_EMIT_MIN_MS: ${MOCK_EMIT_MIN_MS:-15000}
-      MOCK_EMIT_MAX_MS: ${MOCK_EMIT_MAX_MS:-30000}
       MOCK_SEED: ${MOCK_SEED:-42}
       MOCK_CORS_ORIGIN: ${MOCK_CORS_ORIGIN:-*}
     volumes:

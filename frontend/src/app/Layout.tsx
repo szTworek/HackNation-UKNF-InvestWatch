@@ -1,18 +1,12 @@
-import { Badge } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { IconChevronRight, IconSearch } from '@tabler/icons-react';
-import { useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { api } from '../api/client';
-import { useFindings, useOverview } from '../api/hooks';
+import { useEntities, useOverview } from '../api/hooks';
 import { useConnectionState } from '../api/socket';
-import { AlertBell, ConnectionIndicator, DateRangeFilter } from '../components/Header';
-import { RISK_HEX } from '../components/Terminal';
-import { fmtInt, fmtTime } from '../lib/format';
-import { PLATFORM_LABEL, RISK_LABEL } from '../lib/labels';
+import { ConnectionIndicator, DateRangeFilter } from '../components/Header';
+import { fmtInt } from '../lib/format';
 import { useDateRange, useRangeSearch } from '../lib/url';
-import { useLiveFeed, useRealtime } from './realtime';
 
 interface NavItem {
   to: string;
@@ -34,12 +28,13 @@ function readFontStep(): number {
   }
 }
 
-function crumbsFor(path: string, items: NavItem[]): { label: string; to?: string }[] {
+function crumbsFor(path: string, items: NavItem[], entityName?: string): { label: string; to?: string }[] {
   const item = items.find((n) => path === n.to || path.startsWith(`${n.to}/`));
   const out: { label: string; to?: string }[] = [{ label: 'Strona główna', to: '/' }];
-  if (path.startsWith('/findings/')) return [...out, { label: 'Wszystkie wyniki', to: '/findings' }, { label: path.split('/')[2] }];
-  if (path.startsWith('/campaigns/')) return [...out, { label: 'Kampanie', to: '/campaigns' }, { label: path.split('/')[2] }];
   if (path.startsWith('/modules/') && item) return [...out, { label: 'Moduły' }, { label: item.title }];
+  if (path.startsWith('/findings/')) return [...out, { label: 'Rekord' }, { label: path.split('/')[2] }];
+  if (path.startsWith('/entities/')) return [...out, { label: 'Podmioty', to: '/entities' }, { label: entityName ?? path.split('/')[2] }];
+  if (path.startsWith('/reports/')) return [...out, { label: 'Raporty', to: '/reports' }, { label: entityName ?? path.split('/')[2] }];
   return item ? [...out, { label: item.title }] : out;
 }
 
@@ -47,13 +42,10 @@ export function Layout() {
   const { from, to, setRange } = useDateRange();
   const search = useRangeSearch();
   const connection = useConnectionState();
-  const rt = useRealtime();
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const entities = useEntities();
   const o = useOverview(useMemo(() => ({ from, to }), [from, to])).data;
-  const latest = useFindings({ from, to, sort: 'fetchedAt:desc', page: 1, pageSize: 8 });
-  const feed = useLiveFeed(latest.data?.items);
-  const health = useQuery({ queryKey: ['health'], queryFn: api.health, staleTime: Infinity });
   const [phrase, setPhrase] = useState('');
   const [fontStep, setFontStep] = useState(readFontStep);
 
@@ -67,20 +59,22 @@ export function Layout() {
   }, [fontStep]);
 
   const modules: NavItem[] = [
-    { to: '/modules/1', label: 'M1 Finfluencerzy', title: 'Finfluencerzy i podmioty trzecie', key: 'F1', count: o?.byModule['1'] },
-    { to: '/modules/2', label: 'M2 Ryzyko', title: 'Informacja o ryzyku', key: 'F2', count: o?.byModule['2'] },
-    { to: '/modules/3', label: 'M3 Advisory', title: 'Shadow advisory', key: 'F3', count: o?.byModule['3'] },
-    { to: '/modules/scam', label: 'Oszustwa', title: 'Oszustwa', key: 'F4', count: o?.scamTotal },
+    { to: '/statistics', label: 'Statystyki', title: 'Statystyki', key: 'F4' },
+    { to: '/entities', label: 'Podmioty', title: 'Podmioty z rejestru KNF', key: 'F6', count: entities.data?.length },
+    { to: '/reports', label: 'Raporty', title: 'Raporty podmiotów', key: 'F7' },
+  ];
+  const moduleTabs: NavItem[] = [
+    { to: '/modules/1', label: 'Finfluencerzy', title: 'Finfluencerzy i podmioty trzecie', key: 'F1', count: o?.byModule['1'] },
+    { to: '/modules/2', label: 'Informacja o ryzyku', title: 'Informacja o ryzyku', key: 'F2', count: o?.byModule['2'] },
+    { to: '/modules/3', label: 'Shadow advisory', title: 'Shadow advisory', key: 'F3', count: o?.byModule['3'] },
   ];
   const other: NavItem[] = [
-    { to: '/findings', label: 'Wyniki', title: 'Wszystkie wyniki', key: 'F6' },
-    { to: '/campaigns', label: 'Kampanie', title: 'Kampanie', key: 'F7' },
-    { to: '/statistics', label: 'Statystyki', title: 'Statystyki', key: 'F8' },
     { to: '/history', label: 'Historia', title: 'Historia decyzji', key: 'F9' },
     { to: '/calibration', label: 'Kalibracja', title: 'Kalibracja progów', key: 'F10' },
   ];
-  const all = [...modules, ...other];
-  const crumbs = crumbsFor(pathname, all);
+  const all = [...moduleTabs, ...modules, ...other];
+  const entityId = pathname.match(/^\/(?:entities|reports)\/([^/]+)/)?.[1];
+  const crumbs = crumbsFor(pathname, all, entities.data?.find((e) => e.id === entityId)?.name);
 
   // skróty klawiszowe (F5 zostaje dla odświeżania przeglądarki)
   useEffect(() => {
@@ -97,8 +91,9 @@ export function Layout() {
   const onSearch = (e: FormEvent) => {
     e.preventDefault();
     const p = new URLSearchParams(search.replace(/^\?/, ''));
+    p.delete('q');
     if (phrase.trim()) p.set('q', phrase.trim());
-    navigate({ pathname: '/findings', search: `?${p.toString()}` });
+    navigate({ pathname: '/entities', search: `?${p.toString()}` });
   };
 
   const link = (n: NavItem) => (
@@ -114,7 +109,7 @@ export function Layout() {
       <div className="iw-topline" />
       <header className="iw-header">
         <div className="iw-container iw-header-row">
-          <Link to={{ pathname: '/modules/1', search }} className="iw-brand">
+          <Link to={{ pathname: '/statistics', search }} className="iw-brand">
             <span className="iw-brand-name">InvestWatch</span>
             <span className="iw-brand-rule" aria-hidden />
             <span className="iw-brand-desc">
@@ -126,7 +121,7 @@ export function Layout() {
             </span>
           </Link>
           <form className="iw-search" role="search" onSubmit={onSearch}>
-            <input aria-label="Szukaj po frazie" placeholder="Szukaj po frazie..." value={phrase} onChange={(e) => setPhrase(e.currentTarget.value)} />
+            <input aria-label="Szukaj podmiotu" placeholder="Szukaj podmiotu..." value={phrase} onChange={(e) => setPhrase(e.currentTarget.value)} />
             <button type="submit" aria-label="Szukaj">
               <IconSearch size={20} stroke={1.5} />
             </button>
@@ -139,42 +134,20 @@ export function Layout() {
             <button type="button" className="iw-tool" aria-label="Powiększ tekst" disabled={fontStep === FONT_SIZES.length - 1} onClick={() => setFontStep((s) => s + 1)}>
               A+
             </button>
-            {health.data?.demoReplay && (
-              <Badge color="yellow" variant="filled" tt="none" title="Rekordy są prawdziwe, symulowany jest tylko moment ich pojawiania się">
-                tryb demo
-              </Badge>
-            )}
             <ConnectionIndicator state={connection} />
-            <AlertBell alerts={rt.alerts} unread={rt.unread} onOpen={rt.markAllRead} onClear={rt.clear} />
           </div>
         </div>
       </header>
 
       <nav className="iw-nav" aria-label="Menu główne">
         <div className="iw-container iw-nav-row">
+          {moduleTabs.map(link)}
+          <span className="iw-nav-sep" aria-hidden />
           {modules.map(link)}
           <span className="iw-nav-sep" aria-hidden />
           {other.map(link)}
         </div>
       </nav>
-
-      <div className="iw-ticker" aria-label="Najnowsze rekordy">
-        <div className="iw-container iw-ticker-row">
-          <span className="iw-ticker-label">Nowe rekordy</span>
-          <div style={{ overflow: 'hidden', flex: 1 }}>
-            {feed.length > 0 && (
-              <div className="iw-ticker-track" key={feed[0].id}>
-                {feed.map((f) => (
-                  <Link key={f.id} to={`/findings/${f.id}${search}`} className="iw-ticker-item">
-                    <span style={{ color: 'var(--iw-muted)' }}>{fmtTime(f.at)}</span> {PLATFORM_LABEL[f.platform]}, {f.author}{' '}
-                    <span style={{ color: RISK_HEX[f.riskLevel], fontWeight: 600 }}>{RISK_LABEL[f.riskLevel]}</span>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
 
       <main className="iw-container iw-main">
         <ol className="iw-crumbs" aria-label="Ścieżka">

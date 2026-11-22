@@ -22,6 +22,16 @@ import type {
   Timeseries,
   TimeseriesGroupBy,
 } from './types';
+import type {
+  EntityAlert,
+  EntityItemWithFindings,
+  EntityOverview,
+  ItemsPage,
+  KnfEntity,
+  KnfEntityDetail,
+  MonitoredPage,
+  PageChangeDetail,
+} from './entityTypes';
 
 export const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:4000/api').replace(/\/$/, '');
 
@@ -114,6 +124,16 @@ export const api = {
   campaign: (id: string) => request<CampaignDetail>(`/campaigns/${encodeURIComponent(id)}`),
   indicator: (type: IndicatorType, value: string) =>
     request<IndicatorFindings>(`/indicators/${type}/${encodeURIComponent(value)}`),
+
+  entities: () => request<KnfEntity[]>('/entities'),
+  entity: (id: string) => request<KnfEntityDetail>(`/entities/${encodeURIComponent(id)}`),
+  entityItems: (id: string, q: { channel?: string; platform?: string; module?: string; limit?: number; offset?: number }) =>
+    request<ItemsPage>(`/entities/${encodeURIComponent(id)}/items${buildQuery({ ...q })}`),
+  entityPages: (id: string) => request<MonitoredPage[]>(`/entities/${encodeURIComponent(id)}/pages`),
+  entityAlerts: (id: string) => request<EntityAlert[]>(`/entities/${encodeURIComponent(id)}/alerts`),
+  item: (id: string) => request<EntityItemWithFindings>(`/items/${encodeURIComponent(id)}`),
+  change: (id: string) => request<PageChangeDetail>(`/changes/${encodeURIComponent(id)}`),
+  entityOverview: () => request<EntityOverview>('/entity-stats/overview'),
 
   reportUrl: (module: ModuleId, q: FindingsQuery) => {
     const rest: FindingsQuery = { ...q, module: undefined, page: undefined, pageSize: undefined };

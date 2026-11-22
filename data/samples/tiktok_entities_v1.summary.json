@@ -1,0 +1,101 @@
+{
+ "@xtbpl": {
+  "embed": {
+   "xtbpl": {
+    "status": 200,
+    "videos": 6,
+    "followers": 49200
+   }
+  },
+  "video_errors": [],
+  "new": 6
+ },
+ "@plus500official": {
+  "embed": {
+   "plus500official": {
+    "status": 200,
+    "videos": 6,
+    "followers": 42700
+   }
+  },
+  "video_errors": [],
+  "new": 6
+ },
+ "@trading212": {
+  "embed": {
+   "trading212": {
+    "status": 200,
+    "videos": 6,
+    "followers": 41300
+   }
+  },
+  "video_errors": [],
+  "new": 6
+ },
+ "@revolut": {
+  "embed": {
+   "revolut": {
+    "status": 200,
+    "videos": 6,
+    "followers": 521900
+   }
+  },
+  "video_errors": [],
+  "new": 6
+ },
+ "@etoro_official": {
+  "embed": {
+   "etoro_official": {
+    "status": 200,
+    "videos": 6,
+    "followers": 217400
+   }
+  },
+  "video_errors": [],
+  "new": 6
+ },
+ "@mr_pankracy": {
+  "embed": {
+   "mr_pankracy": {
+    "status": 200,
+    "videos": 6,
+    "followers": 24500
+   }
+  },
+  "video_errors": [],
+  "new": 6
+ },
+ "@kacper_snela": {
+  "embed": {
+   "kacper_snela": {
+    "status": 200,
+    "videos": 6,
+    "followers": 12700
+   }
+  },
+  "video_errors": [],
+  "new": 6
+ },
+ "@profit_investing": {
+  "embed": {
+   "profit_investing": {
+    "status": 200,
+    "videos": 6,
+    "followers": 5354
+   }
+  },
+  "video_errors": [],
+  "new": 6
+ },
+ "@wladcamonet": {
+  "embed": {
+   "wladcamonet": {
+    "status": 200,
+    "videos": 6,
+    "followers": 325
+   }
+  },
+  "video_errors": [],
+  "new": 6
+ }
+}

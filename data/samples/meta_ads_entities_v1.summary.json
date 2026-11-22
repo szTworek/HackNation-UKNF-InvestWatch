@@ -1,0 +1,94 @@
+{
+ "XTB": {
+  "scrolls_done": 6,
+  "login_wall": true,
+  "body_chars": 44461,
+  "returned": 87,
+  "kept": 84
+ },
+ "XTB kod": {
+  "scrolls_done": 5,
+  "login_wall": true,
+  "body_chars": 25137,
+  "returned": 50,
+  "kept": 41
+ },
+ "XTB polecenie": {
+  "scrolls_done": 1,
+  "login_wall": true,
+  "body_chars": 815,
+  "returned": 0,
+  "kept": 0
+ },
+ "eToro": {
+  "scrolls_done": 6,
+  "login_wall": true,
+  "body_chars": 104387,
+  "returned": 93,
+  "kept": 75
+ },
+ "eToro kod": {
+  "scrolls_done": 1,
+  "login_wall": true,
+  "body_chars": 25606,
+  "returned": 14,
+  "kept": 4
+ },
+ "Plus500": {
+  "scrolls_done": 6,
+  "login_wall": true,
+  "body_chars": 140056,
+  "returned": 97,
+  "kept": 9
+ },
+ "Trading 212": {
+  "scrolls_done": 6,
+  "login_wall": true,
+  "body_chars": 71120,
+  "returned": 104,
+  "kept": 59
+ },
+ "Trading 212 polecenie": {
+  "scrolls_done": 1,
+  "login_wall": true,
+  "body_chars": 815,
+  "returned": 0,
+  "kept": 0
+ },
+ "Revolut inwestowanie": {
+  "scrolls_done": 4,
+  "login_wall": true,
+  "body_chars": 25717,
+  "returned": 53,
+  "kept": 50
+ },
+ "Revolut akcje": {
+  "scrolls_done": 1,
+  "login_wall": true,
+  "body_chars": 9415,
+  "returned": 22,
+  "kept": 19
+ },
+ "Trading 212 kod": {
+  "scrolls_done": 1,
+  "login_wall": true,
+  "body_chars": 1028,
+  "returned": 1,
+  "kept": 0
+ },
+ "ytdlp_errors": [
+  "844397757965187: ERROR: [facebook:ads] 844397757965187: Unable to get verification cookie: HTTP Error 429: Too Many Requests (caused by <HTTPError 429: Too Many Reques",
+  "1502625730954011: ERROR: [facebook:ads] 1502625730954011: Unable to get verification cookie: HTTP Error 429: Too Many Requests (caused by <HTTPError 429: Too Many Reque",
+  "843655358753731: ERROR: [facebook:ads] 843655358753731: Unable to get verification cookie: HTTP Error 429: Too Many Requests (caused by <HTTPError 429: Too Many Reques",
+  "1437269528586761: ERROR: [facebook:ads] 1437269528586761: Unable to get verification cookie: HTTP Error 429: Too Many Requests (caused by <HTTPError 429: Too Many Reque",
+  "3111290712364259: ERROR: [facebook:ads] 3111290712364259: Unable to get verification cookie: HTTP Error 429: Too Many Requests (caused by <HTTPError 429: Too Many Reque",
+  "1442360491062640: ERROR: [facebook:ads] 1442360491062640: Unable to get verification cookie: HTTP Error 429: Too Many Requests (caused by <HTTPError 429: Too Many Reque",
+  "856264333960577: ERROR: [facebook:ads] 856264333960577: Unable to get verification cookie: HTTP Error 429: Too Many Requests (caused by <HTTPError 429: Too Many Reques",
+  "1459434972370191: ERROR: [facebook:ads] 1459434972370191: Unable to get verification cookie: HTTP Error 429: Too Many Requests (caused by <HTTPError 429: Too Many Reque",
+  "1302426817955394: ERROR: [facebook:ads] 1302426817955394: Unable to get verification cookie: HTTP Error 429: Too Many Requests (caused by <HTTPError 429: Too Many Reque",
+  "1158658933035194: ERROR: [facebook:ads] 1158658933035194: Unable to get verification cookie: HTTP Error 429: Too Many Requests (caused by <HTTPError 429: Too Many Reque",
+  "1169833278583569: ERROR: [facebook:ads] 1169833278583569: Unable to get verification cookie: HTTP Error 429: Too Many Requests (caused by <HTTPError 429: Too Many Reque",
+  "1750096442326783: ERROR: [facebook:ads] 1750096442326783: Unable to get verification cookie: HTTP Error 429: Too Many Requests (caused by <HTTPError 429: Too Many Reque",
+  "4339262876354123: ERROR: [facebook:ads] 4339262876354123: Unable to get verification cookie: HTTP Error 429: Too Many Requests (caused by <HTTPError 429: Too Many Reque"
+ ]
+}

@@ -265,8 +265,7 @@ export function ModuleTable(p: Props) {
         </Table.Thead>
         <Table.Tbody>
           {p.items.map((f) => {
-            const scam = f.scamP >= p.scamThreshold;
-            const cls = [scam && p.moduleKey !== 'scam' ? 'iw-row-scam' : '', p.freshIds.has(f.id) ? 'iw-row-new' : ''].filter(Boolean).join(' ');
+            const cls = [p.freshIds.has(f.id) ? 'iw-row-new' : ''].filter(Boolean).join(' ');
             return (
               <Table.Tr key={f.id} className={cls || undefined} onClick={() => p.onOpen(f.id)} style={{ cursor: 'pointer' }} bg={p.selected.has(f.id) ? '#eef3f9' : undefined}>
                 <Table.Td onClick={(e) => e.stopPropagation()}>
@@ -279,7 +278,7 @@ export function ModuleTable(p: Props) {
                   <Table.Td key={c.key}>{c.render(f)}</Table.Td>
                 ))}
                 <Table.Td>
-                  <Risk f={f} scam={scam} />
+                  <Risk f={f} scam={false} />
                 </Table.Td>
                 <Table.Td>
                   <StatusBadge status={f.status} size="sm" />

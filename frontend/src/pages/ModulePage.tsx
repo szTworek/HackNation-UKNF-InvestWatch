@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Grid, Group, Menu, MultiSelect, Pagination, Paper, Select, SimpleGrid, Stack, Switch, Text, TextInput, Title } from '@mantine/core';
+import { Box, Button, Grid, Group, Menu, MultiSelect, Pagination, Paper, Select, SimpleGrid, Stack, Switch, Text, TextInput, Title } from '@mantine/core';
 import { useDebouncedCallback } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconChevronDown, IconDownload, IconSearch } from '@tabler/icons-react';
@@ -7,7 +7,6 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { api } from '../api/client';
 import { useBulkStatus, useFindings, useRules, useThresholds, useUpdateStatus } from '../api/hooks';
 import type { FindingSummary, FindingsQuery, FlagKey, ModuleId, Platform, RiskLevel, RuleDef, Status } from '../api/types';
-import { useRealtime } from '../app/realtime';
 import { MODULE_COLOR } from '../app/theme';
 import { StatusMenuItems } from '../components/FindingsTable';
 import { ModuleTable, type ModuleKey } from '../components/ModuleTable';
@@ -40,21 +39,21 @@ interface ModuleConfig {
 
 const CONFIG: Record<ModuleKey, ModuleConfig> = {
   '1': {
-    title: 'Moduł 1: Finfluencerzy i podmioty trzecie',
+    title: 'Finfluencerzy i podmioty trzecie',
     scope: 'Reklamy zarejestrowanych firm inwestycyjnych publikowane przez osoby trzecie, w tym finfluencerów. Raport zestawia firmę, reklamującego, treść i URL.',
     color: MODULE_COLOR[1],
     base: { module: [1] },
     report: 1,
   },
   '2': {
-    title: 'Moduł 2: Informacja o ryzyku',
+    title: 'Informacja o ryzyku',
     scope: 'Materiały marketingowe zarejestrowanych firm inwestycyjnych sprawdzane według 18 kryteriów informacji o ryzyku.',
     color: MODULE_COLOR[2],
     base: { module: [2] },
     report: 2,
   },
   '3': {
-    title: 'Moduł 3: Shadow advisory',
+    title: 'Shadow advisory',
     scope: 'Podmioty spoza rejestru KNF, które faktycznie świadczą doradztwo inwestycyjne. Raport zestawia podmiot, treść oferty i URL.',
     color: MODULE_COLOR[3],
     base: { module: [3] },
@@ -188,7 +187,7 @@ function Kpi({ label, value, color }: { label: string; value?: number; color?: s
 
 export function ModuleRoute() {
   const { key } = useParams();
-  if (key !== '1' && key !== '2' && key !== '3' && key !== 'scam') return <Navigate to="/modules/1" replace />;
+  if (key !== '1' && key !== '2' && key !== '3') return <Navigate to="/modules/1" replace />;
   return <ModulePage moduleKey={key} key={key} />;
 }
 
@@ -211,7 +210,6 @@ export function ModulePage({ moduleKey }: { moduleKey: ModuleKey }) {
   const thresholds = useThresholds();
   const updateStatus = useUpdateStatus();
   const bulk = useBulkStatus();
-  const rt = useRealtime();
 
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [q, setQ] = useState(filters.q);
@@ -293,27 +291,6 @@ export function ModulePage({ moduleKey }: { moduleKey: ModuleKey }) {
         <Kpi label="Czeka na decyzję" value={waiting.data?.total} color={cfg.color} />
       </SimpleGrid>
 
-      {rt.pendingNew > 0 && (
-        <Alert color="knf" variant="light" py={8}>
-          <Group justify="space-between">
-            <Text size="sm">{rt.pendingNew === 1 ? '1 nowy rekord' : `${fmtInt(rt.pendingNew)} nowych rekordów`}</Text>
-            <Button
-              size="xs"
-              variant="light"
-              onClick={() => {
-                rt.resetPending();
-                void findings.refetch();
-                void all.refetch();
-                void newToday.refetch();
-                void highRisk.refetch();
-                void waiting.refetch();
-              }}
-            >
-              Odśwież listę
-            </Button>
-          </Group>
-        </Alert>
-      )}
 
       <Panel
         title={`Rekordy (${fmtInt(total)})`}

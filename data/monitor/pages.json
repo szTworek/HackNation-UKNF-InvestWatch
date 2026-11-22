@@ -1,0 +1,38 @@
+[
+  {"page_id": "xtb-home", "entity_id": "xtb", "url": "https://www.xtb.com/pl", "label": "Home (PL)"},
+  {"page_id": "xtb-forex", "entity_id": "xtb", "url": "https://www.xtb.com/pl/forex", "label": "Forex CFD"},
+  {"page_id": "xtb-indices", "entity_id": "xtb", "url": "https://www.xtb.com/pl/indeksy-gieldowe", "label": "Index CFD"},
+  {"page_id": "xtb-commodities", "entity_id": "xtb", "url": "https://www.xtb.com/pl/surowce", "label": "Commodity CFD"},
+  {"page_id": "xtb-etf", "entity_id": "xtb", "url": "https://www.xtb.com/pl/etf", "label": "ETF"},
+  {"page_id": "xtb-interest", "entity_id": "xtb", "url": "https://www.xtb.com/pl/odsetki", "label": "Interest on cash (promo)"},
+  {"page_id": "xtb-instrument-spec", "entity_id": "xtb", "url": "https://www.xtb.com/pl/specyfikacja-instrumentow", "label": "Instrument specification / fees"},
+
+  {"page_id": "etoro-home", "entity_id": "etoro", "url": "https://www.etoro.com/pl/", "label": "Home (PL)"},
+  {"page_id": "etoro-cfd", "entity_id": "etoro", "url": "https://www.etoro.com/pl/trading/cfd/", "label": "CFD trading"},
+  {"page_id": "etoro-interest", "entity_id": "etoro", "url": "https://www.etoro.com/pl/investing/interest-on-balance/", "label": "Interest on balance (promo)"},
+  {"page_id": "etoro-fees", "entity_id": "etoro", "url": "https://www.etoro.com/pl/trading/fees/", "label": "Fees"},
+  {"page_id": "etoro-crypto", "entity_id": "etoro", "url": "https://www.etoro.com/pl/crypto/", "label": "Crypto"},
+  {"page_id": "etoro-risk-disclosure", "entity_id": "etoro", "url": "https://www.etoro.com/pl/customer-service/general-risk-disclosure/", "label": "General risk disclosure"},
+
+  {"page_id": "plus500-home", "entity_id": "plus500", "url": "https://www.plus500.com/pl/", "label": "Home (PL)"},
+  {"page_id": "plus500-forex", "entity_id": "plus500", "url": "https://www.plus500.com/pl/trading/forex", "label": "Forex CFD"},
+  {"page_id": "plus500-indices", "entity_id": "plus500", "url": "https://www.plus500.com/pl/trading/indices", "label": "Index CFD"},
+  {"page_id": "plus500-crypto", "entity_id": "plus500", "url": "https://www.plus500.com/pl/trading/cryptocurrencies", "label": "Crypto CFD"},
+  {"page_id": "plus500-promo-bulls", "entity_id": "plus500", "url": "https://www.plus500.com/pl/promotions/bulls", "label": "Promotion (Chicago Bulls)"},
+  {"page_id": "plus500-disclosures", "entity_id": "plus500", "url": "https://www.plus500.com/pl/disclosures", "label": "Disclosures / legal"},
+
+  {"page_id": "trading212-home", "entity_id": "trading212", "url": "https://www.trading212.com/pl", "label": "Home (PL)"},
+  {"page_id": "trading212-cfd", "entity_id": "trading212", "url": "https://www.trading212.com/pl/cfd", "label": "CFD"},
+  {"page_id": "trading212-invest", "entity_id": "trading212", "url": "https://www.trading212.com/pl/invest", "label": "Invest"},
+  {"page_id": "trading212-pricing", "entity_id": "trading212", "url": "https://www.trading212.com/pl/pricing", "label": "Pricing / fees"},
+  {"page_id": "trading212-legal", "entity_id": "trading212", "url": "https://www.trading212.com/pl/legal-documentation", "label": "Legal documentation"},
+  {"page_id": "trading212-help-cfd", "entity_id": "trading212", "url": "https://helpcentre.trading212.com/hc/en-us/articles/11574486714397-What-is-CFD", "label": "Help centre: What is CFD (EN)"},
+  {"page_id": "trading212-help-cfd-loss", "entity_id": "trading212", "url": "https://helpcentre.trading212.com/hc/en-us/articles/360007380097-Can-I-lose-more-money-than-my-deposit", "label": "Help centre: CFD losses (EN)"},
+  {"page_id": "trading212-help-fees", "entity_id": "trading212", "url": "https://helpcentre.trading212.com/hc/en-us/articles/360007081637-What-are-the-applicable-stock-exchange-fees", "label": "Help centre: fees (EN)"},
+
+  {"page_id": "revolut-home", "entity_id": "revolut", "url": "https://www.revolut.com/pl-PL/", "label": "Home (PL)"},
+  {"page_id": "revolut-stocks", "entity_id": "revolut", "url": "https://www.revolut.com/pl-PL/stock-trading/", "label": "Stock trading"},
+  {"page_id": "revolut-etfs", "entity_id": "revolut", "url": "https://www.revolut.com/pl-PL/etfs/", "label": "ETF"},
+  {"page_id": "revolut-crypto", "entity_id": "revolut", "url": "https://www.revolut.com/pl-PL/crypto/", "label": "Crypto"},
+  {"page_id": "revolut-legal", "entity_id": "revolut", "url": "https://www.revolut.com/pl-PL/legal/", "label": "Legal"}
+]

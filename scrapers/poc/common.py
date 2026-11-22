@@ -4,6 +4,7 @@ Collector interface: collect(query: str, notes: dict) -> Iterable[RawDocument]."
 import json
 import os
 import random
+import re
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -63,6 +64,22 @@ def missing_core(doc: dict) -> list[str]:
 
 def plain_text(doc: dict) -> str:
     return "\n\n".join(s["text"] for s in doc.get("text") or [] if s.get("text"))
+
+
+# Polish markers compared without diacritics, because OCR often drops them ("DOLACZ", "srodki").
+PL_WORDS = {"i", "w", "z", "na", "dla", "bez", "sie", "jest", "nie", "oraz", "twoje", "twoich", "swoim", "konto",
+            "zl", "dolacz", "srodki", "pieniadze", "inwestuj", "inwestujesz", "inwestowanie", "inwestycje",
+            "prowizji", "oplat", "ryzyko", "rachunek", "rachunkow", "zarabiaj", "kup", "akcje", "kupuj", "otworz",
+            "nota", "prawna", "wiecej", "informacji", "pomysl", "okazje", "zlecen", "rejestr", "inwestowaniu"}
+PL_LETTERS = re.compile("[ąęłśźżćń]")  # absent from Czech and Slovak; strong Polish signal on its own
+
+
+def pl_score(text: str) -> int:
+    import unicodedata
+    low = text.lower()
+    plain = unicodedata.normalize("NFKD", low.replace("ł", "l"))
+    plain = "".join(c for c in plain if not unicodedata.combining(c))
+    return sum(1 for w in re.findall(r"[a-z]+", plain) if w in PL_WORDS) + (2 if PL_LETTERS.search(low) else 0)
 
 
 def envelope(*, url, source, collector, content_type, text=None, sections=None, query_keywords=None,

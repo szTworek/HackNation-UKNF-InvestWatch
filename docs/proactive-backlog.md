@@ -52,6 +52,10 @@ Zamknięte w iter. 2: R2 (reguły wizualne) → D3 + Wow #1; R3, R4 (demo bez si
 
 | 10 | P13. Scenariusz demo jako test E2E: skrypt Playwright przechodzi scenariusz 3 min z Wow (wklej URL → alert WebSocket → karta → suwak progu), w CI służy jako smoke test, a z `record_video_dir` nagrywa film do zgłoszenia; ten sam skrypt sprawdza czystą konsolę (`page.on("console")`, R7) | 2 h | proces AI 20% (test zamiast deklaracji), technologia/demo 30% | nowy, iter. 6 |
 
+| 11 | P14. Byt `Channel` (kanał/autor) przypisany do podmiotu: `platform`, `handle`, `entity_id`, `relation` (`oficjalny` / `przypisany automatycznie` / `przypisany ręcznie`), `basis` (np. link do domeny podmiotu w bio, `beneficiary_payers` z Meta, kod polecający, decyzja analityka), `followers`. Preprocessing przypisuje `author` z koperty (D2) do kanału, kanał do podmiotu; automatyczne przypisania analityk potwierdza. Zasila Podmiot 360 i rozmiar kropki w macierzy ryzyka | 2–3 h | zgodność 20% (M1: „dane podmiotu reklamującego”), atrakcyjność 10% | pomysł Szymona, 2026-11-21 21:19 |
+
+Metryki zaakceptowane do makiety (Szymon): lejek statusów, heatmapa podmioty × reguły, odsetek materiałów bez naruszeń w czasie, donut źródeł, macierz ryzyka (scatter). Odrzucone: czas od wykrycia do decyzji; na razie odrzucone: reklamy własne vs u osób trzecich i top promotorzy.
+
 Makieta P7–P9 i całego UI: https://claude.ai/artifact/7C1JhKBJsxsHzWkQ4mxM3c (Dashboard, Karta dowodowa M2, Panel kalibracji; podmioty fikcyjne, liczby przykładowe).
 
 Pokryte w innych pracach (nie rozwijam): P1 gold set → Wow #5; P2 render 3 viewporty → D3 + Wow #1; P3 tryb replay → Feasibility §4.
