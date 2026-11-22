@@ -8,6 +8,7 @@ const PHASE: Record<string, string> = {
   idle: 'Bezczynny',
   starting: 'Start',
   scraping: 'Zbieranie',
+  transcription: 'Transkrypcja',
   language: 'Filtr języka',
   llm: 'Ocena LLM',
 };

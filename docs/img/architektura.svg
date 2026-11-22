@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 772" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8a94a6"/>
+    </marker>
+    <style>
+      .layer { fill: #f5f7fa; stroke: #dde3ea; }
+      .lname { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; fill: #6b7686; }
+      .tech { font-size: 11px; fill: #6b7686; }
+      .box { fill: #fff; stroke: #c9d2dd; }
+      .key { fill: #0b2f63; }
+      .t { font-size: 14px; font-weight: 600; fill: #1d2633; }
+      .s { font-size: 11.5px; fill: #5b6676; }
+      .tw { font-size: 14px; font-weight: 600; fill: #fff; }
+      .sw { font-size: 11.5px; fill: #c8d6ee; }
+      .chip { fill: #fff; stroke: #c9d2dd; }
+      .ct { font-size: 12.5px; fill: #1d2633; }
+      .flow { stroke: #8a94a6; stroke-width: 1.5; fill: none; marker-end: url(#a); }
+      .el { font-size: 11px; fill: #6b7686; }
+    </style>
+  </defs>
+  <rect width="1000" height="772" fill="#ffffff"/>
+
+  <!-- 1. Źródła -->
+  <rect class="layer" x="20" y="16" width="960" height="92" rx="10"/>
+  <text class="lname" x="40" y="40">ŹRÓDŁA</text>
+  <g>
+    <rect class="chip" x="40" y="54" width="140" height="36" rx="18"/><text class="ct" x="110" y="77" text-anchor="middle">Google Ads TC</text>
+    <rect class="chip" x="194" y="54" width="140" height="36" rx="18"/><text class="ct" x="264" y="77" text-anchor="middle">Meta Ad Library</text>
+    <rect class="chip" x="348" y="54" width="150" height="36" rx="18"/><text class="ct" x="423" y="77" text-anchor="middle">Microsoft Ad Library</text>
+    <rect class="chip" x="512" y="54" width="110" height="36" rx="18"/><text class="ct" x="567" y="77" text-anchor="middle">YouTube</text>
+    <rect class="chip" x="636" y="54" width="110" height="36" rx="18"/><text class="ct" x="691" y="77" text-anchor="middle">TikTok</text>
+    <rect class="chip" x="760" y="54" width="200" height="36" rx="18"/><text class="ct" x="860" y="77" text-anchor="middle">Strony firm z rejestru KNF</text>
+  </g>
+
+  <path class="flow" d="M500 108 V136"/>
+
+  <!-- 2. Silnik zbierania -->
+  <rect class="layer" x="20" y="138" width="960" height="130" rx="10"/>
+  <text class="lname" x="40" y="162">SILNIK ZBIERANIA</text>
+  <text class="tech" x="960" y="162" text-anchor="end">scrape-worker · Python, Playwright, httpx, yt-dlp</text>
+  <rect class="key" x="40" y="176" width="220" height="74" rx="8"/>
+  <text class="tw" x="56" y="202">Kolejka przebiegów</text>
+  <text class="sw" x="56" y="221">kolektory × zapytania, rotacja</text>
+  <text class="sw" x="56" y="238">harmonogram · blokada 409</text>
+  <rect class="box" x="276" y="176" width="220" height="74" rx="8"/>
+  <text class="t" x="292" y="202">Kolektory</text>
+  <text class="s" x="292" y="221">rotacja User-Agent, robots.txt</text>
+  <text class="s" x="292" y="238">deduplikacja po URL · filtr języka</text>
+  <rect class="box" x="512" y="176" width="220" height="74" rx="8"/>
+  <text class="t" x="528" y="202">OCR i transkrypcja</text>
+  <text class="s" x="528" y="221">RapidOCR: tekst z grafik reklam</text>
+  <text class="s" x="528" y="238">faster-whisper: filmy YT, TikTok</text>
+  <rect class="box" x="748" y="176" width="212" height="74" rx="8"/>
+  <text class="t" x="764" y="202">Monitor stron</text>
+  <text class="s" x="764" y="221">zrzut, bloki ze stylem</text>
+  <text class="s" x="764" y="238">sha256 tekstu i stylu → diff</text>
+
+  <path class="flow" d="M500 268 V296"/>
+  <text class="el" x="510" y="287">rekord JSON (source, url, author, text…)</text>
+
+  <!-- 3. ai-service -->
+  <rect class="layer" x="20" y="298" width="960" height="130" rx="10"/>
+  <text class="lname" x="40" y="322">ANALIZA AI</text>
+  <text class="tech" x="960" y="322" text-anchor="end">ai-service · Python, FastAPI</text>
+  <rect class="box" x="40" y="336" width="290" height="74" rx="8"/>
+  <text class="t" x="56" y="362">Sygnały</text>
+  <text class="s" x="56" y="381">rejestr KNF (744 wpisy), słowa kluczowe</text>
+  <text class="s" x="56" y="398">ze stemmingiem, normalizacja tekstu</text>
+  <rect class="key" x="346" y="336" width="300" height="74" rx="8"/>
+  <text class="tw" x="362" y="362">LLM: M1 · M2 · M3 · NONE</text>
+  <text class="sw" x="362" y="381">Ollama + Bielik 11B (on-premise)</text>
+  <text class="sw" x="362" y="398">albo Groq gpt-oss-120b · pewność, cytaty</text>
+  <rect class="box" x="662" y="336" width="298" height="74" rx="8"/>
+  <text class="t" x="678" y="362">Reguły R01–R18</text>
+  <text class="s" x="678" y="381">czcionka, kontrast, położenie: stałe progi</text>
+  <text class="s" x="678" y="398">ocena istotności zmian stron</text>
+
+  <path class="flow" d="M500 428 V456"/>
+  <text class="el" x="510" y="447">ocena + powiązanie z podmiotem</text>
+
+  <!-- 4. Składowanie -->
+  <rect class="layer" x="20" y="458" width="960" height="112" rx="10"/>
+  <text class="lname" x="40" y="482">SKŁADOWANIE</text>
+  <g>
+    <path class="box" d="M260 500 v44 a110 12 0 0 0 220 0 v-44"/>
+    <ellipse class="box" cx="370" cy="500" rx="110" ry="12"/>
+    <text class="t" x="370" y="532" text-anchor="middle">Postgres</text>
+    <text class="s" x="370" y="550" text-anchor="middle">rekordy, oceny, statusy, progi</text>
+  </g>
+  <g>
+    <path class="box" d="M520 500 v44 a110 12 0 0 0 220 0 v-44"/>
+    <ellipse class="box" cx="630" cy="500" rx="110" ry="12"/>
+    <text class="t" x="630" y="532" text-anchor="middle">MinIO</text>
+    <text class="s" x="630" y="550" text-anchor="middle">grafiki reklam, zrzuty stron</text>
+  </g>
+
+  <path class="flow" d="M500 570 V598"/>
+
+  <!-- 5. Aplikacja -->
+  <rect class="layer" x="20" y="600" width="960" height="156" rx="10"/>
+  <text class="lname" x="40" y="624">APLIKACJA</text>
+  <rect class="box" x="40" y="640" width="400" height="96" rx="8"/>
+  <text class="t" x="56" y="666">api · Node.js, Express, Socket.IO</text>
+  <text class="s" x="56" y="685">REST: podmioty, rekordy, statusy, progi</text>
+  <text class="s" x="56" y="702">alert finding:high_risk w czasie rzeczywistym</text>
+  <text class="s" x="56" y="719">sterowanie zbieraniem danych</text>
+  <rect class="key" x="560" y="640" width="400" height="96" rx="8"/>
+  <text class="tw" x="576" y="666">Panel analityka · React, Mantine, Recharts</text>
+  <text class="sw" x="576" y="685">moduły M1–M3 z filtrami, podmioty, statystyki</text>
+  <text class="sw" x="576" y="702">raporty PDF, historia decyzji</text>
+  <text class="sw" x="576" y="719">kalibracja progów: precyzja ↔ pełność</text>
+  <path class="flow" d="M440 672 H556"/>
+  <text class="el" x="498" y="664" text-anchor="middle">REST + WebSocket</text>
+  <path class="flow" d="M556 700 H444"/>
+  <text class="el" x="498" y="716" text-anchor="middle">„Zbieranie danych”</text>
+</svg>
