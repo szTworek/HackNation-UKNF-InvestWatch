@@ -28,7 +28,6 @@ import type {
   TimeseriesGroupBy,
 } from '../src/api/types';
 import {
-  CAMPAIGN_STATUS_LABEL,
   CONTENT_TYPES,
   PLATFORMS,
   PLATFORM_LABEL,
@@ -38,6 +37,7 @@ import {
   STATUSES,
   STATUS_LABEL,
 } from '../src/lib/labels';
+import { registerEntityRoutes } from './entities';
 import { frameSvg, landingSvg } from './enrich';
 import { campaignGraph, egoGraph } from './graph';
 import { RULES } from './rules';
@@ -47,11 +47,10 @@ import {
   fetchEvalSet,
   loadRealWorld,
   type RealData,
-  releaseNext,
   rescoreViaAi,
   saveState,
 } from './real';
-import { applyThresholds, createLiveFinding, createWorld, recomputeCampaign, type World } from './seed';
+import { applyThresholds, createWorld, recomputeCampaign, type World } from './seed';
 
 try {
   process.loadEnvFile('.env');
@@ -59,10 +58,7 @@ try {
   // brak .env – zostają wartości domyślne
 }
 
-const fast = process.argv.includes('--fast');
 const PORT = Number(process.env.MOCK_PORT ?? 4000);
-const EMIT_MIN = fast ? 3000 : Number(process.env.MOCK_EMIT_MIN_MS ?? 15000);
-const EMIT_MAX = fast ? 6000 : Math.max(EMIT_MIN, Number(process.env.MOCK_EMIT_MAX_MS ?? 30000));
 const SEED = Number(process.env.MOCK_SEED ?? 42);
 const CORS_ORIGIN = process.env.MOCK_CORS_ORIGIN ?? '*';
 
@@ -73,18 +69,15 @@ if (DATA_MODE !== 'mock' && DATA_MODE !== 'real') {
   process.stderr.write(`[api] Nieznany DATA_MODE: ${DATA_MODE} (dozwolone: mock, real)\n`);
   process.exit(1);
 }
-const DEMO_REPLAY = DATA_MODE === 'real' && process.env.DEMO_REPLAY === '1';
 const AI_URL = (process.env.AI_URL ?? 'http://localhost:8000').replace(/\/$/, '');
 const DATA_DIR = join(process.cwd(), 'mock-server', 'data');
 const REAL_PATH = process.env.REAL_DATA_PATH ?? join(DATA_DIR, 'findings.real.json');
 const STATE_PATH = process.env.STATE_PATH ?? join(DATA_DIR, 'state.json');
-const REPLAY_MIN_MS = 4000;
-const REPLAY_MAX_MS = 8000;
 
 function loadReal(): RealData | null {
   if (DATA_MODE !== 'real') return null;
   try {
-    return loadRealWorld(REAL_PATH, STATE_PATH, DEMO_REPLAY, new Date());
+    return loadRealWorld(REAL_PATH, STATE_PATH, new Date());
   } catch (e) {
     process.stderr.write(`[api] ${(e as Error).message}\n`);
     process.exit(1);
@@ -309,7 +302,7 @@ app.use((req, res, next) => {
 const notFound = (res: Response, what = 'Nie znaleziono') => res.status(404).json({ error: what });
 
 app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', findings: world.findings.length, dataMode: DATA_MODE, demoReplay: DEMO_REPLAY });
+  res.json({ status: 'ok', findings: world.findings.length, dataMode: DATA_MODE });
 });
 
 app.get('/api/findings', (req, res) => {
@@ -681,6 +674,9 @@ app.get('/api/assets/frame/:id/:file', (req, res) => {
   res.send(frameSvg(frame.ocrText, frame.t));
 });
 
+const entityCount = registerEntityRoutes(app);
+log(`podmioty: ${entityCount} (rejestr KNF + snapshot rekordów)`);
+
 app.use('/api', (_req, res) => {
   notFound(res, 'Nieznany endpoint');
 });
@@ -699,35 +695,6 @@ io.on('connection', (socket) => {
   log(`klient połączony (${socket.id}), aktywnych: ${io.engine.clientsCount}`);
   socket.on('disconnect', () => log(`klient rozłączony (${socket.id})`));
 });
-
-function scheduleEmit(): void {
-  const delay = EMIT_MIN + Math.random() * (EMIT_MAX - EMIT_MIN);
-  setTimeout(() => {
-    const { finding, campaign } = createLiveFinding(world, new Date());
-    io.emit('finding:new', finding);
-    if (campaign && campaign.scamShare >= 0.5) io.emit('campaign:new_member', { campaign, finding });
-    if (finding.riskLevel === 'HIGH' || finding.riskLevel === 'CRITICAL') io.emit('finding:high_risk', finding);
-    log(
-      `nowy rekord ${finding.id} (${RISK_LABEL[finding.riskLevel]}${campaign ? `, kampania ${campaign.id} – ${CAMPAIGN_STATUS_LABEL[campaign.status]}` : ''})`,
-    );
-    scheduleEmit();
-  }, delay);
-}
-
-/** DEMO_REPLAY: odsłania prawdziwe rekordy trzymane poza listą. Nie tworzy nowych. */
-function scheduleReplay(data: RealData): void {
-  if (!data.held.length) return;
-  setTimeout(() => {
-    const next = releaseNext(data);
-    if (next) {
-      io.emit('finding:new', next.finding);
-      if (next.campaign) io.emit('campaign:new_member', { campaign: next.campaign, finding: next.finding });
-      if (next.finding.riskLevel === 'HIGH' || next.finding.riskLevel === 'CRITICAL') io.emit('finding:high_risk', next.finding);
-      log(`demo: odsłonięto ${next.finding.id}, zostało ${data.held.length}`);
-    }
-    scheduleReplay(data);
-  }, REPLAY_MIN_MS + Math.random() * (REPLAY_MAX_MS - REPLAY_MIN_MS));
-}
 
 /** Zapisane progi działają po restarcie tylko wtedy, gdy ai-service potrafi je przeliczyć. */
 async function restoreThresholds(data: RealData): Promise<void> {
@@ -748,12 +715,8 @@ async function start(): Promise<void> {
   httpServer.listen(PORT, () => {
     log(`API: http://localhost:${PORT}/api, tryb ${DATA_MODE}, ${world.findings.length} rekordów, ${world.campaigns.size} kampanii`);
     if (real) {
-      log(`dane z ${real.generatedAt}, model ${real.modelVersion}${DEMO_REPLAY ? `, odtwarzanie demo: ${real.held.length} rekordów` : ''}`);
-      if (DEMO_REPLAY) scheduleReplay(real);
-      return;
+      log(`dane z ${real.generatedAt}, model ${real.modelVersion}`);
     }
-    log(`nowe rekordy co ${Math.round(EMIT_MIN / 1000)}–${Math.round(EMIT_MAX / 1000)} s${fast ? ' (--fast)' : ''}`);
-    scheduleEmit();
   });
 }
 

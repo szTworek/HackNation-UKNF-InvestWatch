@@ -39,7 +39,7 @@ services:
       target: dev
     restart: "no"
     read_only: false
-    command: ["npx", "tsx", "watch", "mock-server/server.ts", "--fast"]
+    command: ["npx", "tsx", "watch", "mock-server/server.ts"]
     ports:
       - "127.0.0.1:4000:4000"
     volumes:

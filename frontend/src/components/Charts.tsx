@@ -34,9 +34,9 @@ const axisProps = {
 
 const SERIES: Record<TimeseriesGroupBy, Record<string, { label: string; color: string }>> = {
   module: {
-    '1': { label: 'M1 Finfluencerzy', color: C.blue },
-    '2': { label: 'M2 Informacja o ryzyku', color: C.teal },
-    '3': { label: 'M3 Shadow advisory', color: C.violet },
+    '1': { label: 'Finfluencerzy', color: C.blue },
+    '2': { label: 'Informacja o ryzyku', color: C.teal },
+    '3': { label: 'Shadow advisory', color: C.violet },
     scam: { label: 'Oszustwa', color: C.red },
   },
   platform: {

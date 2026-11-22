@@ -10,12 +10,12 @@ import { theme } from './theme';
 
 // ekrany ładowane dopiero przy wejściu (wykresy i graf to osobne, duże paczki)
 const Statistics = lazy(() => import('../pages/Statistics').then((m) => ({ default: m.Statistics })));
-const History = lazy(() => import('../pages/History').then((m) => ({ default: m.History })));
+const Entities = lazy(() => import('../pages/Entities').then((m) => ({ default: m.Entities })));
+const EntityDetail = lazy(() => import('../pages/EntityDetail').then((m) => ({ default: m.EntityDetail })));
+const Reports = lazy(() => import('../pages/Reports').then((m) => ({ default: m.Reports })));
 const ModuleRoute = lazy(() => import('../pages/ModulePage').then((m) => ({ default: m.ModuleRoute })));
-const AllFindings = lazy(() => import('../pages/ModulePage').then((m) => ({ default: () => <m.ModulePage moduleKey="all" /> })));
+const History = lazy(() => import('../pages/History').then((m) => ({ default: m.History })));
 const FindingDetail = lazy(() => import('../pages/FindingDetail').then((m) => ({ default: m.FindingDetail })));
-const Campaigns = lazy(() => import('../pages/Campaigns').then((m) => ({ default: m.Campaigns })));
-const CampaignDetailPage = lazy(() => import('../pages/CampaignDetail').then((m) => ({ default: m.CampaignDetailPage })));
 const Calibration = lazy(() => import('../pages/Calibration').then((m) => ({ default: m.Calibration })));
 const NotFound = lazy(() => import('../pages/NotFound').then((m) => ({ default: m.NotFound })));
 
@@ -35,13 +35,14 @@ export function App() {
               <Routes>
                 <Route element={<Layout />}>
                   {[
-                    { index: true, el: <ToFindings /> },
-                    { path: 'modules/:key', el: <ModuleRoute /> },
-                    { path: 'findings', el: <AllFindings /> },
-                    { path: 'findings/:id', el: <FindingDetail /> },
-                    { path: 'campaigns', el: <Campaigns /> },
-                    { path: 'campaigns/:id', el: <CampaignDetailPage /> },
+                    { index: true, el: <ToStatistics /> },
                     { path: 'statistics', el: <Statistics /> },
+                    { path: 'entities', el: <Entities /> },
+                    { path: 'entities/:id', el: <EntityDetail /> },
+                    { path: 'reports', el: <Reports /> },
+                    { path: 'reports/:id', el: <Reports /> },
+                    { path: 'modules/:key', el: <ModuleRoute /> },
+                    { path: 'findings/:id', el: <FindingDetail /> },
                     { path: 'history', el: <History /> },
                     { path: 'calibration', el: <Calibration /> },
                     { path: '*', el: <NotFound /> },
@@ -62,8 +63,8 @@ export function App() {
   );
 }
 
-/** Strona startowa to moduł 1 (zakres dat z URL zostaje). */
-function ToFindings() {
+/** Strona startowa to statystyki (zakres dat z URL zostaje). */
+function ToStatistics() {
   const { search } = useLocation();
-  return <Navigate to={{ pathname: '/modules/1', search }} replace />;
+  return <Navigate to={{ pathname: '/statistics', search }} replace />;
 }

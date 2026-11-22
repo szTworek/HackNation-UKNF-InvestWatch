@@ -9,10 +9,9 @@
   "scripts": {
     "dev": "vite",
     "mock": "tsx mock-server/server.ts",
-    "mock:fast": "tsx mock-server/server.ts --fast",
     "dev:all": "concurrently -k -n mock,web -c blue,green \"npm:mock\" \"npm:dev\"",
-    "dev:demo": "concurrently -k -n mock,web -c blue,green \"npm:mock:fast\" \"npm:dev\"",
     "seed": "tsx mock-server/seed.ts",
+    "entities:build": "tsx mock-server/build-entities.ts",
     "build": "tsc -p tsconfig.app.json && vite build",
     "build:mock": "esbuild mock-server/server.ts --bundle --platform=node --target=node20 --format=cjs --outfile=dist-mock/server.cjs --external:bufferutil --external:utf-8-validate",
     "preview": "vite preview",

@@ -242,7 +242,6 @@ export interface ApiHealth {
   status: string;
   findings: number;
   dataMode: 'mock' | 'real';
-  demoReplay: boolean;
 }
 
 export interface Page<T> {
@@ -378,11 +377,8 @@ export interface FindingsQuery {
 
 // Zdarzenia socket.io
 export interface ServerToClientEvents {
-  'finding:new': (f: Finding) => void;
-  'finding:high_risk': (f: Finding) => void;
   'finding:updated': (f: Finding) => void;
   'thresholds:updated': (t: Thresholds) => void;
-  'campaign:new_member': (e: { campaign: Campaign; finding: Finding }) => void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type

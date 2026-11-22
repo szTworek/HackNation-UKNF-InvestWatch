@@ -418,33 +418,6 @@ export function createWorld(seed: number, now: Date): World {
   return world;
 }
 
-/** Nowy rekord „z produkcji” dla socketu. Czasem dołącza do istniejącej kampanii. */
-export function createLiveFinding(world: World, now: Date): { finding: Finding; campaign?: Campaign } {
-  const rng = world.rng;
-  let draft: Draft;
-  const roll = rng.next();
-  const active = CAMPAIGNS.filter((c) => world.campaigns.get(c.id)?.status !== 'CLOSED');
-  if (roll < 0.4 && active.some((c) => c.scam)) {
-    const def = rng.weighted(active.filter((c) => c.scam).map((c) => [c, c.size] as const));
-    draft = campaignDraft(rng, def);
-  } else if (roll < 0.47 && active.some((c) => !c.scam)) {
-    draft = campaignDraft(rng, rng.pick(active.filter((c) => !c.scam)));
-  } else {
-    const [, , make] = rng.weighted(STANDALONE.map((e) => [e, e[0] === 'NON_FIN' ? 20 : e[1]] as const));
-    draft = make(rng);
-  }
-  const finding = draftToFinding(world, draft, now);
-  addFinding(world, finding);
-  world.findings.unshift(finding);
-  finding.related = computeRelated(world, finding);
-  for (const r of finding.related) {
-    const other = world.byId.get(r.findingId);
-    if (other) other.related = computeRelated(world, other);
-  }
-  const campaign = finding.campaignId ? recomputeCampaign(world, finding.campaignId) : undefined;
-  return { finding, campaign };
-}
-
 /** Przeliczenie reguł, modułów i ryzyka wszystkich rekordów po zmianie progów. */
 export function applyThresholds(world: World, values: Record<string, number>, now: Date): Thresholds {
   const n = Number(world.thresholds.version.replace(/\D/g, '')) || 1;
