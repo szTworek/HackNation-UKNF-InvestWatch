@@ -156,10 +156,6 @@ export function RiskWarningStatus({ snap }: { snap: PageSnapshot | null }) {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Rekord z podświetleniem dowodów
-// ---------------------------------------------------------------------------
-
 function Highlighted({ text, hits }: { text: string; hits: RuleHit[] }) {
   const parts = useMemo(() => {
     const spans = hits
@@ -395,10 +391,6 @@ export function ItemView({ id, focusFinding }: { id: string; focusFinding: strin
   );
 }
 
-// ---------------------------------------------------------------------------
-// Diff dwóch zrzutów strony
-// ---------------------------------------------------------------------------
-
 type Row = { kind: 'same' | 'del' | 'add' | 'mod'; a?: string; b?: string; ai?: number; bi?: number };
 
 function diffLines(a: string[], b: string[]): Row[] {
@@ -601,10 +593,6 @@ export function DiffView({ id }: { id: string }) {
     </Stack>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Oś czasu zmian i lista alertów
-// ---------------------------------------------------------------------------
 
 export function ChangeTimeline({ changes, onOpen }: { changes: (PageChange & { label: string })[]; onOpen: (id: string) => void }) {
   if (!changes.length)

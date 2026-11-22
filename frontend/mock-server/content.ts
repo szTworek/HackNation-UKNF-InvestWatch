@@ -54,10 +54,6 @@ export interface Draft {
   campaignId?: string;
 }
 
-// ---------------------------------------------------------------------------
-// Podmioty (fikcyjne)
-// ---------------------------------------------------------------------------
-
 export interface Firm {
   name: string;
   short: string;
@@ -140,10 +136,6 @@ const COMPANIES = ['Wisłostal', 'Mazowiecka Energetyka', 'Polski Kabel', 'BioMe
 
 const SHORTENER = 'skroc.to';
 
-// ---------------------------------------------------------------------------
-// Pomocnicze
-// ---------------------------------------------------------------------------
-
 function kindFor(platform: Platform, rng: Rng): ContentKind {
   if (platform === 'youtube') return 'transcript';
   if (platform === 'tiktok') return rng.chance(0.7) ? 'transcript' : 'post';
@@ -171,10 +163,6 @@ const firmEntity = (f: Firm, rng: Rng): Entity => ({
   role: 'investment_firm',
   knfRegister: { status: 'REGISTERED', matchedName: f.name, score: Math.round(rng.range(0.88, 1) * 100) / 100 },
 });
-
-// ---------------------------------------------------------------------------
-// Treści nieinwestycyjne
-// ---------------------------------------------------------------------------
 
 const NON_FIN_POSTS = [
   'Niedzielny obiad u mamy 🍲 rosół jak zawsze najlepszy #niedziela #rodzina',
@@ -241,9 +229,7 @@ export function financialOther(rng: Rng): Draft {
   });
 }
 
-// ---------------------------------------------------------------------------
 // Edukacja, dyskusje, ostrzeżenia przed oszustwami (trudne negatywy)
-// ---------------------------------------------------------------------------
 
 const EDU_TEMPLATES: { segs: Seg[]; instruments: Instrument[]; title?: string }[] = [
   {
@@ -385,10 +371,6 @@ export function opinion(rng: Rng): Draft {
   });
 }
 
-// ---------------------------------------------------------------------------
-// Marketing firm inwestycyjnych (moduł 2)
-// ---------------------------------------------------------------------------
-
 const RISK_CFD_PL = (pct: number) =>
   `CFD są złożonymi instrumentami i wiążą się z dużym ryzykiem szybkiej utraty środków pieniężnych z powodu dźwigni finansowej. ${pct}% rachunków inwestorów detalicznych odnotowuje straty pieniężne w wyniku handlu kontraktami CFD u tego dostawcy.`;
 const RISK_CFD_EN = (pct: number) =>
@@ -502,10 +484,6 @@ export function firmMarketing(rng: Rng, opts: FirmOptions = {}): Draft {
   });
 }
 
-// ---------------------------------------------------------------------------
-// Promocje finfluencerów (moduł 1)
-// ---------------------------------------------------------------------------
-
 export interface PromoOptions {
   firm?: Firm;
   author?: (typeof FINFLUENCERS)[number];
@@ -565,10 +543,6 @@ export function thirdPartyPromo(rng: Rng, opts: PromoOptions = {}): Draft {
   });
 }
 
-// ---------------------------------------------------------------------------
-// Rekomendacje
-// ---------------------------------------------------------------------------
-
 export function recommendation(rng: Rng): Draft {
   const company = rng.pick(COMPANIES);
   const author = rng.chance(0.6) ? rng.pick(FINFLUENCERS) : { handle: rng.pick(USERS), followers: rng.int(300, 6000) };
@@ -601,10 +575,6 @@ export function recommendation(rng: Rng): Draft {
     signals: [],
   });
 }
-
-// ---------------------------------------------------------------------------
-// Oferty usług doradczych (moduł 3)
-// ---------------------------------------------------------------------------
 
 export function serviceOffer(rng: Rng): Draft {
   const advisor = rng.weighted(ADVISORS.map((a) => [a, a.registered ? 1 : a.nonInstrument ? 1.5 : 3] as const));
@@ -660,10 +630,6 @@ export function serviceOffer(rng: Rng): Draft {
     signals: advisor.registered || advisor.nonInstrument ? [] : ['NOT_IN_REGISTER'],
   });
 }
-
-// ---------------------------------------------------------------------------
-// Kampanie (scam + klastry legalne)
-// ---------------------------------------------------------------------------
 
 export interface CampaignDef {
   id: string;

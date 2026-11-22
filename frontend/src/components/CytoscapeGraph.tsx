@@ -134,7 +134,6 @@ export function CytoscapeGraph({ graph, onNodeClick, highlightId, height = 480 }
     clickRef.current = onNodeClick;
   });
 
-  // inicjalizacja
   useEffect(() => {
     if (!containerRef.current) return;
     const cy = cytoscape({
@@ -160,7 +159,6 @@ export function CytoscapeGraph({ graph, onNodeClick, highlightId, height = 480 }
     };
   }, []);
 
-  // synchronizacja elementów z propsem
   useEffect(() => {
     const cy = cyRef.current;
     if (!cy) return;

@@ -36,7 +36,7 @@ Aplikacja: <http://localhost:8080>. Bez pliku z danymi ustaw `DATA_MODE=mock`, a
 
 ```env
 DATA_MODE=real            # real: dane z findings.real.json, mock: dane przykładowe
-LLM_BACKEND=groq          # none | groq | ollama
+LLM_BACKEND=groq          # parametr builda: groq (domyślnie) | ollama | none; po zmianie uruchom z --build
 LLM_MODEL=openai/gpt-oss-120b
 GROQ_API_KEY=
 YOUTUBE_API_KEY=          # opcjonalny
@@ -100,16 +100,16 @@ Nie ma publicznego polskiego zbioru z etykietami M1/M2/M3, więc zbudowaliśmy w
 
 | Źródło | Rekordy | Gdzie |
 |---|---|---|
-| Microsoft/Bing Ad Library | 1227 | `ml/data/raw/scraper_live/*bing_ads/` |
-| Google Ads Transparency Center (PL, tekst obrazów z OCR) | 710 | `data/export/google_ads/`, `ml/data/raw/scraper_live/zip1122_google_ads/` |
-| Meta Ad Library | 331 | `data/export/meta_ads/`, `ml/data/raw/scraper_live/*meta_ads/` |
+| Microsoft/Bing Ad Library | 1322 | `ml/data/raw/scraper_live/*bing*/` |
+| Google Ads Transparency Center (tekst obrazów z OCR) | 440 | `data/export/google_ads/`, `ml/data/raw/scraper_live/zip1122_google_ads/` |
+| Meta Ad Library | 802 | `data/export/meta_ads/`, `ml/data/raw/scraper_live/*meta*/` |
 | YouTube (opis + transkrypcja faster-whisper) | 764 + 352 kandydatów M3 | `ml/data/pool/youtube.jsonl`, `ml/data/pool/m3_youtube.jsonl` |
-| TikTok (z transkrypcją) | 55 | `data/export/tiktok/`, `ml/data/raw/scraper_live/zip1122_tiktok/` |
+| TikTok (z transkrypcją) | 49 | `data/export/tiktok/`, `ml/data/raw/scraper_live/zip1122_tiktok/` |
 | Strony firm inwestycyjnych | 11 | `ml/data/raw/scraper_live/zip1122_firm_web/` |
 | Reddit (polskie subreddity finansowe) | 5343 | `ml/data/pool/reddit.jsonl` |
 | Archiwalne strony oszustów z listy CERT PL (Wayback Machine) | 53 | `ml/data/pool/cert_wayback.jsonl` |
 
-Format rekordu (`source`, `source_url`, `author`, `published_at`, `fetched_at`, `query_keywords`, `text`) opisuje [data/export/README.md](data/export/README.md). Aplikacja pokazuje wyłącznie polskie rekordy z paczek zip i z przebiegów zbierania.
+Format rekordu (`source`, `source_url`, `author`, `published_at`, `fetched_at`, `query_keywords`, `text`) opisuje [data/export/README.md](data/export/README.md). Liczby obejmują wszystkie pobrane rekordy, także niepolskie. Aplikacja pokazuje wyłącznie polskie rekordy z paczek zip i z przebiegów zbierania.
 
 ### Dane uzupełniające (tylko trening, nigdy test)
 
@@ -118,7 +118,7 @@ Rzadkie klasy (scam, rekomendacje, doradztwo) uzupełniamy danymi przetłumaczon
 | Zbiór | Rekordy | Licencja |
 |---|---|---|
 | MultiAgentFraudBench (posty oszustów) | 2200 | CC BY-NC-SA 4.0 |
-| VideoConviction (rekomendacje finfluencerów) | 685 | CC BY-NC 4.0 |
+| VideoConviction (rekomendacje finfluencerów) | 215 | CC BY-NC 4.0 |
 | Fraud-R1 | 300 | nie podano |
 | Trudne przypadki napisane ręcznie | 100 | własne |
 
@@ -129,7 +129,7 @@ Rzadkie klasy (scam, rekomendacje, doradztwo) uzupełniamy danymi przetłumaczon
 - **Scam:** 125 przykładów realnych i 1136 z danych uzupełniających.
 - **Weryfikacja przez człowieka:** 42 rekordy, użyte do porównania modeli LLM.
 
-Klasyfikator v2 (`ml/models_candidate/v2/metrics.json`), test na 548 realnych dokumentach: wykrywanie scamu AP 0,82 wobec 0,18 dla reguł słownikowych, temat makro-F1 0,77 wobec 0,52. Metryki mierzą zgodność z etykietami nauczyciela, nie prawdę.
+Klasyfikator v2 (`ml/models_candidate/v2/metrics.json`), test na 548 realnych dokumentach: wykrywanie scamu AP 0,815 wobec 0,18 dla reguł słownikowych, temat makro-F1 0,77 wobec 0,52. W `ml/models/` działa wcześniejszy kandydat (504 dokumenty testowe, scam AP 0,75). Metryki mierzą zgodność z etykietami nauczyciela, nie prawdę.
 
 ### Odtworzenie
 

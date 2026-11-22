@@ -48,6 +48,9 @@ FROM deps-api AS runtime-api
 COPY src ./src
 RUN --mount=type=cache,target=/root/.cache/uv uv pip install --no-deps . && rm -rf ./src /usr/local/bin/uv
 USER app
+# Silnik LLM ustawiany przy budowie: none | groq | ollama. Klucze API nie trafiają do obrazu.
+ARG LLM_BACKEND=none
+ENV LLM_BACKEND=$LLM_BACKEND
 EXPOSE 8000
 HEALTHCHECK --interval=15s --timeout=5s --start-period=30s --retries=3 \
   CMD python -c "import urllib.request as u; u.urlopen('http://127.0.0.1:8000/health', timeout=4)"
@@ -58,6 +61,9 @@ COPY src ./src
 RUN --mount=type=cache,target=/root/.cache/uv uv pip install --no-deps -e .
 ENV WATCHFILES_FORCE_POLLING=true
 USER app
+# Silnik LLM ustawiany przy budowie: none | groq | ollama. Klucze API nie trafiają do obrazu.
+ARG LLM_BACKEND=none
+ENV LLM_BACKEND=$LLM_BACKEND
 EXPOSE 8000
 CMD ["uvicorn", "investwatch_ml.api:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--reload-dir", "/app/src"]
 
@@ -65,6 +71,9 @@ FROM deps-gpu AS runtime-gpu
 COPY src ./src
 RUN --mount=type=cache,target=/root/.cache/uv uv pip install --no-deps . && rm -rf ./src /usr/local/bin/uv
 USER app
+# Silnik LLM ustawiany przy budowie: none | groq | ollama. Klucze API nie trafiają do obrazu.
+ARG LLM_BACKEND=none
+ENV LLM_BACKEND=$LLM_BACKEND
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=300s --retries=3 \
   CMD python -c "import urllib.request as u; u.urlopen('http://127.0.0.1:8000/health', timeout=4)"
@@ -74,6 +83,9 @@ FROM deps-cpu AS runtime-cpu
 COPY src ./src
 RUN --mount=type=cache,target=/root/.cache/uv uv pip install --no-deps . && rm -rf ./src /usr/local/bin/uv
 USER app
+# Silnik LLM ustawiany przy budowie: none | groq | ollama. Klucze API nie trafiają do obrazu.
+ARG LLM_BACKEND=none
+ENV LLM_BACKEND=$LLM_BACKEND
 EXPOSE 8000
 # start-period: pierwszy start z modelem pobiera embedder BGE-M3 do wolumenu HF
 HEALTHCHECK --interval=30s --timeout=5s --start-period=300s --retries=3 \

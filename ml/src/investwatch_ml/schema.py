@@ -58,8 +58,6 @@ class TeacherLabel(BaseModel):
     entities: list[Entity]
 
 
-# ---------------------------------------------------------------- JSONL helpers
-
 
 def read_jsonl(path: str | Path) -> Iterator[dict[str, Any]]:
     p = Path(path)

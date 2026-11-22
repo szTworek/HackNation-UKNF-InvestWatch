@@ -16,10 +16,6 @@ const DOMAIN_FLAG_LABEL: Record<LandingDomainFlag, string> = {
   NEW_DOMAIN: 'Nowa domena',
 };
 
-// ---------------------------------------------------------------------------
-// Strona docelowa
-// ---------------------------------------------------------------------------
-
 /** Łańcuch przekierowań jako „breadcrumb”; podejrzane domeny na czerwono. */
 function RedirectChain({ chain, suspicious }: { chain: string[]; suspicious: boolean }) {
   return (
@@ -100,10 +96,6 @@ export function LandingView({ page, spans }: { page: LandingPageView; spans: Spa
     </Stack>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Wideo
-// ---------------------------------------------------------------------------
 
 const mmss = (t: number) => `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(Math.round(t) % 60).padStart(2, '0')}`;
 

@@ -76,12 +76,13 @@ services:
     build:
       context: ./ml
       target: runtime-cpu
+      args:
+        LLM_BACKEND: ${LLM_BACKEND:-groq}
     environment:
       INVESTWATCH_BASELINE: ${INVESTWATCH_BASELINE:-0}
-      # Silnik LLM: none | groq (GROQ_API_KEY) | ollama (lokalny Bielik: dodaj --profile local-llm)
-      LLM_BACKEND: ${LLM_BACKEND:-none}
       LLM_MODEL: ${LLM_MODEL:-}
       GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GROQ_API_KEY_2: ${GROQ_API_KEY_2:-}
       OLLAMA_URL: ${OLLAMA_URL:-http://ollama:11434}
     extra_hosts:
       - "host.docker.internal:host-gateway"  # Ollama zainstalowana na komputerze zamiast w kontenerze

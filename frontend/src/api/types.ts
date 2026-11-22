@@ -250,9 +250,7 @@ export interface EvalItem {
   gold: Record<string, 0 | 1>;
 }
 
-// ---------------------------------------------------------------------------
 // Odpowiedzi REST (założenia kontraktu – opisane w frontend/README.md)
-// ---------------------------------------------------------------------------
 
 export interface ApiHealth {
   status: string;

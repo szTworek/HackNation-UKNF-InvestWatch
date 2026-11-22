@@ -3,8 +3,8 @@
 //   - data/entity_fixtures.json: wynik app/backend/scripts/build_fixtures.py
 //     (data/export/*/records.jsonl, data/monitor/*, linkowanie z app/backend/inwestwatch_api/entities.py);
 //     rekordy `mock` i wyniki klasyfikatora mock-v0 są pomijane,
-//   - wyniki: werdykty LLM z mock-server/data/findings.real.json, a dla pozostałych rekordów POST /ingest w ai-service
-//     (AI_URL, domyślnie http://localhost:8000; pamięć podręczna w ml/data/entity_scores.json),
+//   - wyniki: zapisane werdykty z mock-server/data/findings.real.json i ml/data/entity_scores.json.
+//     Build działa bez sieci i nie woła ai-service ani LLM.
 //   - rejestr KNF: ../data/knf_entities.json (760 wpisów), uzupełniany z ml/src/investwatch_ml/knf_register.json.
 // Uruchom: npm run entities:build
 import { createHash } from 'node:crypto';
@@ -32,8 +32,6 @@ const KNF_ML = join(REPO, 'ml', 'src', 'investwatch_ml', 'knf_register.json');
 const OUT = join(FRONT, 'mock-server', 'entities.snapshot.json');
 const REAL_FINDINGS = process.env.REAL_DATA_PATH ?? join(FRONT, 'mock-server', 'data', 'findings.real.json');
 const SCORE_CACHE = join(REPO, 'ml', 'data', 'entity_scores.json');
-const AI_URL = (process.env.AI_URL ?? 'http://localhost:8000').replace(/\/$/, '');
-const BATCH_SIZE = 16;
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Raw = Record<string, any>;
@@ -136,9 +134,8 @@ function slug(s: string): string {
 function loadRegistry(): { entries: RegistryEntry[]; source: string } {
   // pełny plik rejestru nie jest w repo: bez niego zachowujemy wpisy z poprzedniego snapshotu
   if (!existsSync(KNF_FULL) && existsSync(OUT)) {
-    const seen = new Map<string, RegistryEntry>();
-    for (const e of read(OUT).entities as Raw[]) for (const r of e.registryEntries as RegistryEntry[]) seen.set(r.name, r);
-    if (seen.size) return { entries: [...seen.values()], source: 'entities.snapshot.json' };
+    const saved = (read(OUT).entities as Raw[]).flatMap((e) => e.registryEntries as RegistryEntry[]);
+    if (saved.length) return { entries: saved, source: 'entities.snapshot.json' };
   }
   const ml = read(KNF_ML).entities as Raw[];
   const mlByName = new Map(ml.map((r) => [String(r.name), r]));
@@ -181,14 +178,6 @@ interface Verdict {
   model: string;
 }
 
-const SOURCE_BY_PLATFORM: Record<string, string> = {
-  google_ads: 'google_ads_transparency',
-  meta_ads: 'meta_ad_library',
-  bing_ads: 'microsoft_ad_library',
-  youtube: 'youtube',
-  tiktok: 'tiktok',
-  website: 'web',
-};
 const SEVERITY_BY_RISK: Record<string, EntityFinding['severity']> = { CRITICAL: 'high', HIGH: 'high', MEDIUM: 'medium', LOW: 'low' };
 const RULE_KEY: Record<string, string> = { M1_PROMO: 'M1.PROMO', M3_ADVISORY: 'M3.ADV', M3_RECOMMENDATION: 'M3.REC' };
 
@@ -197,64 +186,24 @@ function ruleKey(id: string): string {
   return n ? `R${n[1].padStart(2, '0')}` : (RULE_KEY[id] ?? id);
 }
 
-async function ai<T>(path: string, body?: unknown): Promise<T> {
-  const res = await fetch(`${AI_URL}${path}`, {
-    method: body ? 'POST' : 'GET',
-    headers: { 'Content-Type': 'application/json' },
-    body: body ? JSON.stringify(body) : undefined,
-    signal: AbortSignal.timeout(900_000),
-  });
-  if (!res.ok) throw new Error(`ai-service ${path}: HTTP ${res.status}`);
-  return (await res.json()) as T;
-}
-
-/** Werdykt dla każdego rekordu: LLM z głównego zbioru, inaczej model ai-service. Bez ai-service build się przerywa. */
-async function loadVerdicts(rawItems: Raw[], ownerName: Map<string, string>): Promise<{ verdicts: Map<string, Verdict>; llm: number; model: number }> {
+/** Werdykty zapisane wcześniej. Rekord bez werdyktu nie dostaje wyniku. */
+function loadVerdicts(rawItems: Raw[]): { verdicts: Map<string, Verdict>; llm: number; model: number; pending: number } {
   const reviewed = new Map<string, Raw>();
   if (existsSync(REAL_FINDINGS)) for (const f of read(REAL_FINDINGS).findings as Raw[]) if (f.llm) reviewed.set(f.url, f);
-  const { modelVersion } = await ai<{ modelVersion: string }>('/health');
-  const stored = existsSync(SCORE_CACHE) ? read(SCORE_CACHE) : null;
-  const cache: Record<string, Verdict> = stored?.modelVersion === modelVersion ? stored.verdicts : {};
+  const stored: Record<string, Verdict> = existsSync(SCORE_CACHE) ? read(SCORE_CACHE).verdicts : {};
   const verdicts = new Map<string, Verdict>();
-  const todo: Raw[] = [];
   let llm = 0;
+  let pending = 0;
   for (const i of rawItems) {
     const f = reviewed.get(i.source_url);
     if (f) {
       verdicts.set(i.id, { modules: f.modules, rules: f.rules, riskLevel: f.riskLevel, model: f.llm.model ?? f.modelVersion });
       llm++;
-    } else if (cache[i.id]) verdicts.set(i.id, cache[i.id]);
-    else todo.push(i);
+    } else if (stored[i.id]) verdicts.set(i.id, stored[i.id]);
+    else pending++;
   }
-  for (let n = 0; n < todo.length; n += BATCH_SIZE) {
-    const batch = todo.slice(n, n + BATCH_SIZE);
-    const records = batch.map((i) => ({
-      source: SOURCE_BY_PLATFORM[i.platform] ?? 'web',
-      source_url: i.source_url,
-      author: i.author,
-      // własna reklama firmy: wydawcą jest wpis rejestru, nawet gdy strona ma inną nazwę handlową
-      sponsor: i.author_is_entity ? ownerName.get(i.entity_ids[0]) : i.channel === 'ad' ? i.author : undefined,
-      published_at: i.published_at,
-      fetched_at: i.fetched_at,
-      text: i.text,
-      links: [],
-      content_type: i.channel === 'ad' ? 'ad' : 'post',
-    }));
-    const { results } = await ai<{ results: { item: Raw; analysis: Raw }[] }>('/ingest', { records });
-    const byUrl = new Map(results.map((r) => [r.item.url as string, r.analysis]));
-    for (const i of batch) {
-      const a = byUrl.get(i.source_url);
-      // rekord bez treści do analizy nie ma wyniku
-      const v: Verdict = a
-        ? { modules: a.modules, rules: a.rules, riskLevel: a.riskLevel, model: a.modelVersion }
-        : { modules: [], rules: [], riskLevel: 'LOW', model: modelVersion };
-      cache[i.id] = v;
-      verdicts.set(i.id, v);
-    }
-    writeFileSync(SCORE_CACHE, JSON.stringify({ modelVersion, verdicts: cache }));
-    process.stderr.write(`ai-service: ${Math.min(n + BATCH_SIZE, todo.length)}/${todo.length}\n`);
-  }
-  return { verdicts, llm, model: rawItems.length - llm };
+  if (!verdicts.size) throw new Error('brak zapisanych werdyktów; snapshot pozostaje bez zmian');
+  return { verdicts, llm, model: verdicts.size - llm, pending };
 }
 
 function ruleHit(rule: Raw, text: Record<string, string>): EntityFinding['ruleHits'][number] {
@@ -325,14 +274,13 @@ function findingsByDay(findings: EntityFinding[], now: Date): { date: string; M1
   return days;
 }
 
-async function main(): Promise<void> {
+function main(): void {
   const fx = read(FIXTURES);
   const { entries, source } = loadRegistry();
   const byName = new Map(entries.map((e) => [e.name, e]));
   const now = new Date();
   const realItems = (fx.items as Raw[]).filter((i) => !i.mock);
-  const ownerName = new Map((fx.entities as Raw[]).map((e) => [e.id as string, e.registry_entries[0]?.name as string]));
-  const { verdicts, llm, model } = await loadVerdicts(realItems, ownerName);
+  const { verdicts, llm, model, pending } = loadVerdicts(realItems);
   const { findings, skipped } = buildFindings(realItems, verdicts);
 
   const items: EntityItem[] = realItems.map((i) => ({
@@ -535,11 +483,13 @@ async function main(): Promise<void> {
   writeFileSync(OUT, JSON.stringify(snapshot));
   process.stdout.write(
     `entities.snapshot.json: ${snapshot.entities.length} podmiotów (${withData.length} z danymi, rejestr ${entries.length} z ${source}), ` +
-      `${items.length} rekordów, ${findings.length} wyników (werdykty: ${llm} LLM, ${model} ai-service; pominięte niezgodne z autorem: ${skipped}), ${pages.length} stron, ${changes.length} zmian, ${alerts.length} alertów\n`,
+      `${items.length} rekordów, ${findings.length} wyników (werdykty: ${llm} z głównego zbioru, ${model} zapisane, bez werdyktu ${pending}; pominięte niezgodne z autorem: ${skipped}), ${pages.length} stron, ${changes.length} zmian, ${alerts.length} alertów\n`,
   );
 }
 
-main().catch((e: unknown) => {
+try {
+  main();
+} catch (e) {
   process.stderr.write(`entities:build: ${(e as Error).message}\n`);
   process.exit(1);
-});
+}

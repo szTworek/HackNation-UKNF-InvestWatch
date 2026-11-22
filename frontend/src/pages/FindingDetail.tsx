@@ -167,10 +167,6 @@ export function FindingDetail() {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Zakładka „Treść”: tekst z dowodami, co wykryto, naruszone reguły, status
-// ---------------------------------------------------------------------------
-
 function ContentTab({
   finding: f,
   tv,
@@ -386,10 +382,6 @@ function ModelDetails({ finding: f, tv }: { finding: Finding; tv: ThresholdValue
     </>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Zakładka „Powiązania” (graf pobierany dopiero tutaj)
-// ---------------------------------------------------------------------------
 
 function LinksTab({ finding: f }: { finding: Finding }) {
   const navigate = useNavigate();

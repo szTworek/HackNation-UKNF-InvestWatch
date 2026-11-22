@@ -77,7 +77,7 @@ class Flag:
 
 
 FLAGS: list[Flag] = [
-    # --- zgodność informacji o ryzyku (moduł 2, częściowo 1) ---
+    # zgodność informacji o ryzyku (moduł 2, częściowo 1)
     Flag("PROFIT_CLAIM", "compliance", ("3",), "Obietnica / twierdzenie o zysku",
          "twierdzenie o możliwych lub osiągniętych zyskach, stopie zwrotu, zarobku („zarabiaj”, „zysk 12% rocznie”)"),
     Flag("RISK_WARNING", "compliance", ("3", "6"), "Ostrzeżenie o ryzyku",
@@ -100,7 +100,7 @@ FLAGS: list[Flag] = [
          "porównanie z innymi produktami, usługami lub firmami („lepsze niż lokata”, „najniższe prowizje na rynku”)"),
     Flag("SUPERVISOR_AS_SAFETY", "compliance", ("17", "18"), "Nadzór KNF jako argument bezpieczeństwa",
          "odwołanie do KNF, nadzoru, licencji lub regulacji sugerujące bezpieczeństwo lub aprobatę produktu"),
-    # --- doradztwo (moduł 3) ---
+    # doradztwo (moduł 3)
     Flag("PERSONALIZED_ADVICE", "advisory", ("M3",), "Porada dopasowana do klienta",
          "oferowanie lub udzielanie porady dopasowanej do sytuacji konkretnej osoby („dobiorę portfel do Twoich "
          "potrzeb”, „napisz ile masz, powiem w co wejść”)"),
@@ -109,7 +109,7 @@ FLAGS: list[Flag] = [
          "(„konsultacje 1:1”, „zarządzam portfelami klientów”, „grupa premium z sygnałami”)"),
     Flag("SPECIFIC_INSTRUMENT_CALL", "advisory", ("M3",), "Wezwanie do kupna/sprzedaży instrumentu",
          "wezwanie do kupna, sprzedaży lub trzymania konkretnego instrumentu („kupujcie teraz akcje X”)"),
-    # --- oszustwa ---
+    # oszustwa
     Flag("GUARANTEED_PROFIT", "scam", ("SCAM",), "Gwarantowany zysk",
          "zapewnienie, że zysk jest pewny lub gwarantowany"),
     Flag("NO_RISK_CLAIM", "scam", ("SCAM",), "Twierdzenie o braku ryzyka",

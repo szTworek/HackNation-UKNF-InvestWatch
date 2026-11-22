@@ -32,10 +32,6 @@ function join(segs: Seg[], sep: string, sink: EvidenceSink, extra: Partial<Evide
   return text;
 }
 
-// ---------------------------------------------------------------------------
-// Strona docelowa
-// ---------------------------------------------------------------------------
-
 function landingSegments(rng: Rng, d: Draft): { title: string; segs: Seg[]; form: boolean } {
   const brand = d.extraIndicators.find((i) => i.type === 'brand')?.value;
   const phone = d.extraIndicators.find((i) => i.type === 'phone')?.value;
@@ -101,10 +97,6 @@ export function buildLanding(rng: Rng, d: Draft, findingId: string, sink: Eviden
   ];
 }
 
-// ---------------------------------------------------------------------------
-// Wideo
-// ---------------------------------------------------------------------------
-
 export function buildMedia(rng: Rng, d: Draft, findingId: string, transcriptLength: number, sink: EvidenceSink): MediaView {
   const durationS = Math.max(20, Math.round(transcriptLength / 14));
   const phone = d.extraIndicators.find((i) => i.type === 'phone')?.value;
@@ -139,10 +131,6 @@ export function buildMedia(rng: Rng, d: Draft, findingId: string, transcriptLeng
   }
   return media;
 }
-
-// ---------------------------------------------------------------------------
-// SVG
-// ---------------------------------------------------------------------------
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 

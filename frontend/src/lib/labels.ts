@@ -292,10 +292,6 @@ export const CAMPAIGN_STATUS_COLOR: Record<CampaignStatus, string> = {
   CLOSED: 'gray',
 };
 
-// ---------------------------------------------------------------------------
-// Progi kalibracji
-// ---------------------------------------------------------------------------
-
 export type ThresholdGroup = 'flags' | 'contentType' | 'risk' | 'scam';
 
 export const THRESHOLD_GROUP_LABEL: Record<ThresholdGroup, string> = {
@@ -332,10 +328,6 @@ export function thresholdOrder(key: string): number {
 
 export const SCAM_THRESHOLD_KEY = 'scam.p';
 export const DEFAULT_SCAM_THRESHOLD = 0.6;
-
-// ---------------------------------------------------------------------------
-// Oś podmiotu (rejestr KNF)
-// ---------------------------------------------------------------------------
 
 export const ENTITY_MODULES: EntityModule[] = ['M1', 'M2', 'M3'];
 

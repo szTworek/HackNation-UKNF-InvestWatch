@@ -89,10 +89,6 @@ const real = loadReal();
 const world: World = real?.world ?? createWorld(SEED, new Date());
 const DAY = 24 * 3600 * 1000;
 
-// ---------------------------------------------------------------------------
-// Pomocnicze: query string, filtry
-// ---------------------------------------------------------------------------
-
 type Query = Request['query'];
 
 function arr(q: Query, key: string): string[] {
@@ -282,10 +278,6 @@ function csvCell(v: string | number | undefined): string {
   return /[";\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
-// ---------------------------------------------------------------------------
-// HTTP
-// ---------------------------------------------------------------------------
-
 const app = express();
 app.disable('x-powered-by');
 app.use(express.json({ limit: '200kb' }));
@@ -302,10 +294,6 @@ app.use((req, res, next) => {
 });
 
 const notFound = (res: Response, what = 'Nie znaleziono') => res.status(404).json({ error: what });
-
-// ---------------------------------------------------------------------------
-// Zbieranie danych: pośrednik do scrape-workera (usługa dostępna tylko w sieci Compose)
-// ---------------------------------------------------------------------------
 
 const WORKER_URL = (process.env.SCRAPE_WORKER_URL ?? 'http://scrape-worker:8100').replace(/\/$/, '');
 
@@ -734,10 +722,6 @@ log(`podmioty: ${entityCount} (rejestr KNF + snapshot rekordów)`);
 app.use('/api', (_req, res) => {
   notFound(res, 'Nieznany endpoint');
 });
-
-// ---------------------------------------------------------------------------
-// Socket.io + emisja nowych rekordów
-// ---------------------------------------------------------------------------
 
 const httpServer = createServer(app);
 const io = new Server<ClientToServerEvents, ServerToClientEvents>(httpServer, {

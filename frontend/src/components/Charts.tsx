@@ -28,10 +28,6 @@ const axisProps = {
   axisLine: { stroke: C.grayLight },
 } as const;
 
-// ---------------------------------------------------------------------------
-// Trend incydentów
-// ---------------------------------------------------------------------------
-
 const SERIES: Record<TimeseriesGroupBy, Record<string, { label: string; color: string }>> = {
   module: {
     '1': { label: 'Finfluencerzy', color: C.blue },
@@ -87,10 +83,6 @@ export function TrendChart({ data, height = 280 }: { data: Timeseries; height?: 
   );
 }
 
-// ---------------------------------------------------------------------------
-// Rozkład (poziome słupki z wartością na końcu)
-// ---------------------------------------------------------------------------
-
 export function DistributionBars({ data, color = C.blue }: { data: { label: string; value: number }[]; color?: string }) {
   const rows = data.filter((d) => d.value > 0).sort((a, b) => b.value - a.value);
   if (!rows.length) return <Text size="sm" c="dimmed">Brak danych w tym zakresie dat.</Text>;
@@ -109,10 +101,6 @@ export function DistributionBars({ data, color = C.blue }: { data: { label: stri
     </ChartBox>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Kalibracja
-// ---------------------------------------------------------------------------
 
 export function PrCurve({ curve, current, height = 240 }: { curve: PrPoint[]; current: { precision: number; recall: number }; height?: number }) {
   return (
@@ -195,10 +183,6 @@ export function ThresholdCurve({
     </>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Kampanie
-// ---------------------------------------------------------------------------
 
 /** Liczba nowych elementów kampanii per dzień. */
 export function CampaignTimeline({ dates, height = 160 }: { dates: string[]; height?: number }) {

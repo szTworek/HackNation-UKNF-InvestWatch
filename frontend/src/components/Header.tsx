@@ -4,10 +4,6 @@ import { IconCalendar } from '@tabler/icons-react';
 import type { ConnectionState } from '../api/socket';
 import { daysAgoIso, todayIso } from '../lib/format';
 
-// ---------------------------------------------------------------------------
-// Połączenie WebSocket
-// ---------------------------------------------------------------------------
-
 const CONN: Record<ConnectionState, { label: string; color: string }> = {
   connected: { label: 'Połączono', color: 'var(--mantine-color-green-6)' },
   reconnecting: { label: 'Ponawianie połączenia', color: 'var(--mantine-color-yellow-6)' },
@@ -30,10 +26,6 @@ export function ConnectionIndicator({ state }: { state: ConnectionState }) {
     </Tooltip>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Zakres dat
-// ---------------------------------------------------------------------------
 
 export function DateRangeFilter({ from, to, onChange }: { from: string; to: string; onChange: (from: string, to: string) => void }) {
   return (

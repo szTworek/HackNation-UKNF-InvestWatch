@@ -62,10 +62,6 @@ export interface World {
   thresholds: Thresholds;
 }
 
-// ---------------------------------------------------------------------------
-// Tekst + evidence
-// ---------------------------------------------------------------------------
-
 /** Styl ASR: małe litery, bez interpunkcji, emoji i hashtagów. */
 export function toAsr(text: string): string {
   return text
@@ -235,10 +231,6 @@ export function draftToFinding(world: World, d: Draft, fetchedAt: Date): Finding
   return { ...base, ...scored };
 }
 
-// ---------------------------------------------------------------------------
-// Statusy i historia dla rekordów z seeda
-// ---------------------------------------------------------------------------
-
 const COMMENTS: Partial<Record<Status, string[]>> = {
   IN_REVIEW: ['Weryfikacja podmiotu w rejestrze KNF.', 'Sprawdzam powiązane domeny.'],
   CONFIRMED: [
@@ -277,10 +269,6 @@ function assignStatus(world: World, f: Finding, category: Category, now: Date): 
   });
   f.status = status;
 }
-
-// ---------------------------------------------------------------------------
-// Kampanie
-// ---------------------------------------------------------------------------
 
 export function recomputeCampaign(world: World, id: string): Campaign | undefined {
   const def = world.defs.get(id);
@@ -321,9 +309,7 @@ function addFinding(world: World, f: Finding): void {
   if (f.campaignId) world.members.set(f.campaignId, [...(world.members.get(f.campaignId) ?? []), f.id]);
 }
 
-// ---------------------------------------------------------------------------
 // Eval-set (gold) – prawdopodobieństwa skorelowane z etykietami
-// ---------------------------------------------------------------------------
 
 function hashKey(key: string): number {
   let h = 2166136261;
@@ -358,10 +344,6 @@ function buildEvalSet(rng: Rng, n = 200): EvalItem[] {
   }
   return items;
 }
-
-// ---------------------------------------------------------------------------
-// Świat
-// ---------------------------------------------------------------------------
 
 const STANDALONE: [Category, number, (rng: Rng) => Draft][] = [
   ['NON_FIN', 64, nonFinancial],
@@ -426,7 +408,6 @@ export function applyThresholds(world: World, values: Record<string, number>, no
   return world.thresholds;
 }
 
-// CLI: `npm run seed` zapisuje fixture do mock-server/data/seed.json
 if (process.argv[1]?.replace(/\\/g, '/').endsWith('mock-server/seed.ts')) {
   const world = createWorld(Number(process.env.MOCK_SEED ?? 42), new Date());
   const dir = join(process.cwd(), 'mock-server', 'data');
