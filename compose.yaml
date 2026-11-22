@@ -1,0 +1,94 @@
+# Cały stack ze źródeł: docker compose up -d --build, potem http://localhost:8080
+# Kolektory (profil jobs) są jednorazowe: docker compose run --rm --build collector youtube_posts forex
+# Weryfikacja środowiska: bash deploy/verify.sh <dev|prod>
+
+x-service: &service
+  restart: unless-stopped
+  security_opt:
+    - no-new-privileges:true
+  cap_drop:
+    - ALL
+  logging:
+    driver: json-file
+    options:
+      max-size: 10m
+      max-file: "5"
+
+services:
+  collector:
+    profiles: [jobs]
+    image: investwatch/uknf-collector:local
+    build:
+      context: .
+      dockerfile: scrapers/Dockerfile
+    init: true
+    shm_size: 1gb
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - collector-results:/app/scrapers/poc/results
+      - collector-cache:/cache/huggingface
+      - ${SECRETS_PATH:-./.secrets}:/app/.secrets:ro
+
+  frontend:
+    <<: *service
+    image: investwatch/uknf-frontend:local
+    build:
+      context: ./frontend
+    depends_on:
+      - api
+    environment:
+      API_UPSTREAM: http://api:4000
+    ports:
+      - "${FRONTEND_BIND:-127.0.0.1}:${FRONTEND_PORT:-8080}:8080"
+
+  # Mock API jest kontraktem backendu. Gdy powstanie backend, podmieniamy tylko ten serwis.
+  api:
+    <<: *service
+    image: investwatch/uknf-mock-api:local
+    build:
+      context: ./frontend
+      dockerfile: mock-server/Dockerfile
+    depends_on:
+      - ai-service
+    read_only: true
+    tmpfs:
+      - /tmp
+    environment:
+      DATA_MODE: ${DATA_MODE:-mock}
+      DEMO_REPLAY: ${DEMO_REPLAY:-0}
+      AI_URL: http://ai-service:8000
+      STATE_PATH: /state/state.json
+      MOCK_EMIT_MIN_MS: ${MOCK_EMIT_MIN_MS:-15000}
+      MOCK_EMIT_MAX_MS: ${MOCK_EMIT_MAX_MS:-30000}
+      MOCK_SEED: ${MOCK_SEED:-42}
+      MOCK_CORS_ORIGIN: ${MOCK_CORS_ORIGIN:-*}
+    volumes:
+      - ./frontend/mock-server/data:/app/mock-server/data:ro
+      - api-state:/state
+
+  ai-service:
+    <<: *service
+    image: investwatch/uknf-ai-service:local
+    build:
+      context: ./ml
+      target: runtime-cpu
+    environment:
+      INVESTWATCH_BASELINE: ${INVESTWATCH_BASELINE:-0}
+    # Tylko localhost: serwis nie ma autoryzacji i nie może być publiczny.
+    ports:
+      - "127.0.0.1:${AI_PORT:-8000}:8000"
+    volumes:
+      - ${MODELS_PATH:-./ml/models}:/app/models:ro
+      - hf-cache:/cache/huggingface
+
+volumes:
+  api-state:
+  collector-results:
+  collector-cache:
+  hf-cache:

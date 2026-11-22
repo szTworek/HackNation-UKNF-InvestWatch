@@ -1,0 +1,7903 @@
+{
+ "generatedAt": "2026-11-21T21:10:37+00:00",
+ "source": "https://www.knf.gov.pl/podmioty/Podmioty_rynku_kapitalowego/Firmy_inwestycyjne_i_Agenci_firm_inwestycyjnych",
+ "entities": [
+  {
+   "name": "360 Treasury Systems AG",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2007-06-01"
+  },
+  {
+   "name": "3D Global Financial Services Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2010-03-19"
+  },
+  {
+   "name": "42 financial services a.s.",
+   "aliases": [
+    "42 financial services s.r.o."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Czechy",
+   "supervisor": "www.cnb.cz",
+   "registeredAt": "2012-03-21"
+  },
+  {
+   "name": "50KCY LTD",
+   "aliases": [
+    "50COINSCY LTD",
+    "UR Trade Fix Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2016-09-20"
+  },
+  {
+   "name": "7Q Financial Services Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2012-04-09"
+  },
+  {
+   "name": "A.H.W. Capital Mangement GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2010-04-15"
+  },
+  {
+   "name": "A.J.K. Wealth Management Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2011-07-27"
+  },
+  {
+   "name": "A.T.I. Associstes (Cyprus) Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2011-06-02"
+  },
+  {
+   "name": "A/S Global Risk Management Ltd Fondsmaeglerselskab",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Dania",
+   "supervisor": "www.finanstilsynet.dk",
+   "registeredAt": "2018-01-03"
+  },
+  {
+   "name": "ABF TRADE EU LIMITED",
+   "aliases": [
+    "X Global Markets Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2013-05-20"
+  },
+  {
+   "name": "ABG Sundal Collier ASA",
+   "aliases": [
+    "ABG Sundal Collier Norge ASA"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Norwegia",
+   "supervisor": "www.finanstilsynet.no",
+   "registeredAt": "2008-01-28"
+  },
+  {
+   "name": "ABN AMRO - ODDO BHF B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2021-02-01"
+  },
+  {
+   "name": "AC Markets (Europe) Ltd",
+   "aliases": [
+    "LTTRADER LTD"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2018-03-01"
+  },
+  {
+   "name": "Accuindex EU Limited",
+   "aliases": [
+    "Ruizean Markets Ltd",
+    "RZT Capital Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2017-12-13"
+  },
+  {
+   "name": "ACOLIN Europe AG",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "18.01.2022"
+  },
+  {
+   "name": "Across Private Investments, o.c.p., a.s.",
+   "aliases": [
+    "Across Wealth Management o.c.p., a.s.",
+    "Across Investment Services, o.c.p., a.s."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Słowacja",
+   "supervisor": "www.nbs.sk",
+   "registeredAt": "2006-08-23"
+  },
+  {
+   "name": "ACT Financial Solutions B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2018-01-03"
+  },
+  {
+   "name": "ActivMarkets - Empresa de Investimento, S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Portugalia",
+   "supervisor": "www.cmvm.pt",
+   "registeredAt": "2023-05-12"
+  },
+  {
+   "name": "Adamant Capital Partners AD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Bułgaria",
+   "supervisor": "www.fsc.bg",
+   "registeredAt": "2011-07-28"
+  },
+  {
+   "name": "Adams Street (Europe) GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2020-12-22"
+  },
+  {
+   "name": "ADM Investor Services B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2024-02-02"
+  },
+  {
+   "name": "Admiral Markets AS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Estonia",
+   "supervisor": "www.fi.ee",
+   "registeredAt": "29.07.2009"
+  },
+  {
+   "name": "Admirals Europe Ltd",
+   "aliases": [
+    "Admiral Markets Cyprus Ltd",
+    "Admiralex Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2014-02-27"
+  },
+  {
+   "name": "Aeonic Securities C.I.F Plc",
+   "aliases": [
+    "Solidus Securities Cyprus C.I.F. Ltd",
+    "Solidus Securities Cyprus Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2013-09-04"
+  },
+  {
+   "name": "AFEX Markets Europe Limited",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "26.02.2020"
+  },
+  {
+   "name": "AFS Interest BV",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2018-01-04"
+  },
+  {
+   "name": "AGF International Advisors Company Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2009-03-03"
+  },
+  {
+   "name": "AHP Capital Management GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "20.12.2025"
+  },
+  {
+   "name": "AIB Corporate Finance Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2006-01-13"
+  },
+  {
+   "name": "Airwallex Capital (Netherlands) B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2025-08-14"
+  },
+  {
+   "name": "Aisa International, s.r.o.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Czechy",
+   "supervisor": "www.cnb.cz",
+   "registeredAt": "2022-03-01"
+  },
+  {
+   "name": "AIXON INVESTMENT MANAGEMENT SP. Z O.O.",
+   "aliases": [],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "2024-12-06"
+  },
+  {
+   "name": "AK Jensen Norway AS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Norwegia",
+   "supervisor": "www.finanstilsynet.no",
+   "registeredAt": "01.03.2021"
+  },
+  {
+   "name": "AKCENTA CZ, a.s.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Czechy",
+   "supervisor": "www.cnb.cz",
+   "registeredAt": "2013-12-02"
+  },
+  {
+   "name": "AKSYS GLOBAL MARKETS EUROPE LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "12.12.2025"
+  },
+  {
+   "name": "Alaric Securities OOD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Bułgaria",
+   "supervisor": "www.fsc.bg",
+   "registeredAt": "01.12.2022"
+  },
+  {
+   "name": "ALBOURNE CYPRUS LIMITED",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2026-09-18"
+  },
+  {
+   "name": "Alfa Capital Markets Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2020-10-15"
+  },
+  {
+   "name": "Algorithmic Trading Group Netherlands Management B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2018-01-03"
+  },
+  {
+   "name": "ALIOR BANK S.A.",
+   "aliases": [
+    "Biuro Maklerskie ALIOR Bank"
+   ],
+   "lists": [
+    "BANK"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "05-09-2008"
+  },
+  {
+   "name": "All Energy Trading N.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2007-12-24"
+  },
+  {
+   "name": "All Options International N.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2007-12-24"
+  },
+  {
+   "name": "All Securities BV",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2010-05-21"
+  },
+  {
+   "name": "Allianz Global Investors Europe GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2006-06-30"
+  },
+  {
+   "name": "ALPACA EUROPE, A.V., S.L.U.",
+   "aliases": [
+    "WEALTHKERNEL SPAIN, A.V., S.L.U."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Hiszpania",
+   "supervisor": "www.cnmv.es",
+   "registeredAt": "09.06.2026"
+  },
+  {
+   "name": "Alpha FX Europe Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.com.mt",
+   "registeredAt": "2021-04-06"
+  },
+  {
+   "name": "ALT21 Europe Limited",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.mt",
+   "registeredAt": "2025-05-21"
+  },
+  {
+   "name": "Amana Capital (Cyprus) Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2012-06-08"
+  },
+  {
+   "name": "Amenda Markets AS IBS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Łotwa",
+   "supervisor": "www.fktk.lv",
+   "registeredAt": "2016-07-21"
+  },
+  {
+   "name": "AMFIE",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "2017-02-08"
+  },
+  {
+   "name": "Aon Solutions Ireland Limited",
+   "aliases": [
+    "Aon Hewitt Ireland Limited"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "04.12.2019"
+  },
+  {
+   "name": "APME FX Trading Europe Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2017-12-07"
+  },
+  {
+   "name": "Apollo Capital Solutions Europe B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2023-02-10"
+  },
+  {
+   "name": "Aquilla Nummus Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2018-04-25"
+  },
+  {
+   "name": "Arctic Asset Management AS",
+   "aliases": [
+    "Arctic Fund Management AS",
+    "Arctic Capital Partners AS"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Norwegia",
+   "supervisor": "www.finanstilsynet.no",
+   "registeredAt": "2009-01-09"
+  },
+  {
+   "name": "Arctic Securities AS",
+   "aliases": [
+    "Arctic Securities ASA"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Norwegia",
+   "supervisor": "www.finanstilsynet.no",
+   "registeredAt": "2007-09-20"
+  },
+  {
+   "name": "Arctica Finance hf.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Islandia",
+   "supervisor": "www.fme.is",
+   "registeredAt": "2018-01-25"
+  },
+  {
+   "name": "Argus Stockbrokers Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2010-12-01"
+  },
+  {
+   "name": "Arion Banki hf.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Islandia",
+   "supervisor": "www.cb.is",
+   "registeredAt": "2024-03-22"
+  },
+  {
+   "name": "Arisaig Wealth Management B.V.",
+   "aliases": [
+    "Black Swan Capital B.V."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "14.11.2019"
+  },
+  {
+   "name": "ARTEX Global Markets AG",
+   "aliases": [
+    "Artex MTF AG"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Liechtenstein",
+   "supervisor": "www.fma-li.li",
+   "registeredAt": "13.06.2023"
+  },
+  {
+   "name": "ARTS Asset Management GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Austria",
+   "supervisor": "www.fma.gv.at",
+   "registeredAt": "2019-01-29"
+  },
+  {
+   "name": "AS Mintos Marketplace",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Łotwa",
+   "supervisor": "www.bank.lv/en/",
+   "registeredAt": "04.09.2023"
+  },
+  {
+   "name": "AS Suprema Securities",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Estonia",
+   "supervisor": "www.fi.ee/",
+   "registeredAt": "2006-02-07"
+  },
+  {
+   "name": "Asante Capital Group Germany GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2023-01-10"
+  },
+  {
+   "name": "Asset Management International B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2026-08-24"
+  },
+  {
+   "name": "ASSETERA GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Austria",
+   "supervisor": "www.fma.gv.at/en/",
+   "registeredAt": "2024-07-11"
+  },
+  {
+   "name": "ASTEO Luxembourg S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "2015-03-16"
+  },
+  {
+   "name": "ATFX Global Markets (CY) Ltd",
+   "aliases": [
+    "Positiva Markets (CY) Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2016-06-21"
+  },
+  {
+   "name": "Atlantic Capital Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Gibraltar",
+   "supervisor": "www.fsc.gi",
+   "registeredAt": "2016-02-03"
+  },
+  {
+   "name": "Atlantic Securities Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2013-12-11"
+  },
+  {
+   "name": "Attrax Financial Services SA",
+   "aliases": [
+    "attrax S.A."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "2016-05-30"
+  },
+  {
+   "name": "Aurel-bcg",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2008-07-09"
+  },
+  {
+   "name": "Ava Trade EU Ltd",
+   "aliases": [
+    "Ava Capital Markets Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2009-07-17"
+  },
+  {
+   "name": "AWM Wealth Advisers Limited",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "29.05.2019"
+  },
+  {
+   "name": "Axeltis",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2010-07-07"
+  },
+  {
+   "name": "Axia Ventures Group Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2011-09-02"
+  },
+  {
+   "name": "Ayers Alliance Financial Group Ltd",
+   "aliases": [
+    "Harborx Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "03.12.2014"
+  },
+  {
+   "name": "AYOMI Financial Services Limited",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2021-09-03"
+  },
+  {
+   "name": "B2B Prime Services EU Ltd",
+   "aliases": [
+    "Menasecurities Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "25.02.2020"
+  },
+  {
+   "name": "Ballinger Markets Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.mt",
+   "registeredAt": "2024-02-07"
+  },
+  {
+   "name": "BANK HANDLOWY S.A.",
+   "aliases": [
+    "Departament Maklerski Banku Handlowego"
+   ],
+   "lists": [
+    "BANK"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "13-11-2007"
+  },
+  {
+   "name": "BANK MILLENNIUM S.A.",
+   "aliases": [
+    "Biuro Maklerskie Banku Millennium"
+   ],
+   "lists": [
+    "BANK"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "04-01-2005"
+  },
+  {
+   "name": "BANK PEKAO S.A. (BANK POLSKA KASA OPIEKI S.A.)",
+   "aliases": [
+    "B",
+    "iuro Maklerskie PEKAO"
+   ],
+   "lists": [
+    "BANK"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "10-10-2007"
+  },
+  {
+   "name": "Bankhaus Scheich Wertpapierspezialist AG",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2021-04-21"
+  },
+  {
+   "name": "BCM Begin Capital Markets CY Ltd",
+   "aliases": [
+    "OX Capital Markets Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2015-06-16"
+  },
+  {
+   "name": "BDT & MSD Partners Europe GmbH",
+   "aliases": [
+    "BDT & Company Europe GmbH"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "30.09.2019"
+  },
+  {
+   "name": "BenchMark Finance PLC",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Bułgaria",
+   "supervisor": "www.fsc.bg",
+   "registeredAt": "2011-07-25"
+  },
+  {
+   "name": "BESTINVER, SOCIEDAD DE VALORES, S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Hiszpania",
+   "supervisor": "www.cnmv.es",
+   "registeredAt": "2023-11-14"
+  },
+  {
+   "name": "BETA Securities SA",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Grecja",
+   "supervisor": "www.hcmc.gr",
+   "registeredAt": "2004-12-30"
+  },
+  {
+   "name": "Bitpanda Financial Services GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Austria",
+   "supervisor": "www.fma.gv.at",
+   "registeredAt": "01.03.2021"
+  },
+  {
+   "name": "Bitstamp finančne storitve d.o.o.",
+   "aliases": [
+    "(ang. Bitstamp Financial Services Ltd.)"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Słowenia",
+   "supervisor": "www.a-tvp.si",
+   "registeredAt": "06.01.2025"
+  },
+  {
+   "name": "BlackRock (Netherlands) B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2018-10-31"
+  },
+  {
+   "name": "Blacktower Financial Management (Cyprus) Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2020-10-06"
+  },
+  {
+   "name": "Blacktower Financial Management (International) Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Gibraltar",
+   "supervisor": "www.fsc.gi",
+   "registeredAt": "2015-12-17"
+  },
+  {
+   "name": "BLOCKMAZE GREECE INVESTMENT SERVICES SINLGE MEMBER SOCIETE ANONYME",
+   "aliases": [
+    "TRIPLE A EXPERTS INVESTMENT SERVICES SINGLE MEMBER S.A.",
+    "TRIPLE A EXPERTS INVESTMENT SERVICES S.A.",
+    "Triple A Experts Investment Services Single Member S.A.",
+    "Triple A Experts S.A."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Grecja",
+   "supervisor": "www.hcmc.gr",
+   "registeredAt": "2012-05-15"
+  },
+  {
+   "name": "Bloomberg Trading Facility B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2019-01-31"
+  },
+  {
+   "name": "Blue Suisse Ltd",
+   "aliases": [
+    "Port FX Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.com.mt",
+   "registeredAt": "2014-04-02"
+  },
+  {
+   "name": "BLUENEXT",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2008-04-21"
+  },
+  {
+   "name": "BMCP GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "25.06.2020"
+  },
+  {
+   "name": "BN & Partners Capital AG",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2026-06-22"
+  },
+  {
+   "name": "BNP Paribas Bank Polska S.A.",
+   "aliases": [
+    "Biuro Maklerskie BNP Paribas Bank Polska"
+   ],
+   "lists": [
+    "BANK"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "21-02-1992"
+  },
+  {
+   "name": "BNP Paribas Dealing Services",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2017-03-31"
+  },
+  {
+   "name": "BNP Paribas Equities France",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2005-07-01"
+  },
+  {
+   "name": "BNP Paribas Investment Partners Netherlands N.V.",
+   "aliases": [
+    "ABN Amro Asset Management (Netherlands) B.V."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2006-04-11"
+  },
+  {
+   "name": "Boer & Olij Securities B.V.",
+   "aliases": [
+    "Boer & Olij Effectenhuis"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2008-11-20"
+  },
+  {
+   "name": "Boku Securities SIA",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Łotwa",
+   "supervisor": "www.bank.lv/en/",
+   "registeredAt": "2026-06-18"
+  },
+  {
+   "name": "BOS Wealth Management Europe sa",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "2018-09-17"
+  },
+  {
+   "name": "Boson Alfa Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2019-03-20"
+  },
+  {
+   "name": "BOURSE DIRECT",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2026-04-15"
+  },
+  {
+   "name": "BP ENERGY SOLUTIONS, SOCIEDAD DE VALORES, S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Hiszpania",
+   "supervisor": "www.cnmv.es",
+   "registeredAt": "2023-06-02"
+  },
+  {
+   "name": "Brewin Dolphin Wealth Management Ltd",
+   "aliases": [
+    "Tilman Brewin Dolphin Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2018-09-19"
+  },
+  {
+   "name": "BROCTAGON PRIME LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "13.02.2023"
+  },
+  {
+   "name": "BSG France S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2024-04-18"
+  },
+  {
+   "name": "BT Securities SA",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Rumunia",
+   "supervisor": "www.asfromania.ro",
+   "registeredAt": "2011-04-13"
+  },
+  {
+   "name": "BTIG Norway AS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Norwegia",
+   "supervisor": "www.finanstilsynet.no",
+   "registeredAt": "2025-09-03"
+  },
+  {
+   "name": "Calamatta Cuschieri Investment Services Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.com.mt",
+   "registeredAt": "2018-10-08"
+  },
+  {
+   "name": "Cambridge Associates GmbH",
+   "aliases": [
+    "Cambridge Associates (Germany) GmbH"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2020-03-16"
+  },
+  {
+   "name": "Campbell Lutyens & Co (France) S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.fr",
+   "registeredAt": "2021-04-01"
+  },
+  {
+   "name": "Cantor Fitzgerald Ireland Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2018-11-06"
+  },
+  {
+   "name": "CAPITAL COM GROUP LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "03.03.2026"
+  },
+  {
+   "name": "Capital Com SV Investments Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "22.08.2017"
+  },
+  {
+   "name": "Capital Markets, o.c.p., a.s.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Słowacja",
+   "supervisor": "www.nbs.sk",
+   "registeredAt": "2008-03-17"
+  },
+  {
+   "name": "Capital Solutions Advisory GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Austria",
+   "supervisor": "www.fma.gv.at",
+   "registeredAt": "2020-02-11"
+  },
+  {
+   "name": "Captin B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2022-05-24"
+  },
+  {
+   "name": "Carne Global Financial Services (Europe) – Empresa de Investimento, S.A.",
+   "aliases": [
+    "Carne Global Financial Services (Europe), Unipessoal Lda."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Portugalia",
+   "supervisor": "www.cmvm.pt",
+   "registeredAt": "26.08.2019"
+  },
+  {
+   "name": "Cashline Értékpapír zártkörűen működő Részvénytársaság",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Węgry",
+   "supervisor": "www.mnb.hu",
+   "registeredAt": "2007-05-10"
+  },
+  {
+   "name": "CASPAR ASSET MANAGEMENT S.A.",
+   "aliases": [],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "26-05-2010"
+  },
+  {
+   "name": "CBRE Capital Advisors B.V.",
+   "aliases": [
+    "CBRE Real Estate Finance B.V.",
+    "CB Richard Ellis Real Estate Finance BV"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "31.10.2011"
+  },
+  {
+   "name": "CDJ SOCIAL STOCKS LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2026-03-20"
+  },
+  {
+   "name": "Centris Capital AG",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Austria",
+   "supervisor": "www.fma.gv.at",
+   "registeredAt": "19.04.2012"
+  },
+  {
+   "name": "Centrus Advisors Limited",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "04.07.2024"
+  },
+  {
+   "name": "CERES DOM INWESTYCYJNY S.A.",
+   "aliases": [
+    "EFIX DOM MAKLERSKI S.A."
+   ],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "08-02-2011"
+  },
+  {
+   "name": "Cex Markets Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2020-06-17"
+  },
+  {
+   "name": "CHARLGATE Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2020-01-08"
+  },
+  {
+   "name": "Chase Buchanan Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2016-04-27"
+  },
+  {
+   "name": "Chatham Financial Europe B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2024-05-24"
+  },
+  {
+   "name": "Chefinvest International AG",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Liechtenstein",
+   "supervisor": "www.fma-li.li",
+   "registeredAt": "2015-06-19"
+  },
+  {
+   "name": "Cheuvreux SA",
+   "aliases": [
+    "Credit Agricole Cheuvreux"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2010-07-07"
+  },
+  {
+   "name": "Citadel Securities GCS (Ireland) Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "16.11.2018"
+  },
+  {
+   "name": "Citfin – Finanční trhy, a.s.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Czechy",
+   "supervisor": "www.cnb.cz",
+   "registeredAt": "2024-07-04"
+  },
+  {
+   "name": "Citigroup Global Markets Europe AG",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2018-12-27"
+  },
+  {
+   "name": "CLAREMONT SQUARE CAPITAL LIMITED",
+   "aliases": [
+    "Afterprime Europe Limited",
+    "H.C.F.S. High Capital Financial Services Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "20.11.2020"
+  },
+  {
+   "name": "Clarkson Platou Project Sales AS",
+   "aliases": [
+    "RS Platou Finans Shipping AS"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Norwegia",
+   "supervisor": "www.finanstilsynet.no",
+   "registeredAt": "2013-08-16"
+  },
+  {
+   "name": "Clear Street Europe BV",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2026-05-12"
+  },
+  {
+   "name": "Cleaves Securities AS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Norwegia",
+   "supervisor": "www.finanstilsynet.no",
+   "registeredAt": "2014-02-11"
+  },
+  {
+   "name": "CLICKOPTIONS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2008-05-28"
+  },
+  {
+   "name": "CLSA Europe B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2019-04-02"
+  },
+  {
+   "name": "CMC Markets Germany GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER",
+    "FOREIGN_BRANCH"
+   ],
+   "country": "Niemcy",
+   "supervisor": "Federal Financial Supervisory Authority",
+   "registeredAt": "2019-09-04"
+  },
+  {
+   "name": "Coeli Wealth Management AB",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Szwecja",
+   "supervisor": "www.fi.se",
+   "registeredAt": "2019-08-12"
+  },
+  {
+   "name": "Cohen & Company (Europe) S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2021-11-23"
+  },
+  {
+   "name": "Coinbase Financial Services Europe Ltd.",
+   "aliases": [
+    "Bux Europe Ltd",
+    "HUA REN (Cyprus) Financial Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "18.10.2019"
+  },
+  {
+   "name": "Colin&Cie. Luxembourg S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "2017-01-19"
+  },
+  {
+   "name": "Colmex Pro Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2011-03-16"
+  },
+  {
+   "name": "Columbia Threadneedle Netherlands B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "24.11.2025"
+  },
+  {
+   "name": "Comgest Asset Management International Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2020-09-23"
+  },
+  {
+   "name": "Computershare Investor Services (Ireland) Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2018-12-18"
+  },
+  {
+   "name": "Concorde Értékpapir Részvénytársaság",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Węgry",
+   "supervisor": "www.mnb.hu",
+   "registeredAt": "2004-12-13"
+  },
+  {
+   "name": "Connaught (EU) B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.amf.nl",
+   "registeredAt": "2024-09-05"
+  },
+  {
+   "name": "Conotoxia Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2017-11-14"
+  },
+  {
+   "name": "Conseq Investment Management, a.s.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Czechy",
+   "supervisor": "www.cnb.cz",
+   "registeredAt": "2012-09-14"
+  },
+  {
+   "name": "Convera Europe Financial S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER",
+    "FOREIGN_BRANCH"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "Commission de Surveillance du Secteur Financier (CSSF)",
+   "registeredAt": "2022-10-05"
+  },
+  {
+   "name": "Corum Vermögensverwaltung (Deutschland) GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2026-06-22"
+  },
+  {
+   "name": "Createrra Finance S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "2022-05-13"
+  },
+  {
+   "name": "Credit Financier Invest (CFI) Ltd",
+   "aliases": [
+    "CFI Markets Ltd",
+    "CF Invest Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2013-05-22"
+  },
+  {
+   "name": "CREDO Vermogensmanagement GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2011-05-31"
+  },
+  {
+   "name": "CREDOS d.o.o.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Chorwacja",
+   "supervisor": "www.hanfa.hr",
+   "registeredAt": "2017-03-07"
+  },
+  {
+   "name": "CROWD Tech Ltd",
+   "aliases": [
+    "MPF Global Markets Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2014-04-16"
+  },
+  {
+   "name": "CTCAP LTD",
+   "aliases": [
+    "CT CAPITALLTRADERS LTD"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "11.09.2023"
+  },
+  {
+   "name": "CTS Cloud Trading Solutions Ltd",
+   "aliases": [
+    "Novox Capital Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2014-04-11"
+  },
+  {
+   "name": "CVC Capital Markets S.à r.l.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "07.07.2023"
+  },
+  {
+   "name": "CVI DOM MAKLERSKI SP. Z O.O.",
+   "aliases": [],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "21-05-2013"
+  },
+  {
+   "name": "CYRRUS a.s.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Czechy",
+   "supervisor": "www.cnb.cz",
+   "registeredAt": "2006-07-24"
+  },
+  {
+   "name": "D.T. Direct Investment Hub Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2019-01-28"
+  },
+  {
+   "name": "D2X Group N.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "22.03.2024"
+  },
+  {
+   "name": "Daiwa Capital Markets Deutschland GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "30.11.2018"
+  },
+  {
+   "name": "Darion Capital Management BV",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2013-09-10"
+  },
+  {
+   "name": "DC Placement Advisors GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2015-12-30"
+  },
+  {
+   "name": "DealerBox Technologies S.A.S",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2025-04-09"
+  },
+  {
+   "name": "DeFinVa Deutsche Finanzvertriebsagentur GmbH",
+   "aliases": [
+    "The Silverfern Group Europe GmbH",
+    "First Investment Partners"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2018-04-12"
+  },
+  {
+   "name": "Deltastock AD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Bułgaria",
+   "supervisor": "www.fsc.bg",
+   "registeredAt": "2009-04-03"
+  },
+  {
+   "name": "Deriv Investments (Europe) Ltd",
+   "aliases": [
+    "Deriv Investment (Europe) Ltd",
+    "Binary Investment (Europe) Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.com.mt",
+   "registeredAt": "2015-05-25"
+  },
+  {
+   "name": "Descartes Trading S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2015-04-24"
+  },
+  {
+   "name": "Development Company for Israel Europe GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2021-02-03"
+  },
+  {
+   "name": "Dialog Vermögensmanagement GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "08.04.2022"
+  },
+  {
+   "name": "Dif Broker – Empresa de Investimento, S.A.",
+   "aliases": [
+    "DIF Broker - Sociedade Financeira de Corretagem, SA",
+    "DIF Broker - Sociedade Corretora, SA"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Portugalia",
+   "supervisor": "www.cmvm.pt",
+   "registeredAt": "2010-04-16"
+  },
+  {
+   "name": "Direct Hedge Danmark Fondsmæglerselskab A/S",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Dania",
+   "supervisor": "www.finanstilsynet.dk",
+   "registeredAt": "2011-07-20"
+  },
+  {
+   "name": "Directa SIM S.p.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Włochy",
+   "supervisor": "www.consob.it",
+   "registeredAt": "2016-06-16"
+  },
+  {
+   "name": "Dodge & Cox (Europe) GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2023-05-26"
+  },
+  {
+   "name": "DOM INWESTYCYJNY NEHREBETIUS S.A.",
+   "aliases": [],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "22-03-2005"
+  },
+  {
+   "name": "DOM INWESTYCYJNY XELION SP. Z O.O.",
+   "aliases": [],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "18-10-2011"
+  },
+  {
+   "name": "DOM MAKLERSKI AFS Sp. z o.o.",
+   "aliases": [],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "15-07-2010"
+  },
+  {
+   "name": "DOM MAKLERSKI BANKU OCHRONY ŚRODOWISKA  S.A.",
+   "aliases": [],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "18-08-1994"
+  },
+  {
+   "name": "DOM MAKLERSKI BDM S.A.",
+   "aliases": [],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "08-10-1993"
+  },
+  {
+   "name": "DOM MAKLERSKI INC S.A.",
+   "aliases": [],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "21-02-2012"
+  },
+  {
+   "name": "DOM MAKLERSKI NAVIGATOR S.A.",
+   "aliases": [],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "27-09-2007"
+  },
+  {
+   "name": "DonauCapital Pure Investment GmbH",
+   "aliases": [
+    "DonauCapital Investment GmbH",
+    "DonauCapital Wertpapier AG"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2010-03-28"
+  },
+  {
+   "name": "DonauCapital Wertpapier GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2016-06-08"
+  },
+  {
+   "name": "DOO FINANCIAL CYPRUS LIMITED",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2025-03-04"
+  },
+  {
+   "name": "DORADZTWO DLA POLSKICH PRZEDSIĘBIORSTW SECURITIES S.A.",
+   "aliases": [],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "20-05-2008"
+  },
+  {
+   "name": "Doto Europe Ltd.",
+   "aliases": [
+    "Vasby Capital Markets Limited"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "21.09.2021"
+  },
+  {
+   "name": "DPRG IM LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "04.09.2025"
+  },
+  {
+   "name": "Dragon Capital (Cyprus) Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2010-12-13"
+  },
+  {
+   "name": "DriveWealth Europe UAB",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Litwa",
+   "supervisor": "www.lb.lt",
+   "registeredAt": "13.11.2024"
+  },
+  {
+   "name": "DRW Europe B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "13.01.2025"
+  },
+  {
+   "name": "Dukascopy Europe IBS AS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Łotwa",
+   "supervisor": "www.fktk.lv",
+   "registeredAt": "2011-07-12"
+  },
+  {
+   "name": "Dutch Options and Futures Institute B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2005-05-16"
+  },
+  {
+   "name": "DWS International GmbH",
+   "aliases": [
+    "Deutsche Asset Management International GmBH"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "21.03.2007"
+  },
+  {
+   "name": "e-MID SIM S.p.A",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Włochy",
+   "supervisor": "www.consob.it",
+   "registeredAt": "2008-11-07"
+  },
+  {
+   "name": "Easy Forex Trading Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2007-08-10"
+  },
+  {
+   "name": "EBURY PARTNERS MARKETS CYPRUS LIMITED",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2025-11-17"
+  },
+  {
+   "name": "ECOMMBX INVESTMENTS LIMITED",
+   "aliases": [
+    "Mercorix Limited",
+    "Symmetria F.S. Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2020-07-15"
+  },
+  {
+   "name": "EDR Financial Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2015-05-27"
+  },
+  {
+   "name": "EFEKTA obchodník s cennými papíry a.s.",
+   "aliases": [
+    "Efekta Consulting, a.s."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Czechy",
+   "supervisor": "www.cnb.cz",
+   "registeredAt": "25.06.2010"
+  },
+  {
+   "name": "Eightcap EU Ltd",
+   "aliases": [
+    "R Capital Solutions Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2014-10-13"
+  },
+  {
+   "name": "ELIDI Securities Ltd",
+   "aliases": [
+    "UGM Securities Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2020-06-03"
+  },
+  {
+   "name": "ELITE SIM S.p.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Włochy",
+   "supervisor": "www.bancaditalia.it",
+   "registeredAt": "2019-10-16"
+  },
+  {
+   "name": "Elitepartner Financial Advisors GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Austria",
+   "supervisor": "www.fma.gv.at",
+   "registeredAt": "2007-12-10"
+  },
+  {
+   "name": "Eminova Fondkommission AB",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Szwecja",
+   "supervisor": "www.fi.se",
+   "registeredAt": "2024-03-04"
+  },
+  {
+   "name": "EMKAP LTD",
+   "aliases": [
+    "MeritKapital Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2010-03-08"
+  },
+  {
+   "name": "Emporium Capital K.A. Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2021-10-26"
+  },
+  {
+   "name": "Energy Risk Management Fondsmæglerselskab A/S",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Dania",
+   "supervisor": "www.dfsa.dk",
+   "registeredAt": "2025-05-13"
+  },
+  {
+   "name": "ENGIE Global Markets",
+   "aliases": [
+    "GDF SUEZ Trading",
+    "GASELYS"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2008-05-28"
+  },
+  {
+   "name": "Enmacc Financial Services GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2023-03-13"
+  },
+  {
+   "name": "EOS Venture",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2016-10-13"
+  },
+  {
+   "name": "Equilor Investment Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Węgry",
+   "supervisor": "www.mnb.hu",
+   "registeredAt": "16.12.2010"
+  },
+  {
+   "name": "equinet AG",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2007-12-10"
+  },
+  {
+   "name": "EQUITI GLOBAL MARKETS LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "23.05.2023"
+  },
+  {
+   "name": "ERSTE BANK POLSKA S.A.",
+   "aliases": [
+    "Erste Biuro Maklerskie",
+    "SANTANDER BANK POLSKA S.A.",
+    "Santander Biuro Maklerskie"
+   ],
+   "lists": [
+    "BANK"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "19-07-1991"
+  },
+  {
+   "name": "Erste Investment AG",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Węgry",
+   "supervisor": "www.mnb.hu",
+   "registeredAt": "2015-10-12"
+  },
+  {
+   "name": "ERSTE SECURITIES POLSKA S.A.",
+   "aliases": [],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "29-09-1995"
+  },
+  {
+   "name": "Etoro (Europe) Ltd",
+   "aliases": [
+    "RetailFX Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2010-04-12"
+  },
+  {
+   "name": "EUI Private Wealth Ltd",
+   "aliases": [
+    "AHR Private Wealth Europe Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2021-02-04"
+  },
+  {
+   "name": "Eurivex Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2011-07-19"
+  },
+  {
+   "name": "EUROAMERICAN FINANCIAL ADVISORS EAF, S.L",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Hiszpania",
+   "supervisor": "www.cnmv.es",
+   "registeredAt": "2025-09-24"
+  },
+  {
+   "name": "Eurobank Equities Investment Firm S.A.",
+   "aliases": [
+    "Eurobank EFG Equities Investment Firm S.A.",
+    "Eurobank EFG Securities Investment Firm S.A."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Grecja",
+   "supervisor": "www.hcmc.gr",
+   "registeredAt": "2009-11-09"
+  },
+  {
+   "name": "Europa Brokerhaz",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Węgry",
+   "supervisor": "www.mnb.hu",
+   "registeredAt": "2014-04-10"
+  },
+  {
+   "name": "Eurotrade Investments RGB Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2016-09-30"
+  },
+  {
+   "name": "EUROXX SECURITIES S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Grecja",
+   "supervisor": "www.hcmc.gr",
+   "registeredAt": "11.04.2023"
+  },
+  {
+   "name": "Evbx Ltd",
+   "aliases": [
+    "VSTAR & SOHO MARKETS LTD"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "18.04.2022"
+  },
+  {
+   "name": "Evelyn Partners Investment Management (Europe) Limited",
+   "aliases": [
+    "Smith & Williamson Investment Management (Europe) Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "23.04.2019"
+  },
+  {
+   "name": "EVER CAPITAL INVESTMENTS, S.V., S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Hiszpania",
+   "supervisor": "www.cnmv.es",
+   "registeredAt": "2026-02-19"
+  },
+  {
+   "name": "Ever Financial AD",
+   "aliases": [
+    "Financial House Ever AD"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Bułgaria",
+   "supervisor": "www.fsc.bg",
+   "registeredAt": "2010-08-11"
+  },
+  {
+   "name": "Evercore GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2021-01-19"
+  },
+  {
+   "name": "Everest Index Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2012-07-13"
+  },
+  {
+   "name": "EVEREST INVESTMENT MANAGEMENT S.A.",
+   "aliases": [],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "06-10-2015"
+  },
+  {
+   "name": "Evli Oyj",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Finlandia",
+   "supervisor": "www.finanssivalvonta.fi",
+   "registeredAt": "2022-05-04"
+  },
+  {
+   "name": "EVO DOM MAKLERSKI S.A.",
+   "aliases": [
+    "PRIME SELECTION DOM MAKLERSKI S.A."
+   ],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "17-11-2015"
+  },
+  {
+   "name": "EXANE Options",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2008-08-01"
+  },
+  {
+   "name": "Exclusive Change Capital Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2017-09-12"
+  },
+  {
+   "name": "EXCLUSIVE PARTNERS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2026-07-01"
+  },
+  {
+   "name": "Exelcius Prime Ltd",
+   "aliases": [
+    "CopyDO Social Investment Network Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2019-03-26"
+  },
+  {
+   "name": "EXENICO (CY) LTD",
+   "aliases": [
+    "Grandis Securities Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "06.10.2020"
+  },
+  {
+   "name": "Exness (Cy) Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2013-08-06"
+  },
+  {
+   "name": "EXT Ltd",
+   "aliases": [
+    "M&L Invest Union Markets Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER",
+    "FOREIGN_BRANCH"
+   ],
+   "country": "Cypr",
+   "supervisor": "Cyprus Securities and Exchange Commission",
+   "registeredAt": "2024-07-26"
+  },
+  {
+   "name": "FACTORY AD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Bułgaria",
+   "supervisor": "www.fsc.bg",
+   "registeredAt": "2010-06-07"
+  },
+  {
+   "name": "Fathom Wealth Management Advisors Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2016-12-08"
+  },
+  {
+   "name": "Fearnley Securities AS",
+   "aliases": [
+    "Fearnley Fonds ASA"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Norwegia",
+   "supervisor": "www.finanstilsynet.no",
+   "registeredAt": "2005-05-23             zmiana zakresu działalności:                          2018-09-27"
+  },
+  {
+   "name": "Fiduciary Wealth Management Limited",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Gibraltar",
+   "supervisor": "www.gfsc.gi",
+   "registeredAt": "14.01.2020"
+  },
+  {
+   "name": "FIL (Luxembourg) SA",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "2011-11-14"
+  },
+  {
+   "name": "FIMEX Capital o.c.p., a.s.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Słowacja",
+   "supervisor": "www.nbs.sk",
+   "registeredAt": "2008-12-02"
+  },
+  {
+   "name": "Finad GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Austria",
+   "supervisor": "www.fma.gv.at",
+   "registeredAt": "15.12.2021"
+  },
+  {
+   "name": "FINALTO EU LTD",
+   "aliases": [
+    "Magnasale Trading Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2016-03-30"
+  },
+  {
+   "name": "Financial & Risk Transaction Services Ireland Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2019-04-05"
+  },
+  {
+   "name": "Finary SAS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2026-09-15"
+  },
+  {
+   "name": "Finax, o.c.p., a.s.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER",
+    "FOREIGN_BRANCH"
+   ],
+   "country": "Słowacja",
+   "supervisor": "Narodna Banka Slovenska (NBS)",
+   "registeredAt": "2022-03-07"
+  },
+  {
+   "name": "FinDeal Advisers S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "2025-10-09"
+  },
+  {
+   "name": "FINQUOTES FINANCIAL (CYPRUS) LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2024-10-22"
+  },
+  {
+   "name": "FIO, burzovni spolecnost, a.s. Czechy",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Czechy",
+   "supervisor": "www.cnb.cz",
+   "registeredAt": "2004-05-31"
+  },
+  {
+   "name": "First Avenue Partners (Europe) GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2025-01-22"
+  },
+  {
+   "name": "First Capital Management Group GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "08.01.2020"
+  },
+  {
+   "name": "First Prudential Markets Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2019-05-29"
+  },
+  {
+   "name": "Fisher Investments Ireland Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "14.03.2019"
+  },
+  {
+   "name": "Fisher Investments Luxembourg Sarl",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "2019-09-18"
+  },
+  {
+   "name": "Flow Traders B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2013-05-14"
+  },
+  {
+   "name": "FMO Investment Management B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2015-12-23"
+  },
+  {
+   "name": "FNZ (Europe) DAC",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2023-05-25"
+  },
+  {
+   "name": "Fondee s.r.o.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Czechy",
+   "supervisor": "www.cnb.cz",
+   "registeredAt": "2022-03-21"
+  },
+  {
+   "name": "Forex TB Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2015-12-22"
+  },
+  {
+   "name": "FORIS CAPITAL CY LIMITED",
+   "aliases": [
+    "A.N. Allnew Investments Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2017-12-28"
+  },
+  {
+   "name": "Fortrade Cyprus Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "23.06.2020"
+  },
+  {
+   "name": "FP Asset Management Cyprus Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2017-02-15"
+  },
+  {
+   "name": "Freedom Finance Europe Ltd",
+   "aliases": [
+    "Freedom Finance Cyprus Ltd",
+    "FFINEU Investments Limited"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2018-03-20"
+  },
+  {
+   "name": "FTI Finance Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "24.06.2009"
+  },
+  {
+   "name": "FUND CHANNEL S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "27.11.2023"
+  },
+  {
+   "name": "FundRock Distribution S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "26.09.2023"
+  },
+  {
+   "name": "Fundvest UAB",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Litwa",
+   "supervisor": "www.lb.lt",
+   "registeredAt": "03.01.2023"
+  },
+  {
+   "name": "FUSION MARKETS EU LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2025-03-10"
+  },
+  {
+   "name": "FX Central Clearing Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2011-03-30"
+  },
+  {
+   "name": "FXdirekt Bank AG Niemcy",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2005-06-30"
+  },
+  {
+   "name": "FXGlobe Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2013-12-16"
+  },
+  {
+   "name": "FXNET Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2012-12-19"
+  },
+  {
+   "name": "FXOPEN EU Ltd",
+   "aliases": [
+    "AMB Prime Ltd",
+    "Valutrades CY Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2014-04-11"
+  },
+  {
+   "name": "FXPRO Financial Services Ltd",
+   "aliases": [
+    "Euroorient Securities and Financial Services Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2008-01-24"
+  },
+  {
+   "name": "Gasum Portfolio Services Oy",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Finlandia",
+   "supervisor": "www.finanssivalvonta.fi",
+   "registeredAt": "2020-05-12"
+  },
+  {
+   "name": "GATE SECURITIES (CYPRUS) LTD",
+   "aliases": [
+    "Sheer Markets (Cyprus) Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "14.05.2021"
+  },
+  {
+   "name": "GBE Brokers Ltd",
+   "aliases": [
+    "GBE Safepay Transactions Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2015-09-21"
+  },
+  {
+   "name": "GBR Capital GmbH",
+   "aliases": [
+    "GBR Financial Services GmbH"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Austria",
+   "supervisor": "www.fma.gv.at",
+   "registeredAt": "10.11.2010"
+  },
+  {
+   "name": "GC Exchange Fondsmæglerselskab A/S",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Dania",
+   "supervisor": "www.dfsa.dk",
+   "registeredAt": "2023-05-04"
+  },
+  {
+   "name": "Gemini Intergalactic EU Artemis, Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.mt",
+   "registeredAt": "2025-06-26"
+  },
+  {
+   "name": "General Investments AG",
+   "aliases": [
+    "DT Securities AG",
+    "DT Securities GmbH"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Austria",
+   "supervisor": "www.fma.gv.at",
+   "registeredAt": "2004-10-11"
+  },
+  {
+   "name": "Geneve Invest (Europe) S.A.",
+   "aliases": [
+    "Geneve Invest (Europe) S.a.r.l."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "2013-01-15"
+  },
+  {
+   "name": "GHI GLOBAL ADVISORY PARTNERS A.V, S.L.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Hiszpania",
+   "supervisor": "www.cnmv.es",
+   "registeredAt": "14.04.2026"
+  },
+  {
+   "name": "GLITNIR AS",
+   "aliases": [
+    "Fischer Partners Fondkommission AB"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Szwecja",
+   "supervisor": "www.fi.se",
+   "registeredAt": "2005-03-21"
+  },
+  {
+   "name": "Global Funds Exchange EAD",
+   "aliases": [
+    "Emirates Wealth EAD",
+    "BMFN EAD",
+    "UniTrader EAD"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Bułgaria",
+   "supervisor": "www.fsc.bg",
+   "registeredAt": "2011-04-19"
+  },
+  {
+   "name": "Global Shares Execution Services Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.com.mt",
+   "registeredAt": "12.03.2019"
+  },
+  {
+   "name": "Global Trade CIF Ltd",
+   "aliases": [
+    "Vistabrokers CIF Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2014-01-29"
+  },
+  {
+   "name": "GMG Europe B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "08.06.2023"
+  },
+  {
+   "name": "GMO Netherlands B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2022-10-12"
+  },
+  {
+   "name": "GO Markets Ltd",
+   "aliases": [
+    "Galactus Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2017-08-24"
+  },
+  {
+   "name": "Goldenburg Group Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2014-10-22"
+  },
+  {
+   "name": "Goldman Sachs Paris Inc. Et Cie",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2019-01-14"
+  },
+  {
+   "name": "Goodbody Stockbrokers Unlimited Company",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2024-06-04"
+  },
+  {
+   "name": "Gothaer Asset Management AG",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2011-08-31"
+  },
+  {
+   "name": "GPB Financial Services Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2011-10-14"
+  },
+  {
+   "name": "Grand Capital Ltd",
+   "aliases": [
+    "Finex Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Bułgaria",
+   "supervisor": "www.fsc.bg",
+   "registeredAt": "2018-03-12"
+  },
+  {
+   "name": "Granfeld Wealth Management Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2017-02-15"
+  },
+  {
+   "name": "GRAVITY PRIVATE WEALTH LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2025-03-07"
+  },
+  {
+   "name": "GreenStream Network Plc",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Finlandia",
+   "supervisor": "www.fin-fsa.fi",
+   "registeredAt": "2008-03-20"
+  },
+  {
+   "name": "Griffin Markets Europe SAS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "06.03.2019"
+  },
+  {
+   "name": "Growell Capital Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2014-07-21"
+  },
+  {
+   "name": "Grunfin AS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Estonia",
+   "supervisor": "www.fi.ee",
+   "registeredAt": "2022-01-31"
+  },
+  {
+   "name": "GTSE CAPITAL GROUP LTD",
+   "aliases": [
+    "Eight Plus Capital Ltd",
+    "Acier FX Ltd",
+    "Argusfx Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2017-09-29"
+  },
+  {
+   "name": "Guggenheim Partners Europe Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2010-10-22"
+  },
+  {
+   "name": "Guggenheim Securities Europe Limited",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2024-03-25"
+  },
+  {
+   "name": "GuildAM Ltd.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.mt",
+   "registeredAt": "2026-02-16"
+  },
+  {
+   "name": "GWT Fondsmeglerselskab A/S",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Dania",
+   "supervisor": "www.finanstilsynet.dk",
+   "registeredAt": "2010-08-13"
+  },
+  {
+   "name": "HABERL Wealth Management, o. c. p., a. s.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Słowacja",
+   "supervisor": "www.nbs.sk",
+   "registeredAt": "2024-03-12"
+  },
+  {
+   "name": "Hamilton Lane (Germany) GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2022-03-23"
+  },
+  {
+   "name": "HANetf EU Limited",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2023-09-04"
+  },
+  {
+   "name": "Harindale Ltd.",
+   "aliases": [
+    "ICC Intercertus Capital Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2016-11-07"
+  },
+  {
+   "name": "Harmovest Capital (Cyprus) Ltd",
+   "aliases": [
+    "GVD KORIMCY LTD"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "31.08.2022"
+  },
+  {
+   "name": "Heptagon Capital Limited",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.com.mt",
+   "registeredAt": "2018-07-26"
+  },
+  {
+   "name": "HF Markets (Europe) Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2013-04-03"
+  },
+  {
+   "name": "Hidden Road Partners CIV NL B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2023-05-12"
+  },
+  {
+   "name": "Hitomorrow Securities LTD",
+   "aliases": [
+    "T.C.R. International Ltd",
+    "1 T.C.R. Corp. Ltd",
+    "1 Financial ROD Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2014-12-09"
+  },
+  {
+   "name": "Hogg Capital Invetsments Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.com.mt",
+   "registeredAt": "05.05.2016"
+  },
+  {
+   "name": "Holborn Assets Wealth Management (Cy) Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2021-01-29"
+  },
+  {
+   "name": "Houlihan Lokey (Europe) GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "17.11.2020"
+  },
+  {
+   "name": "Howden Capital Markets & Advisory (EU) GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2026-07-02"
+  },
+  {
+   "name": "HOXTON CAPITAL MANAGEMENT (EUROPE) LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2023-09-20"
+  },
+  {
+   "name": "HRTEU Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2019-03-25"
+  },
+  {
+   "name": "HSBC Financial Products",
+   "aliases": [
+    "HSBC CCF Financial Products"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2006-11-10"
+  },
+  {
+   "name": "HSBC Global Asset Management (Deutschland) GmbH",
+   "aliases": [
+    "HSBC Investments Deutschland GmbH"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2008-07-14"
+  },
+  {
+   "name": "HSBC International Financial Advisers (Malta) Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.com.mt",
+   "registeredAt": "2005-06-29"
+  },
+  {
+   "name": "HSH Corporate Finance ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Finlandia",
+   "supervisor": "www.fin-fsa.fi",
+   "registeredAt": "2008-03-11"
+  },
+  {
+   "name": "HUAPRIME EU LTD",
+   "aliases": [
+    "Ultima Markets Cyprus Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "19.05.2023"
+  },
+  {
+   "name": "Huber & Co Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Gibraltar",
+   "supervisor": "www.fsc.gi",
+   "registeredAt": "2013-05-24"
+  },
+  {
+   "name": "HYDE CREDIT LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2026-02-17"
+  },
+  {
+   "name": "I.W.G. International Wealth Group Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "13.12.2019"
+  },
+  {
+   "name": "IBKR Europe S.a.r.l.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "2019-11-22"
+  },
+  {
+   "name": "ibrokr.AG",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2010-03-15"
+  },
+  {
+   "name": "IC Markets (EU) Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2019-06-13"
+  },
+  {
+   "name": "ICAP Energy AS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Norwegia",
+   "supervisor": "www.finanstilsynet.no",
+   "registeredAt": "2011-03-01  zmiana zakresu działalności:"
+  },
+  {
+   "name": "ICE Securities Netherlands B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2025-02-07"
+  },
+  {
+   "name": "ICFD Ltd",
+   "aliases": [
+    "iFOREX (Cyprus) Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2011-09-07"
+  },
+  {
+   "name": "ICM InvestmentBank AG",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2016-06-07"
+  },
+  {
+   "name": "IDCM Netherlands B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2023-12-15"
+  },
+  {
+   "name": "IFDS DOM MAKLERSKI S.A.",
+   "aliases": [
+    "INVESTMENT FUNDS DEPOSITARY SERVICES S.A."
+   ],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "2023-09-28"
+  },
+  {
+   "name": "IFH Capital Trader Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.mt",
+   "registeredAt": "2024-04-04"
+  },
+  {
+   "name": "IG Europe GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER",
+    "FOREIGN_BRANCH"
+   ],
+   "country": "Niemcy",
+   "supervisor": "Federal Financial Supervisory Authority",
+   "registeredAt": "2024-07-29"
+  },
+  {
+   "name": "IGM Forex Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2020-10-15"
+  },
+  {
+   "name": "IN2MARKETS LTD",
+   "aliases": [
+    "Pruden Ventures Capital Ltd",
+    "Constance Investment Ltd",
+    "QBF Investment Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2015-10-13"
+  },
+  {
+   "name": "Indication Investments Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2012-06-15"
+  },
+  {
+   "name": "ING BANK  ŚLĄSKI  S.A.",
+   "aliases": [
+    "Biuro Maklerskie ING Bank Śląski"
+   ],
+   "lists": [
+    "BANK"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "30-11-2004"
+  },
+  {
+   "name": "Instant Trading EU Ltd.",
+   "aliases": [
+    "Tradomart Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER",
+    "FOREIGN_BRANCH"
+   ],
+   "country": "Cypr",
+   "supervisor": "Cyprus Securities and Exchange Commission",
+   "registeredAt": "2020-09-14"
+  },
+  {
+   "name": "Instinet Germany GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "29.03.2019"
+  },
+  {
+   "name": "Institutional CN (Europe) — Empresa de Investimento, S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Portugalia",
+   "supervisor": "www.cmvm.pt",
+   "registeredAt": "2023-11-13"
+  },
+  {
+   "name": "Integrae Sim S.p.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Włochy",
+   "supervisor": "www.consob.it",
+   "registeredAt": "2016-12-14"
+  },
+  {
+   "name": "Interactive Brokers Ireland Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "23.12.2020"
+  },
+  {
+   "name": "Intercapital Securities Ltd (vrijednosti papiri)",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Chorwacja",
+   "supervisor": "www.hanfa.hr",
+   "registeredAt": "2016-06-09"
+  },
+  {
+   "name": "Intermediate Capital Group Benelux B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2019-09-26"
+  },
+  {
+   "name": "Intermonte SIM SpA",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Włochy",
+   "supervisor": "www.bancaditalia.it",
+   "registeredAt": "2018-01-04"
+  },
+  {
+   "name": "International Commodity Consulting ICC B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2017-07-13"
+  },
+  {
+   "name": "International Investment Platform, o.c.p., a.s.",
+   "aliases": [
+    "Cornhill Management, o.c.p., a.s.",
+    "SFM Group, o.c.p., a.s."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Słowacja",
+   "supervisor": "www.nbs.sk",
+   "registeredAt": "2009-02-09"
+  },
+  {
+   "name": "Interpolis Pensioenen Vermogensbeheer B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2008-01-14"
+  },
+  {
+   "name": "InterTrader Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Gibraltar",
+   "supervisor": "www.fsc.gi",
+   "registeredAt": "2013-02-22"
+  },
+  {
+   "name": "Invest4Growth Asset Management Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.com.mt",
+   "registeredAt": "2019-08-13"
+  },
+  {
+   "name": "Investcorp Europe S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "2024-09-04"
+  },
+  {
+   "name": "Investec Europe Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2019-04-23"
+  },
+  {
+   "name": "Investium Limited",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "06.06.2023"
+  },
+  {
+   "name": "Investors Europe (Malta) Limited",
+   "aliases": [
+    "Dolfin Asset Services Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.com.mt",
+   "registeredAt": "24.05.2018"
+  },
+  {
+   "name": "IPOPEMA SECURITIES S.A.",
+   "aliases": [],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "30-06-2005"
+  },
+  {
+   "name": "IQBroker Europe Ltd",
+   "aliases": [
+    "Iqoption Europe Ltd",
+    "Investlab Holdings Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2015-02-02"
+  },
+  {
+   "name": "Iqoption Europe Ltd",
+   "aliases": [
+    "Investlab Holdings Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2014-11-25"
+  },
+  {
+   "name": "Isec Wealth Management Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2018-07-06"
+  },
+  {
+   "name": "iSwap Euro B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2019-03-28"
+  },
+  {
+   "name": "IWC Investment Partners Fondsmeglerselskab A/S",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Dania",
+   "supervisor": "www.finanstilsynet.dk",
+   "registeredAt": "2012-10-10"
+  },
+  {
+   "name": "IX ASSET MANAGEMENT S.A.",
+   "aliases": [
+    "NIEZALEŻNY DOM MAKLERSKI S.A."
+   ],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "18-11-2014"
+  },
+  {
+   "name": "J&E Davy Unlimited Company",
+   "aliases": [
+    "J&E Davy t/a Davy",
+    "J&E Davy t/a Davy Stockbrokers"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2008-04-21"
+  },
+  {
+   "name": "J.P. Morgan Dublin plc",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2019-03-28"
+  },
+  {
+   "name": "J2T Services Ltd",
+   "aliases": [
+    "LIME TRADING (CY) LTD",
+    "Just2Trade Online Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2016-02-24"
+  },
+  {
+   "name": "Jane Street Netherlands B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2019-03-25"
+  },
+  {
+   "name": "JB Capital Markets Sociedad de Valores, S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Hiszpania",
+   "supervisor": "www.cnmv.es",
+   "registeredAt": "2010-07-19"
+  },
+  {
+   "name": "JB DRAX HONORE (FRANCE) SAS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "01.04.2022"
+  },
+  {
+   "name": "Jefferies GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER",
+    "FOREIGN_BRANCH"
+   ],
+   "country": "Niemcy",
+   "supervisor": "Federal Financial Supervisory Authority",
+   "registeredAt": "2021-12-03"
+  },
+  {
+   "name": "JFD Group Ltd",
+   "aliases": [
+    "JFD Brokers Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2011-12-08"
+  },
+  {
+   "name": "JLL Transaction Services AB",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Szwecja",
+   "supervisor": "www.fi.se",
+   "registeredAt": "02.04.2019"
+  },
+  {
+   "name": "Jump Trading Europe B.V.,",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2020-09-30"
+  },
+  {
+   "name": "Justmarkets Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "05.01.2022"
+  },
+  {
+   "name": "Kepler Capital Markets S.A.",
+   "aliases": [
+    "Landsbanki Kepler",
+    "Kepler Landsbanki",
+    "Kepler Equities"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2005-07-27"
+  },
+  {
+   "name": "Key Way Investments Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2017-07-21"
+  },
+  {
+   "name": "KfW Capital GmbH & Co. KG",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2022-07-28"
+  },
+  {
+   "name": "KKR Credit Advisors (Ireland) Unlimited Company",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "25.01.2019"
+  },
+  {
+   "name": "KNG Securities International - Empresa de Investimento, Lda",
+   "aliases": [
+    "KNG Securities International, Lda"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Portugalia",
+   "supervisor": "www.cmvm.pt",
+   "registeredAt": "24.03.2022"
+  },
+  {
+   "name": "Kvarn Investment Services Oy",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Finlandia",
+   "supervisor": "https://www.finanssivalvonta.fi",
+   "registeredAt": "2025-11-06"
+  },
+  {
+   "name": "L.F. Investment Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2015-10-21"
+  },
+  {
+   "name": "Lago Kapital Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Finlandia",
+   "supervisor": "www.finanssivalvonta.fi",
+   "registeredAt": "2021-11-02"
+  },
+  {
+   "name": "LAIETANA LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2023-10-19"
+  },
+  {
+   "name": "LCM Commodities SAS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2026-05-11"
+  },
+  {
+   "name": "Leonteq Securities (Europe) GmbH",
+   "aliases": [
+    "EFG Financial Products (Europe) GmbH"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2011-03-24"
+  },
+  {
+   "name": "LFI DOM MAKLERSKI S.A.",
+   "aliases": [
+    "LFI DM S.A."
+   ],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "2026-06-26"
+  },
+  {
+   "name": "LIFEGOALS FINANCIAL SERVICES LIMITED",
+   "aliases": [
+    "Emergo Wealth Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "18.12.2017"
+  },
+  {
+   "name": "Lightyear Europe AS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Estonia",
+   "supervisor": "www.fi.ee",
+   "registeredAt": "10.05.2022"
+  },
+  {
+   "name": "LIQID Asset Management GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2020-03-19"
+  },
+  {
+   "name": "Lirunex Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2020-04-27"
+  },
+  {
+   "name": "Liteforex (Europe) Ltd",
+   "aliases": [
+    "Mayzus Investment Company Ltd",
+    "United World Capital Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2009-08-03"
+  },
+  {
+   "name": "LL Capital & Partners Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.com.mt",
+   "registeredAt": "2010-05-04"
+  },
+  {
+   "name": "Lloyds Bank Corporate Markets Wertpapierhandelsbank GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "15.04.2019"
+  },
+  {
+   "name": "LMAX Broker Europe Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2020-12-15"
+  },
+  {
+   "name": "LocalTapiola Asset Management Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Finlandia",
+   "supervisor": "Finanssivalvonta.fi",
+   "registeredAt": "2021-05-10"
+  },
+  {
+   "name": "Luna Wealth Asset Management Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "11.12.2019"
+  },
+  {
+   "name": "Lydya Financial Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2017-06-23"
+  },
+  {
+   "name": "LYNX B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER",
+    "FOREIGN_BRANCH"
+   ],
+   "country": "Holandia",
+   "supervisor": "Autoriteit Financiële Markten (AFM)",
+   "registeredAt": "2026-06-19"
+  },
+  {
+   "name": "Macquarie Capital France",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2020-12-07"
+  },
+  {
+   "name": "Magic Compass Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2017-02-15"
+  },
+  {
+   "name": "Magnum FX (Cyprus) Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2018-09-25"
+  },
+  {
+   "name": "Makor Securities Paris SAS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "28.03.2023"
+  },
+  {
+   "name": "Man (Europe) AG",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Liechtenstein",
+   "supervisor": "www.fma-li.li",
+   "registeredAt": "2013-03-28"
+  },
+  {
+   "name": "Mandatum Asset Management Ltd",
+   "aliases": [
+    "Mandatum Life Investment Services Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Finlandia",
+   "supervisor": "www.fin-fsa.fi",
+   "registeredAt": "08.10.2014"
+  },
+  {
+   "name": "Manentia Wealth Consulting Group Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.com.mt",
+   "registeredAt": "2020-08-27"
+  },
+  {
+   "name": "Mangold Fonkommission AB",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Szwecja",
+   "supervisor": "www.fi.se",
+   "registeredAt": "2009-11-29"
+  },
+  {
+   "name": "Marche de TitreS France (MTS France)",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "05.03.2018"
+  },
+  {
+   "name": "Marcuard Heritage (Europe) Ltd",
+   "aliases": [
+    "Marcuard Cyprus Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2011-05-03"
+  },
+  {
+   "name": "Marex SA",
+   "aliases": [
+    "HPC SA"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2016-12-09"
+  },
+  {
+   "name": "Marex Società di Intermediazione mobiliare S.p.A. (Marex SIM S.p.A.)",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Włochy",
+   "supervisor": "www.consob.it",
+   "registeredAt": "2026-10-09"
+  },
+  {
+   "name": "Marex Spectron Europe Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2019-03-11"
+  },
+  {
+   "name": "MARIANA UFP SAS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2020-01-08"
+  },
+  {
+   "name": "Marigny Capital",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "28.11.2016"
+  },
+  {
+   "name": "Market Securities France SA",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "02.07.2020"
+  },
+  {
+   "name": "MarketAxess NL B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "26.02.2019"
+  },
+  {
+   "name": "mBANK S.A.",
+   "aliases": [
+    "Biuro Maklerskie mBank"
+   ],
+   "lists": [
+    "BANK"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "30-06-2005"
+  },
+  {
+   "name": "MCA Intelifunds Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2011-12-08"
+  },
+  {
+   "name": "MeDirect Bank (Malta) PLC",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.mt",
+   "registeredAt": "2022-11-11"
+  },
+  {
+   "name": "Medvešek Pušnik, borzno posredniška hiša, d.d., Ljubljana",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Słowenia",
+   "supervisor": "www.a-tvp.si",
+   "registeredAt": "2004-10-29"
+  },
+  {
+   "name": "Mega Equity Securities and Financial Services Public Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2014-04-23"
+  },
+  {
+   "name": "Mercer Global Investments Europe Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "19.06.2019"
+  },
+  {
+   "name": "Mercia Securities Ltd",
+   "aliases": [
+    "Initial Merit Secure Ltd",
+    "Nextrade Worldwide Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2014-06-19"
+  },
+  {
+   "name": "Mercurius Pro, o.c.p., a.s.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Słowacja",
+   "supervisor": "www.nbs.sk",
+   "registeredAt": "2020-09-04"
+  },
+  {
+   "name": "Merrill Lynch, Pierce, Fenner and Smith SAS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2010-07-02"
+  },
+  {
+   "name": "MEX EUROPE LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "06.09.2023"
+  },
+  {
+   "name": "Mexem Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2017-08-22"
+  },
+  {
+   "name": "MICHAEL/STRÖM DOM MAKLERSKI S.A.",
+   "aliases": [
+    "MICHAEL/STRÖM DOM MAKLERSKI Sp. z o.o."
+   ],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "04-06-2013"
+  },
+  {
+   "name": "MIND MONEY LIMITED",
+   "aliases": [
+    "Zerich Securities Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "06.08.2010"
+  },
+  {
+   "name": "MIO-Partners (EU) GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2020-04-08"
+  },
+  {
+   "name": "Mirabella Malta Advisers Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.mt",
+   "registeredAt": "2019-11-05"
+  },
+  {
+   "name": "MIT SIM SpA",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Włochy",
+   "supervisor": "www.consob.it",
+   "registeredAt": "06.07.2021"
+  },
+  {
+   "name": "MITRADE EU LIMITED",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2024-04-12"
+  },
+  {
+   "name": "Mitsui Bussan Commodities France SA",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2020-06-25"
+  },
+  {
+   "name": "MK BROKERS AD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Bułgaria",
+   "supervisor": "www.fsc.bg",
+   "registeredAt": "2024-05-09"
+  },
+  {
+   "name": "MMC Securities (Ireland) Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "06.08.2021"
+  },
+  {
+   "name": "Moelis & Company Europe B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2021-09-23"
+  },
+  {
+   "name": "Monex Europe Markets, S.V, S.A.U",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Hiszpania",
+   "supervisor": "www.cnmv.es",
+   "registeredAt": "2024-07-16"
+  },
+  {
+   "name": "Moneycorp Technologies Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2020-06-25"
+  },
+  {
+   "name": "Montesquieu Finance B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2010-02-25"
+  },
+  {
+   "name": "Monument Group Netherlands B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2023-01-04"
+  },
+  {
+   "name": "Mount Nico Corp Ltd",
+   "aliases": [
+    "Nico Financial NF Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2015-02-16"
+  },
+  {
+   "name": "Moventum S.C.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "27.03.2012"
+  },
+  {
+   "name": "MTG Liquidity Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "08.02.2021"
+  },
+  {
+   "name": "MTS Associated Markets",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Belgia",
+   "supervisor": "www.nbb.be",
+   "registeredAt": "2007-12-20"
+  },
+  {
+   "name": "Naga Markets Europe Ltd",
+   "aliases": [
+    "Naga Markets Ltd",
+    "Hanseatic Brokerhouse Global Markets Ltd",
+    "AF Alaska Financial Ltd",
+    "Ava Trade Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2013-10-30"
+  },
+  {
+   "name": "Naxex Invest Ltd.",
+   "aliases": [
+    "Depaho Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2012-11-29"
+  },
+  {
+   "name": "NBC Global Finance Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2015-04-14"
+  },
+  {
+   "name": "NBC Paris",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2024-05-14"
+  },
+  {
+   "name": "NBI Investments Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2012-10-18"
+  },
+  {
+   "name": "New England Asset Management Ltd",
+   "aliases": [
+    "GR-NEAM Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2012-06-07"
+  },
+  {
+   "name": "New Momentum AV, SA",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Hiszpania",
+   "supervisor": "www.cnmv.es",
+   "registeredAt": "26.06.2018"
+  },
+  {
+   "name": "NFS Netfonds Financial Service GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "19.11.2021"
+  },
+  {
+   "name": "NFS Network Financial Services Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "14.08.2017"
+  },
+  {
+   "name": "Njord Securities AS",
+   "aliases": [
+    "Castelar Corporate Finance AS"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Norwegia",
+   "supervisor": "www.finanstilsynet.no",
+   "registeredAt": "2010-02-25"
+  },
+  {
+   "name": "NNIP Advisors B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2016-04-18"
+  },
+  {
+   "name": "NOBLE Securities S.A.",
+   "aliases": [],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "27-12-1993"
+  },
+  {
+   "name": "Noemon Finance Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2025-03-17"
+  },
+  {
+   "name": "Nomura Investment Management Europe S.A.",
+   "aliases": [
+    "Macquarie Investment Management Europe S.A."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "15.11.2023"
+  },
+  {
+   "name": "Noordnederlands Effektenkantoor B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "05.11.2015"
+  },
+  {
+   "name": "Nordlux Vermögensmanagement S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "2021-11-26"
+  },
+  {
+   "name": "Notely Trading Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2020-05-07"
+  },
+  {
+   "name": "Notesco Financial Services Ltd",
+   "aliases": [
+    "IronFX Global Ltd",
+    "IronFX Ltd",
+    "IronFX Financial Services Ltd",
+    "IronForex Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2011-01-13"
+  },
+  {
+   "name": "NOVA SECURITIES LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2026-03-03"
+  },
+  {
+   "name": "NOVIA GLOBAL EUROPE LIMITED",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "22.01.2025"
+  },
+  {
+   "name": "Npinvestor Fondsmaeglerselskab A/S",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Dania",
+   "supervisor": "www.dfsa.dk",
+   "registeredAt": "2018-01-30"
+  },
+  {
+   "name": "NRP Project Finance AS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Norwegia",
+   "supervisor": "www.finanstilsynet.no",
+   "registeredAt": "2022-07-15"
+  },
+  {
+   "name": "Numisma Capital Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "03.07.2013"
+  },
+  {
+   "name": "NUNTIUS BROKERAGE AND INVESTMENT SERVICES SINGLE MEMBER S.A.",
+   "aliases": [
+    "Nuntius Brokerage and Investment Services S.A."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Grecja",
+   "supervisor": "www.hcmc.gr",
+   "registeredAt": "2017-09-12"
+  },
+  {
+   "name": "NWAI DOM MAKLERSKI S.A.",
+   "aliases": [],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "31-07-2009"
+  },
+  {
+   "name": "OAKK Capital Partners BV",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2021-04-12"
+  },
+  {
+   "name": "OANDA TMS BROKERS S.A.",
+   "aliases": [
+    "Dom Maklerski TMS BROKERS S.A."
+   ],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "26-04-2004"
+  },
+  {
+   "name": "Octa Markets Cyprus Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "05.04.2019"
+  },
+  {
+   "name": "OEXN LIMITED",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2023-05-11"
+  },
+  {
+   "name": "OFL Westpapierhandels AG",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2007-10-03"
+  },
+  {
+   "name": "OKX Europe Markets Limited",
+   "aliases": [
+    "Oanda Europe Markets Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.com.mt",
+   "registeredAt": "05.01.2021"
+  },
+  {
+   "name": "Olive Tree Capital Markets Limited",
+   "aliases": [
+    "Atonline Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2010-09-17"
+  },
+  {
+   "name": "Omega Funds Investment Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2014-03-13"
+  },
+  {
+   "name": "Omicron Investment Management GmbH",
+   "aliases": [
+    "Omicron Invest Management GmbH"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Austria",
+   "supervisor": "www.fma.gv.at",
+   "registeredAt": "2005-12-14"
+  },
+  {
+   "name": "One Plus Capital Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2010-11-10"
+  },
+  {
+   "name": "One Trading Exchange B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "22.10.2024"
+  },
+  {
+   "name": "Oppenheim Asset Management",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Austria",
+   "supervisor": "www.fma.gv.at",
+   "registeredAt": "2011-08-08"
+  },
+  {
+   "name": "Opstock Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Finlandia",
+   "supervisor": "www.fin-fsa.fi",
+   "registeredAt": "2005-09-05"
+  },
+  {
+   "name": "Optieclub.nl B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2015-04-28"
+  },
+  {
+   "name": "optionsXpress Europe B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2006-03-13"
+  },
+  {
+   "name": "Optiver v.o.f.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2010-08-24"
+  },
+  {
+   "name": "OQTIMA EU LTD",
+   "aliases": [
+    "Nordskov Capital Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "22.03.2022"
+  },
+  {
+   "name": "ORBEO",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2008-09-25"
+  },
+  {
+   "name": "ORBEX Ltd",
+   "aliases": [
+    "AFB FX Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2011-05-09"
+  },
+  {
+   "name": "Orion Securities Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Litwa",
+   "supervisor": "www.lb.lt",
+   "registeredAt": "2011-05-04"
+  },
+  {
+   "name": "Orkla Finans Kapitalforvaltning ASA",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Norwegia",
+   "supervisor": "www.finanstilsynet.no",
+   "registeredAt": "2006-03-21"
+  },
+  {
+   "name": "Otkritie Broker Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2016-10-24"
+  },
+  {
+   "name": "Ott, Hagen & Partner AG",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Liechtenstein",
+   "supervisor": "www.fma-li.li",
+   "registeredAt": "2019-03-20"
+  },
+  {
+   "name": "PAM Capital AB",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Szwecja",
+   "supervisor": "www.fi.se",
+   "registeredAt": "2026-03-11"
+  },
+  {
+   "name": "Pareto Private Equity AS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Norwegia",
+   "supervisor": "www.finanstilsynet.no",
+   "registeredAt": "2008-03-31"
+  },
+  {
+   "name": "Pareto Securities",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Norwegia",
+   "supervisor": "www.finanstilsynet.no",
+   "registeredAt": "2007-01-29"
+  },
+  {
+   "name": "Partners Group (EU) GmbH",
+   "aliases": [
+    "Partners Group (Deutschland) GmbH"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2019-06-04"
+  },
+  {
+   "name": "Patria Finance a.s.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Czechy",
+   "supervisor": "www.cnb.cz",
+   "registeredAt": "2011-12-29"
+  },
+  {
+   "name": "Payward Europe Digital Solutions (CY) Limited",
+   "aliases": [
+    "I.F. GREENFIELDS WEALTH LTD",
+    "Pacific Union Group Ltd",
+    "Brightfx Capital Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2017-12-13"
+  },
+  {
+   "name": "Peaks B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2018-03-15"
+  },
+  {
+   "name": "PEAKSIGHT LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "09.04.2024"
+  },
+  {
+   "name": "Peel Hunt Europe Fondsmæglerselskab A/S",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Dania",
+   "supervisor": "www.dfsa.dk",
+   "registeredAt": "01.06.2023"
+  },
+  {
+   "name": "PEKAO INVESTMENT BANKING S.A.",
+   "aliases": [],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "08-10-1993"
+  },
+  {
+   "name": "PELICAN EXCHANGE EUROPE (CY) LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2024-04-02"
+  },
+  {
+   "name": "Pepperstone EU Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2020-11-10"
+  },
+  {
+   "name": "Perella Weinbesrg Partners France SAS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "27.01.2021"
+  },
+  {
+   "name": "Performance Ronnaru Company Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2016-01-08"
+  },
+  {
+   "name": "Pershing Securities International Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "21.12.2018"
+  },
+  {
+   "name": "Petram & Co N.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2016-10-06"
+  },
+  {
+   "name": "PGE DOM MAKLERSKI S.A.",
+   "aliases": [],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "10-12-2013"
+  },
+  {
+   "name": "PIMCO Europe GmbH",
+   "aliases": [
+    "PIMCO Deutschland GmbH"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2012-09-06"
+  },
+  {
+   "name": "PineBridge Investemnts Deutschland GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2019-04-08"
+  },
+  {
+   "name": "Piper Sandler Europe SAS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2026-08-05"
+  },
+  {
+   "name": "PJT Partners Park Hill (Spain) A.V., S.A.U.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Hiszpania",
+   "supervisor": "www.cnmv.es",
+   "registeredAt": "2020-10-22"
+  },
+  {
+   "name": "PLUM Money CY Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "08.09.2022"
+  },
+  {
+   "name": "Plus500CY Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2014-12-12"
+  },
+  {
+   "name": "Plus500EE AS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Estonia",
+   "supervisor": "www.fi.ee",
+   "registeredAt": "2022-05-10"
+  },
+  {
+   "name": "PM MTF LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "29.09.2025"
+  },
+  {
+   "name": "Pohjola Corporate Finance LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Finlandia",
+   "supervisor": "www.fin-fsa.fi",
+   "registeredAt": "2010-10-29"
+  },
+  {
+   "name": "POWSZECHNA KASA OSZCZĘDNOŚCI BANK  POLSKI S.A. (PKO BP S.A.)",
+   "aliases": [
+    "Biuro Maklerskie PKO Banku Polskiego"
+   ],
+   "lists": [
+    "BANK"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "26-08-1991"
+  },
+  {
+   "name": "Primus Global Ltd",
+   "aliases": [
+    "FX Primus Europe (Cy) Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2015-05-20"
+  },
+  {
+   "name": "Pritle N.V.",
+   "aliases": [
+    "Pritle B.V."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2015-11-23"
+  },
+  {
+   "name": "Privalux Management S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "2015-09-14"
+  },
+  {
+   "name": "Privanet Securities Oy",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Finlandia",
+   "supervisor": "www.fin-fsa.fi",
+   "registeredAt": "2016-04-12"
+  },
+  {
+   "name": "Probus Pleion Luxembourg S.A.",
+   "aliases": [
+    "BCB & Partners SA"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "16.01.2013"
+  },
+  {
+   "name": "Prochoice Chrimatistiriaki Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2017-12-12"
+  },
+  {
+   "name": "Prodigit Investments Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2014-06-25"
+  },
+  {
+   "name": "Prospergate Capital Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2018-12-13"
+  },
+  {
+   "name": "Proteste Investe — Empresa de Investimento, Unipessoal Lda.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Portugalia",
+   "supervisor": "www.cmvm.pt",
+   "registeredAt": "2022-08-19"
+  },
+  {
+   "name": "PROXENTA Finance, o.c.p., a.s.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Słowacja",
+   "supervisor": "www.nbs.sk",
+   "registeredAt": "2012-05-23"
+  },
+  {
+   "name": "Q SECURITIES S.A.",
+   "aliases": [],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "29-10-2013"
+  },
+  {
+   "name": "Qbasis Invest GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Austria",
+   "supervisor": "www.fma.gv.at",
+   "registeredAt": "2014-12-16"
+  },
+  {
+   "name": "Quantile BV",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2021-12-27"
+  },
+  {
+   "name": "Quay Financials (Gibraltar) Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Gibraltar",
+   "supervisor": "www.fsc.gi",
+   "registeredAt": "2008-08-05"
+  },
+  {
+   "name": "QUEST FUND PLACE-MENT EUROPE, AGENCIA DE VALORES, SOCIEDAD ANÓNIMA",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Hiszpania",
+   "supervisor": "www.cnmv.es",
+   "registeredAt": "2025-11-05"
+  },
+  {
+   "name": "QUIDEOS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2026-06-24"
+  },
+  {
+   "name": "Quilter Cheviot Europe Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2019-09-03"
+  },
+  {
+   "name": "R.J. O’Brien France S.A.S.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "11.10.2019"
+  },
+  {
+   "name": "Raiffeisen Vermoegensverwaltungsbank AG Austria",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Austria",
+   "supervisor": "www.fma.gv.at",
+   "registeredAt": "2006-04-25"
+  },
+  {
+   "name": "Ramius GmbH",
+   "aliases": [
+    "Ramius HVB Partners Austria GmbH"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Austria",
+   "supervisor": "www.fma.gv.at",
+   "registeredAt": "2007-06-19"
+  },
+  {
+   "name": "Rathbones Investment Management International (Ireland) Limited",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2026-10-05"
+  },
+  {
+   "name": "Raymond James Corporate Finance GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2022-05-25"
+  },
+  {
+   "name": "RAYMOND JAMES France SAS",
+   "aliases": [
+    "Raymond James Euro Equities"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2013-11-19"
+  },
+  {
+   "name": "RBC Capital Markets (Europe) GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "31.01.2019"
+  },
+  {
+   "name": "Red Mars Capital Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2021-09-10"
+  },
+  {
+   "name": "Redburn (France) SA",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "29.06.2023"
+  },
+  {
+   "name": "Rede Partners (Netherlands) B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2022-12-29"
+  },
+  {
+   "name": "Redpine Capital Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "06.08.2021"
+  },
+  {
+   "name": "Renaissance Securities (Cyprus) Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2005-04-08"
+  },
+  {
+   "name": "RENARD Solutions AG",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Liechtenstein",
+   "supervisor": "www.fma-li.li",
+   "registeredAt": "2026-09-03"
+  },
+  {
+   "name": "Revolut Securities Europe UAB",
+   "aliases": [
+    "Revolut Securities UAB"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Litwa",
+   "supervisor": "www.lb.lt",
+   "registeredAt": "21.01.2022"
+  },
+  {
+   "name": "RM-S Market, o.c.p., a.s.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Słowacja",
+   "supervisor": "www.nbs.sk",
+   "registeredAt": "2005-07-05"
+  },
+  {
+   "name": "Robinhood Europe, UAB",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Litwa",
+   "supervisor": "www.lb.lt",
+   "registeredAt": "17.04.2025"
+  },
+  {
+   "name": "RoboMarkets Deutschland GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "24.06.2022"
+  },
+  {
+   "name": "Robomarkets Ltd",
+   "aliases": [
+    "Roboforex (Cy) Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2013-10-15"
+  },
+  {
+   "name": "Roemer Capital (Europe) Limited",
+   "aliases": [
+    "Sinara Financial Corporation (Europe) Ltd",
+    "THINK WEALTH LTD"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2018-02-12"
+  },
+  {
+   "name": "Ronin Europe Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "05.07.2013"
+  },
+  {
+   "name": "Royal Financial Trading (CY) Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2017-09-07"
+  },
+  {
+   "name": "Rubicon Infrastructure Advisors",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "08.05.2014"
+  },
+  {
+   "name": "Ruffer SA",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2019-05-16"
+  },
+  {
+   "name": "Rynat Trading Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2016-12-13"
+  },
+  {
+   "name": "S.S.I.F. Blue Rock Financial Services S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Rumunia",
+   "supervisor": "www.asfromania.ro",
+   "registeredAt": "2014-09-05"
+  },
+  {
+   "name": "SAB o.c.p., a.s.",
+   "aliases": [
+    "Fio o.c.p., a.s."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Słowacja",
+   "supervisor": "www.nbs.sk",
+   "registeredAt": "2005-11-28"
+  },
+  {
+   "name": "Safecap Investments Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2009-09-29"
+  },
+  {
+   "name": "Salmann Investment Management AG",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Liechtenstein",
+   "supervisor": "www.fma-li.li",
+   "registeredAt": "2023-10-12"
+  },
+  {
+   "name": "Salus Alpha Capital GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Liechtenstein",
+   "supervisor": "www.fma-li.li",
+   "registeredAt": "2007-08-24"
+  },
+  {
+   "name": "SAPIENS MARKETS EU, SOCIEDAD DE VALORES, S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Hiszpania",
+   "supervisor": "www.cnmv.es",
+   "registeredAt": "2023-02-10"
+  },
+  {
+   "name": "SB1 Markets AS",
+   "aliases": [
+    "Sparebank 1 Markets AS",
+    "Argo Securities AS"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Norwegia",
+   "supervisor": "www.finanstilsynet.no",
+   "registeredAt": "12.02.2009"
+  },
+  {
+   "name": "SECURITIZE EUROPE BROKERAGE AND MARKETS, S.V., S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Hiszpania",
+   "supervisor": "www.cnmv.es",
+   "registeredAt": "22.05.2025"
+  },
+  {
+   "name": "SFI Markets B.V.",
+   "aliases": [
+    "STX Fixed Income B.V."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2013-05-03"
+  },
+  {
+   "name": "SFS Markets Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2013-10-30"
+  },
+  {
+   "name": "SGX FX Markets NL B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2026-09-22"
+  },
+  {
+   "name": "SHARES FINANCIAL ASSETS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "07.08.2023"
+  },
+  {
+   "name": "Shine Trades (CY) Ltd",
+   "aliases": [
+    "Triumph Int. (Cyprus) Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2018-04-23"
+  },
+  {
+   "name": "SIA “DN Operator”",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Łotwa",
+   "supervisor": "www.bank.lv/en/",
+   "registeredAt": "2026-07-27"
+  },
+  {
+   "name": "SIB (Cyprus) Ltd",
+   "aliases": [
+    "TD Investments Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2011-07-15"
+  },
+  {
+   "name": "Silvercrest Asset Management (Europe) Limited",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2026-09-08"
+  },
+  {
+   "name": "Skanestas Investments Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2015-11-20"
+  },
+  {
+   "name": "Skilling Ltd",
+   "aliases": [
+    "Finovel Cyprus Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2018-06-07"
+  },
+  {
+   "name": "SKY Asset Management AG",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Liechtenstein",
+   "supervisor": "www.fma-li.li",
+   "registeredAt": "2026-05-04"
+  },
+  {
+   "name": "Skybound Wealth Europe Ltd.",
+   "aliases": [
+    "Fenix Capital Markets Trading Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2017-01-30"
+  },
+  {
+   "name": "Slim Vermogensbeheer B.V.",
+   "aliases": [
+    "Berben's Effectenkantoor B.V."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2005-02-24"
+  },
+  {
+   "name": "SM Capital Markets Ltd",
+   "aliases": [
+    "ABC 123 (CY) Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2018-02-27"
+  },
+  {
+   "name": "Small & Mid Cap Investmentbank AG",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2019-05-13"
+  },
+  {
+   "name": "Societatea De Servicii De Investitii Financiare Romintrade SA",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Rumunia",
+   "supervisor": "www.asfromania.ro",
+   "registeredAt": "2013-06-25"
+  },
+  {
+   "name": "Société Générale - Forge",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2022-08-08"
+  },
+  {
+   "name": "SOLARIS EMEA LIMITED",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "31.10.2023"
+  },
+  {
+   "name": "Solas Capital Germany GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2026-05-14"
+  },
+  {
+   "name": "Solid Financial Services Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2010-03-31"
+  },
+  {
+   "name": "SOLVENTIS, S.V., S.A.",
+   "aliases": [
+    "Solventis, AV, S.A."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Hiszpania",
+   "supervisor": "www.cnmv.es",
+   "registeredAt": "2025-02-10"
+  },
+  {
+   "name": "Spiko Finance SASU",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "05.06.2026"
+  },
+  {
+   "name": "Spirit Asset Management SA",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "2021-02-01"
+  },
+  {
+   "name": "Square Global",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "17.05.2023"
+  },
+  {
+   "name": "Squared Financial (CY) Ltd",
+   "aliases": [
+    "Aspide Financial Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2017-09-07"
+  },
+  {
+   "name": "SSC Smart FX Ltd",
+   "aliases": [
+    "Jin Daocheng Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2017-10-27"
+  },
+  {
+   "name": "SSIF BRK FINANCIAL GROUP S.A",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Rumunia",
+   "supervisor": "www.asfromania.ro",
+   "registeredAt": "2019-07-22"
+  },
+  {
+   "name": "STAK SECURITIES LTD",
+   "aliases": [
+    "STAK FX Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "24.09.2021"
+  },
+  {
+   "name": "STATOK LTD",
+   "aliases": [
+    "SMSG Limited"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "24.09.2021"
+  },
+  {
+   "name": "Stifel Europe Securities SAS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2026-07-13"
+  },
+  {
+   "name": "Stonehage Fleming Investment Management (Liechtenstein) AG",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Liechtenstein",
+   "supervisor": "www.fma-li.li",
+   "registeredAt": "2022-03-16"
+  },
+  {
+   "name": "StoneX Europe Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "16.07.2021"
+  },
+  {
+   "name": "StoneX Financial Europe GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2024-11-04"
+  },
+  {
+   "name": "Strategic Wealth Management A/S",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Dania",
+   "supervisor": "www.dfsa.dk",
+   "registeredAt": "2025-04-28"
+  },
+  {
+   "name": "Strato Markets B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2012-10-15"
+  },
+  {
+   "name": "Stratos Europe Limited",
+   "aliases": [
+    "FXCM EU Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2020-12-16"
+  },
+  {
+   "name": "Streams Financial Services Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "09.10.2019"
+  },
+  {
+   "name": "Substnz Capital Partners GmbH",
+   "aliases": [
+    "eXapital Capital Advisors GmbH"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "11.12.2020"
+  },
+  {
+   "name": "Sucden Financial Hamburg GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2024-06-28"
+  },
+  {
+   "name": "Superfund Asset Management GmbH",
+   "aliases": [
+    "Quadriga Asset Management GmbH"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Austria",
+   "supervisor": "www.fma.gv.at",
+   "registeredAt": "2004-07-26"
+  },
+  {
+   "name": "Susquehanna International Securities Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2016-07-19"
+  },
+  {
+   "name": "Svensk Värdepappersservice i Stockholm AB",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Szwecja",
+   "supervisor": "www.fi.se",
+   "registeredAt": "2024-12-19"
+  },
+  {
+   "name": "Swiss Life Asset Managers Transactions AS",
+   "aliases": [
+    "NRP Finans AS"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Norwegia",
+   "supervisor": "www.finanstilsynet.no",
+   "registeredAt": "2013-06-13"
+  },
+  {
+   "name": "Swiss Re Capital Markets Europe S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "2019-04-02"
+  },
+  {
+   "name": "Swissquote Capital Markets Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2023-01-04"
+  },
+  {
+   "name": "Systrade AG",
+   "aliases": [
+    "Systrade Asset Management AG, Vaduz Liechtenstein"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Liechtenstein",
+   "supervisor": "www.fma-li.li",
+   "registeredAt": "2006-12-19"
+  },
+  {
+   "name": "T Markets EU Limited",
+   "aliases": [
+    "NBH Markets EU Ltd",
+    "Fideliscm (Cyprus) Ltd",
+    "SN Financials Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2014-10-03"
+  },
+  {
+   "name": "TAURUS (EUROPE) LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2026-10-08"
+  },
+  {
+   "name": "TCW Italy SIM S.p.A.",
+   "aliases": [
+    "(TCW Italy Societŕ di Intermediazione Mobiliare S.p.A.,)"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Włochy",
+   "supervisor": "www.consob.it",
+   "registeredAt": "2021-12-01"
+  },
+  {
+   "name": "TD Global Finance Unlimited Company",
+   "aliases": [
+    "TD Global Finance"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2005-11-28"
+  },
+  {
+   "name": "Templar EIS Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.com.mt",
+   "registeredAt": "2015-06-25"
+  },
+  {
+   "name": "TF Global Markets (Europe) Ltd",
+   "aliases": [
+    "A-Conversio Capital Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2014-07-08"
+  },
+  {
+   "name": "TFI Ecommpay Ltd",
+   "aliases": [
+    "TFI Markets Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2010-06-08"
+  },
+  {
+   "name": "The Alliance Partnership Netherlands B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2012-12-06"
+  },
+  {
+   "name": "The Cyprus Investment and Securities Corporation Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2011-06-27"
+  },
+  {
+   "name": "The First Interstellar Capital Ltd",
+   "aliases": [
+    "Olikriet Capital Ltd",
+    "Consulco Capital Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2013-05-28"
+  },
+  {
+   "name": "The New Amsterdam Group B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2017-11-09"
+  },
+  {
+   "name": "The Spectrum IFA Group Limited",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.mt",
+   "registeredAt": "2023-09-28"
+  },
+  {
+   "name": "THE ULTIMA INVESTMENTS CYPRUS LIMITED",
+   "aliases": [
+    "BrokerCreditService (Cyprus) Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2013-04-23"
+  },
+  {
+   "name": "Tickmill Europe Ltd",
+   "aliases": [
+    "Vipro Markets Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2016-01-26"
+  },
+  {
+   "name": "Timberland Invest Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.com.mt",
+   "registeredAt": "2014-07-02"
+  },
+  {
+   "name": "TIOMARKETS CY LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2024-03-07"
+  },
+  {
+   "name": "Titanedge Securities Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "15.07.2022"
+  },
+  {
+   "name": "Today’s Group B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2024-06-28"
+  },
+  {
+   "name": "TOM B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2011-02-09"
+  },
+  {
+   "name": "Top Markets Solutions Ltd.",
+   "aliases": [
+    "Teletrade-DJ International Consulting Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2012-08-07"
+  },
+  {
+   "name": "TOPFX Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2012-03-19"
+  },
+  {
+   "name": "Tower Research Capital Europe B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2019-02-26"
+  },
+  {
+   "name": "TP ICAP (Europe) SA",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "03.06.2019"
+  },
+  {
+   "name": "Trade Capital Markets (TCM) Ltd",
+   "aliases": [
+    "Leadcapital Markets Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2014-04-16"
+  },
+  {
+   "name": "TRADEPLACE LIMITED",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2026-04-27"
+  },
+  {
+   "name": "TradeStation Europe B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2026-03-31"
+  },
+  {
+   "name": "TRADESTONE LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2018-03-30"
+  },
+  {
+   "name": "Tradeview Europe Limited",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.mt",
+   "registeredAt": "2022-08-11"
+  },
+  {
+   "name": "Tradeweb EU B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2019-01-17"
+  },
+  {
+   "name": "Tradeweb Execution Services B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2022-05-24"
+  },
+  {
+   "name": "Trading 212 EU GmbH",
+   "aliases": [
+    "FXFlat Bank AG",
+    "FX Flat Bank GmbH",
+    "FXFlat Wertpapierhandelsbank GmbH",
+    "Heyder Kruger & Kollegen GmbH"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "01.02.2013"
+  },
+  {
+   "name": "Trading 212 Ltd",
+   "aliases": [
+    "Avus Capital Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Bułgaria",
+   "supervisor": "www.fsc.bg",
+   "registeredAt": "2011-11-16"
+  },
+  {
+   "name": "Trading 212 Markets Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "10.05.2021"
+  },
+  {
+   "name": "Trading Point of Financial Instruments Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2010-12-20"
+  },
+  {
+   "name": "TRADING.COM MARKETS EU LIMITED",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "14.10.2024"
+  },
+  {
+   "name": "Tradition Financial Services España, Sociedad De Valores, S.A.U.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER",
+    "FOREIGN_BRANCH"
+   ],
+   "country": "Hiszpania",
+   "supervisor": "Comision Nacional Del Mercado De Valores (CNMV)",
+   "registeredAt": "2022-05-24"
+  },
+  {
+   "name": "Tradition Financial Services GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2022-02-22"
+  },
+  {
+   "name": "Tradition Luxembourg SA",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "2019-06-04"
+  },
+  {
+   "name": "Tradition Securities and Futures S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2006-02-07"
+  },
+  {
+   "name": "Trek Labs Europe Ltd",
+   "aliases": [
+    "FTX EU LTD",
+    "K-DNA Financial Services Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2015-07-02"
+  },
+  {
+   "name": "Triangleview Investments Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2020-08-06"
+  },
+  {
+   "name": "TRIGON DOM MAKLERSKI S.A.",
+   "aliases": [],
+   "lists": [
+    "BROKERAGE_HOUSE"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "30-09-1991"
+  },
+  {
+   "name": "TriOptima AB",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Szwecja",
+   "supervisor": "www.fi.se",
+   "registeredAt": "07.04.2008"
+  },
+  {
+   "name": "Trive Financial Services Europe Ltd.",
+   "aliases": [
+    "Trive Financial Services Malta Limited",
+    "AKFX Financial Services Ltd",
+    "Cresco Capital Markets (Malta) Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.com.mt",
+   "registeredAt": "2019-01-17"
+  },
+  {
+   "name": "Trust Capital TC Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "18.04.2019"
+  },
+  {
+   "name": "TSAF OTC SA",
+   "aliases": [
+    "Viel Tradition S.A."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2006-02-07"
+  },
+  {
+   "name": "TSG Brokers Ltd.",
+   "aliases": [
+    "GWG (Cyprus) Ltd",
+    "Gametech (Cyprus) Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2016-04-26"
+  },
+  {
+   "name": "Turquoise Global Holdings Europe B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2019-03-07"
+  },
+  {
+   "name": "UAB ,,Axiology DLT”",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Litwa",
+   "supervisor": "www.lb.lt",
+   "registeredAt": "2026-06-15"
+  },
+  {
+   "name": "UAB FMI \"MRC Markets\"",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Litwa",
+   "supervisor": "www.lb.lt",
+   "registeredAt": "2012-05-14"
+  },
+  {
+   "name": "UBK Markets Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "22.05.2015"
+  },
+  {
+   "name": "Unifinanz Tust reg.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Liechtenstein",
+   "supervisor": "www.fma-li.li",
+   "registeredAt": "22.03.2019"
+  },
+  {
+   "name": "Union Corporate AS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Norwegia",
+   "supervisor": "www.finanstilsynet.no",
+   "registeredAt": "2010-05-12"
+  },
+  {
+   "name": "UNIQUA Capital Markets GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Austria",
+   "supervisor": "www.fma.gv.at",
+   "registeredAt": "27.11.2012"
+  },
+  {
+   "name": "UP Trend Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Bułgaria",
+   "supervisor": "www.fsc.bg",
+   "registeredAt": "16.03.2021"
+  },
+  {
+   "name": "UPTEVIA",
+   "aliases": [
+    "Caceis Corporate Trust (Caceis CT)",
+    "Credit Agricole Investor Services Corporate Trust S.A."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2004-08-26"
+  },
+  {
+   "name": "Upvest Securities GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2024-05-03"
+  },
+  {
+   "name": "UTI INTERNATIONAL (FRANCE) SAS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2024-04-17"
+  },
+  {
+   "name": "Validas N.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2009-01-09"
+  },
+  {
+   "name": "Validus Europe AS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Norwegia",
+   "supervisor": "www.finanstilsynet.no",
+   "registeredAt": "2024-11-18"
+  },
+  {
+   "name": "VALOR o.c.p., a. s.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Słowacja",
+   "supervisor": "www.nbs.sk",
+   "registeredAt": "2025-01-25"
+  },
+  {
+   "name": "Van Sterling Capital Limited",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.mt",
+   "registeredAt": "2025-08-25"
+  },
+  {
+   "name": "VanEck (Europe) GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2022-08-01"
+  },
+  {
+   "name": "Veles International Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2012-03-16"
+  },
+  {
+   "name": "VeloBank S.A.",
+   "aliases": [
+    "Departament Maklerski VeloBank"
+   ],
+   "lists": [
+    "BANK"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "2026-02-26"
+  },
+  {
+   "name": "Velthuyse & Mulder Vermogensbeheer B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2009-06-12"
+  },
+  {
+   "name": "Venturebeam Markets AS",
+   "aliases": [
+    "Funderbeam Markets AS"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Estonia",
+   "supervisor": "www.fi.ee",
+   "registeredAt": "12.01.2021"
+  },
+  {
+   "name": "Verdispar Securities AS",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Norwegia",
+   "supervisor": "www.finanstilsynet.no",
+   "registeredAt": "2008-07-22"
+  },
+  {
+   "name": "VermogensParaplu Beheer B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2006-04-20"
+  },
+  {
+   "name": "Vernier Capital Advisors (Europe) Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.com.mt",
+   "registeredAt": "2021-08-12"
+  },
+  {
+   "name": "Vertis Environmental Financial Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Węgry",
+   "supervisor": "www.mnb.hu",
+   "registeredAt": "26.02.2018"
+  },
+  {
+   "name": "VICTORIAPARTNERS GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2024-01-10"
+  },
+  {
+   "name": "Virtu Europe Trading Limited",
+   "aliases": [
+    "Virtu ITG Europe Ltd",
+    "Investment Technology Group Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2008-01-30"
+  },
+  {
+   "name": "Virtu Financial Ireland Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2014-07-03"
+  },
+  {
+   "name": "Vivid Money B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "26.05.2023"
+  },
+  {
+   "name": "VLK-KBCS B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "2026-10-08"
+  },
+  {
+   "name": "VSMARKETS LTD",
+   "aliases": [
+    "KLIPS CY LTD"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "30.11.2023"
+  },
+  {
+   "name": "VTC Europe B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "03.06.2020"
+  },
+  {
+   "name": "W.G. WEALTH GUARDIAN LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2018-03-26"
+  },
+  {
+   "name": "W1M EUROPE, A.V., S.A.",
+   "aliases": [
+    "LONDON AND CAPITAL WEALTH MANAGEMENT EUROPE, A.V. S.A."
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Hiszpania",
+   "supervisor": "www.cnmv.es",
+   "registeredAt": "2022-04-27"
+  },
+  {
+   "name": "Waystone Investment Management (IE) Limited",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "2024-11-28"
+  },
+  {
+   "name": "WB TRADE EU LTD",
+   "aliases": [
+    "Windsor Brokers Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2010-02-12"
+  },
+  {
+   "name": "WEALTHYHOOD EUROPE INVESTMENT SERVICES SINGLE MEMBER SOCIETE ANONYME",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Grecja",
+   "supervisor": "www.hcmc.gr",
+   "registeredAt": "05.08.2026"
+  },
+  {
+   "name": "Webull Securities (Europe) B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.amf.nl",
+   "registeredAt": "2026-02-19"
+  },
+  {
+   "name": "Wellington Management Euorpe GmbH",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Niemcy",
+   "supervisor": "www.bafin.de",
+   "registeredAt": "2019-06-24"
+  },
+  {
+   "name": "Wells Fargo Securities Europe",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Francja",
+   "supervisor": "www.acpr.banque-france.fr",
+   "registeredAt": "2019-09-16"
+  },
+  {
+   "name": "WGM Services Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2014-03-31"
+  },
+  {
+   "name": "WH Selfinvest SA",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Luksemburg",
+   "supervisor": "www.cssf.lu",
+   "registeredAt": "23.04.2007"
+  },
+  {
+   "name": "Wijs & Van Oostveen B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "16.11.2005"
+  },
+  {
+   "name": "William Blair B.V.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Holandia",
+   "supervisor": "www.afm.nl",
+   "registeredAt": "07.07.2022"
+  },
+  {
+   "name": "Winners Investments o.c.p., a.s.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Słowacja",
+   "supervisor": "www.nbs.sk",
+   "registeredAt": "2023-06-15"
+  },
+  {
+   "name": "Wisdompoint Capital Ltd",
+   "aliases": [
+    "Tradernet Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2014-10-23"
+  },
+  {
+   "name": "WisdomTree Ireland Limited",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Irlandia",
+   "supervisor": "www.centralbank.ie",
+   "registeredAt": "31.01.2022"
+  },
+  {
+   "name": "Wise Assets Europe AS",
+   "aliases": [
+    "TINV Europe AS"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Estonia",
+   "supervisor": "www.fi.ee",
+   "registeredAt": "24.01.2023"
+  },
+  {
+   "name": "Wise Wolves Finance Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2017-11-02"
+  },
+  {
+   "name": "WOOD & Company Financial Services a.s.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER",
+    "FOREIGN_BRANCH"
+   ],
+   "country": "Czechy",
+   "supervisor": "Czech National Bank",
+   "registeredAt": "2009-06-09"
+  },
+  {
+   "name": "WOOD Retail Investments a.s.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Czechy",
+   "supervisor": "www.cnb.cz",
+   "registeredAt": "2023-12-19"
+  },
+  {
+   "name": "WRDNB Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "20.11.2023"
+  },
+  {
+   "name": "XBorder Partners Wealth — Empresa de Investimento, S.A.",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Portugalia",
+   "supervisor": "www.cmvm.pt",
+   "registeredAt": "2026-03-31"
+  },
+  {
+   "name": "XNT Ltd",
+   "aliases": [
+    "Exante Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Malta",
+   "supervisor": "www.mfsa.com.mt",
+   "registeredAt": "2014-04-01"
+  },
+  {
+   "name": "XSpot Wealth (EU) Ltd",
+   "aliases": [
+    "X Spot Markets (EU) Ltd",
+    "Boursotrade Ltd"
+   ],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2014-11-25"
+  },
+  {
+   "name": "XTB S.A.",
+   "aliases": [
+    "X-TRADE BROKERS DOM MAKLERSKI S.A.",
+    "DUB Investments Ltd"
+   ],
+   "lists": [
+    "BROKERAGE_HOUSE",
+    "CROSS_BORDER"
+   ],
+   "country": "Polska",
+   "supervisor": "KNF",
+   "registeredAt": "08-11-2005"
+  },
+  {
+   "name": "XTELLUS EUROPE LTD",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "22.11.2024"
+  },
+  {
+   "name": "Zemblanco Investments Ltd",
+   "aliases": [],
+   "lists": [
+    "CROSS_BORDER"
+   ],
+   "country": "Cypr",
+   "supervisor": "www.cysec.gov.cy",
+   "registeredAt": "2016-04-19"
+  }
+ ]
+}

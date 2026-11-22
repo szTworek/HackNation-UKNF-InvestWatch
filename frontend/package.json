@@ -1,0 +1,60 @@
+{
+  "name": "investwatch-frontend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "dev": "vite",
+    "mock": "tsx mock-server/server.ts",
+    "mock:fast": "tsx mock-server/server.ts --fast",
+    "dev:all": "concurrently -k -n mock,web -c blue,green \"npm:mock\" \"npm:dev\"",
+    "dev:demo": "concurrently -k -n mock,web -c blue,green \"npm:mock:fast\" \"npm:dev\"",
+    "seed": "tsx mock-server/seed.ts",
+    "build": "tsc -p tsconfig.app.json && vite build",
+    "build:mock": "esbuild mock-server/server.ts --bundle --platform=node --target=node20 --format=cjs --outfile=dist-mock/server.cjs --external:bufferutil --external:utf-8-validate",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.node.json",
+    "lint": "eslint . --max-warnings=0",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@fontsource/inter": "5.3.0",
+    "@mantine/core": "8.3.18",
+    "@mantine/dates": "8.3.18",
+    "@mantine/hooks": "8.3.18",
+    "@mantine/notifications": "8.3.18",
+    "@tabler/icons-react": "3.52.0",
+    "@tanstack/react-query": "5.108.2",
+    "cytoscape": "3.35.0",
+    "dayjs": "1.11.23",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-is": "18.3.1",
+    "react-router-dom": "7.18.6",
+    "recharts": "3.11.0",
+    "socket.io-client": "4.8.4"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/express": "5.0.6",
+    "@types/node": "22.20.5",
+    "@types/react": "18.3.31",
+    "@types/react-dom": "18.3.7",
+    "@vitejs/plugin-react": "5.2.0",
+    "concurrently": "9.2.5",
+    "esbuild": "0.28.2",
+    "eslint": "10.15.0",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "express": "5.3.0",
+    "globals": "17.14.0",
+    "socket.io": "4.8.4",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.73.0",
+    "vite": "7.3.8",
+    "vitest": "4.1.12"
+  }
+}

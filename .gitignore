@@ -9,3 +9,5 @@ scrapers/poc/results/
 *.zip
 .idea/
 .vscode/
+!.env.example
+/models/

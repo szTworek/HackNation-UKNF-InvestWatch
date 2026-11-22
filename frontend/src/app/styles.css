@@ -1,0 +1,366 @@
+/* InvestWatch: język wizualny serwisu knf.gov.pl. */
+:root {
+  --iw-bg: #ffffff;
+  --iw-surface: #ffffff;
+  --iw-soft: #f9f9f9;
+  --iw-soft-2: #f3f4f6;
+  --iw-border: #e5e7eb;
+  --iw-border-soft: #f0f1f3;
+  --iw-text: #2b303b;
+  --iw-muted: #5f6673;
+  --iw-primary: #113b6f;
+  --iw-link: #1e6ac8;
+  --iw-red: #c00417;
+  --iw-red-soft: #fdf0f1;
+  --iw-container: 1440px;
+}
+
+html,
+body {
+  background: var(--iw-bg);
+  color: var(--iw-text);
+  -webkit-font-smoothing: antialiased;
+}
+::selection {
+  background: #d8e3f0;
+  color: var(--iw-primary);
+}
+:focus-visible {
+  outline: 2px solid var(--iw-link);
+  outline-offset: 2px;
+}
+a {
+  text-underline-offset: 3px;
+}
+.iw-container {
+  width: 100%;
+  max-width: var(--iw-container);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* nagłówek */
+.iw-topline {
+  height: 6px;
+  background: var(--iw-text);
+}
+.iw-header {
+  border-bottom: 1px solid var(--iw-border);
+  background: #fff;
+}
+.iw-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 92px;
+}
+.iw-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--iw-primary);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.iw-brand-name {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+.iw-brand-rule {
+  width: 2px;
+  height: 48px;
+  background: var(--iw-primary);
+}
+.iw-brand-desc {
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.iw-search {
+  display: flex;
+  flex: 1;
+  max-width: 480px;
+  height: 48px;
+  border: 1px solid var(--iw-border);
+}
+.iw-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  padding: 0 16px;
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--iw-text);
+  background: transparent;
+}
+.iw-search input::placeholder {
+  color: var(--iw-muted);
+}
+.iw-search button {
+  width: 48px;
+  border: 0;
+  background: var(--iw-soft-2);
+  color: var(--iw-text);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background-color 150ms ease-out;
+}
+.iw-search button:hover {
+  background: var(--iw-border);
+}
+.iw-tools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 48px;
+  padding: 0 8px;
+  background: var(--iw-soft);
+  flex-shrink: 0;
+}
+.iw-tool {
+  min-width: 34px;
+  height: 34px;
+  border: 0;
+  background: transparent;
+  color: var(--iw-text);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 150ms ease-out;
+}
+.iw-tool:hover:not(:disabled) {
+  background: var(--iw-border);
+}
+.iw-tool:disabled {
+  color: #9ca3af;
+  cursor: default;
+}
+
+/* menu główne */
+.iw-nav {
+  border-bottom: 1px solid var(--iw-border);
+  background: #fff;
+}
+.iw-nav-row {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.iw-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 19px 14px;
+  color: var(--iw-text);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 150ms ease-out;
+}
+.iw-nav-link:first-child {
+  padding-left: 0;
+}
+.iw-nav-link:hover,
+.iw-nav-link.active {
+  color: var(--iw-link);
+}
+.iw-nav-count {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--iw-muted);
+  font-variant-numeric: tabular-nums;
+}
+.iw-nav-sep {
+  width: 1px;
+  margin: 18px 10px;
+  background: var(--iw-border);
+  flex-shrink: 0;
+}
+
+/* pasek nowych rekordów */
+.iw-ticker {
+  background: var(--iw-soft);
+  border-bottom: 1px solid var(--iw-border);
+  font-size: 0.8125rem;
+}
+.iw-ticker-row {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  overflow: hidden;
+}
+.iw-ticker-label {
+  flex-shrink: 0;
+  font-weight: 600;
+  color: var(--iw-primary);
+}
+.iw-ticker-track {
+  display: flex;
+  gap: 40px;
+  white-space: nowrap;
+  padding-left: 100%;
+  width: max-content;
+  animation: iw-marquee 90s linear infinite;
+}
+.iw-ticker:hover .iw-ticker-track {
+  animation-play-state: paused;
+}
+.iw-ticker-item {
+  color: var(--iw-text);
+  text-decoration: none;
+}
+.iw-ticker-item:hover {
+  color: var(--iw-link);
+  text-decoration: underline;
+}
+@keyframes iw-marquee {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* treść */
+.iw-main {
+  padding-top: 24px;
+  padding-bottom: 64px;
+}
+.iw-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9375rem;
+  color: var(--iw-muted);
+}
+.iw-crumbs li {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.iw-crumbs a {
+  color: var(--iw-muted);
+  text-decoration: none;
+}
+.iw-crumbs a:hover {
+  color: var(--iw-link);
+}
+.iw-crumbs [aria-current] {
+  color: var(--iw-primary);
+  font-weight: 600;
+}
+
+/* sekcje */
+.mantine-Paper-root[data-with-border] {
+  border-color: var(--iw-border);
+}
+.iw-panel {
+  background: #fff;
+  border: 1px solid var(--iw-border);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.iw-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--iw-border);
+  background: var(--iw-soft);
+  min-height: 48px;
+}
+.iw-panel-title {
+  font-size: 1rem;
+  font-weight: 700;
+}
+.iw-panel-body {
+  padding: 16px;
+  flex: 1;
+  min-height: 0;
+}
+.iw-panel-body.flush {
+  padding: 0;
+}
+
+/* tabele */
+.iw-table {
+  --table-border-color: var(--iw-border);
+  --table-hover-color: var(--iw-soft);
+  font-variant-numeric: tabular-nums;
+}
+.iw-table thead th {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--iw-muted);
+  background: #fff;
+  border-bottom: 1px solid var(--iw-text);
+  white-space: nowrap;
+}
+.iw-row-scam {
+  background: var(--iw-red-soft);
+}
+.iw-row-new {
+  animation: iw-flash 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes iw-flash {
+  from {
+    background: #d8e3f0;
+  }
+}
+.iw-num,
+.iw-kpi-value {
+  font-variant-numeric: tabular-nums;
+}
+.iw-meter {
+  height: 6px;
+  background: var(--iw-soft-2);
+  position: relative;
+  overflow: hidden;
+}
+.iw-meter > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+}
+mark[data-flags] {
+  color: inherit;
+}
+
+@media (max-width: 1100px) {
+  .iw-search,
+  .iw-brand-rule,
+  .iw-brand-desc {
+    display: none;
+  }
+}
+@media (max-width: 720px) {
+  .iw-container {
+    padding: 0 16px;
+  }
+  .iw-header-row {
+    flex-wrap: wrap;
+    padding: 12px 0;
+  }
+  .iw-tools {
+    width: 100%;
+    overflow-x: auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .iw-row-new,
+  .iw-ticker-track {
+    animation: none;
+  }
+}

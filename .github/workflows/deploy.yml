@@ -1,0 +1,22 @@
+name: Deploy
+
+# Wdrożenie weryfikacyjne na runnerze: projekt nie ma serwera ani publikowanych obrazów.
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build, start and verify the stack
+        run: bash deploy/verify.sh "${{ inputs.environment }}"

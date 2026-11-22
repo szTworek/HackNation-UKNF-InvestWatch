@@ -1,0 +1,10 @@
+*
+!adapters
+!preprocessing
+!scrapers
+scrapers/poc/results
+**/__pycache__
+**/*.pyc
+**/.env
+**/.env.*
+**/*_state.json

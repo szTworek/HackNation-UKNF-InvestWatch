@@ -1,0 +1,190 @@
+name: Security
+
+# Bramka przed budową obrazów w CD, a także PR, cotygodniowy skan i uruchomienie ręczne.
+on:
+  pull_request:
+  schedule:
+    - cron: "0 5 * * 1"
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  secrets:
+    name: Secrets (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Scan full git history
+        run: |
+          docker run --rm -u "$(id -u):$(id -g)" -v "$PWD:/repo:ro" \
+            ghcr.io/gitleaks/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f \
+            git /repo --no-banner --redact --exit-code 1
+
+  codeql:
+    name: SAST (CodeQL, ${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [python, javascript-typescript]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: github/codeql-action/init@1bd86f2fdb4b86187fa4059f16f31a3202acc9ea # v4.39.4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: none
+          queries: security-extended
+      - uses: github/codeql-action/analyze@1bd86f2fdb4b86187fa4059f16f31a3202acc9ea # v4.39.4
+        with:
+          category: /language:${{ matrix.language }}
+          output: sarif-results
+      - name: Fail on high and critical findings
+        run: |
+          findings=$(jq -r '.runs[]
+            | ([.tool.extensions[]?.rules[]?]
+               | map({key: .id, value: ((.properties["security-severity"] // "0") | tonumber)})
+               | from_entries) as $severity
+            | .results[]?
+            | select(($severity[.ruleId] // 0) >= 7)
+            | "\($severity[.ruleId]) \(.ruleId) \(.locations[0].physicalLocation.artifactLocation.uri):\(.locations[0].physicalLocation.region.startLine)"
+            ' sarif-results/*.sarif)
+          if [ -n "$findings" ]; then
+            printf '%s\n' "$findings"
+            { echo '### CodeQL: high/critical'; echo '```'; printf '%s\n' "$findings"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          echo 'CodeQL: no high or critical findings' >> "$GITHUB_STEP_SUMMARY"
+
+  dependencies:
+    name: Dependencies (npm audit, pip-audit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: 0.9.22
+          python-version: "3.12"
+      - name: npm audit
+        working-directory: frontend
+        run: npm audit --audit-level=high
+      - name: pip-audit
+        run: |
+          (cd ml && uv export --frozen --no-dev --no-hashes --no-emit-project --no-annotate --no-header) \
+            | sed -E 's/\+cu[0-9]+//; s/ ;.*//' | grep -vE '^(nvidia-|cuda-|triton)' > "$RUNNER_TEMP/ml.txt"
+          cp scrapers/poc/requirements.txt "$RUNNER_TEMP/collector.txt"
+          grep -oE 'faster-whisper==[0-9.]+' scrapers/Dockerfile >> "$RUNNER_TEMP/collector.txt"
+          mapfile -t ignored < <(sed -E 's/#.*//; /^[[:space:]]*$/d; s/[[:space:]]+$//; s/^/--ignore-vuln=/' .security/pip-audit-ignore.txt)
+          status=0
+          for target in ml collector; do
+            echo "### pip-audit: $target" >> "$GITHUB_STEP_SUMMARY"
+            # Ponawiamy tylko błąd sieci: znaleziona podatność zapisuje raport i kończy pętlę.
+            for attempt in 1 2 3; do
+              target_status=0
+              rm -f "$RUNNER_TEMP/$target.md"
+              uvx pip-audit@2.10.1 -r "$RUNNER_TEMP/$target.txt" --no-deps --disable-pip --progress-spinner off \
+                --timeout 60 "${ignored[@]}" -f markdown -o "$RUNNER_TEMP/$target.md" || target_status=$?
+              if [ "$target_status" -eq 0 ] || [ -s "$RUNNER_TEMP/$target.md" ]; then break; fi
+              echo "::warning::pip-audit ($target): próba $attempt nieudana"
+              if [ "$attempt" -lt 3 ]; then sleep $((attempt * 20)); fi
+            done
+            # bez znalezisk pip-audit nie tworzy pliku raportu
+            if [ -s "$RUNNER_TEMP/$target.md" ]; then
+              cat "$RUNNER_TEMP/$target.md" >> "$GITHUB_STEP_SUMMARY"
+            elif [ "$target_status" -eq 0 ]; then
+              echo "No known vulnerabilities" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "pip-audit failed (exit $target_status)" >> "$GITHUB_STEP_SUMMARY"
+            fi
+            [ "$target_status" -eq 0 ] || status=1
+          done
+          exit "$status"
+
+  snyk:
+    name: Dependencies (Snyk, ${{ matrix.name }})
+    runs-on: ubuntu-latest
+    # ml raportuje, ale nie blokuje: torch ma zaakceptowany wyjątek w .security/pip-audit-ignore.txt
+    continue-on-error: ${{ !matrix.blocking }}
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: frontend
+            blocking: true
+          - name: collector
+            blocking: true
+          - name: ml
+            blocking: false
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    steps:
+      - id: token
+        name: Check Snyk token
+        run: |
+          if [ -n "$SNYK_TOKEN" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::Pomijam Snyk: brak sekretu SNYK_TOKEN"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.token.outputs.ready == 'true'
+        uses: actions/checkout@v5
+      - if: steps.token.outputs.ready == 'true'
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - if: steps.token.outputs.ready == 'true' && matrix.name != 'frontend'
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: 0.9.22
+          python-version: "3.12"
+      - if: steps.token.outputs.ready == 'true'
+        run: npm install -g snyk@1.1309.0
+      - name: Scan npm
+        if: steps.token.outputs.ready == 'true' && matrix.name == 'frontend'
+        run: |
+          snyk test --file=frontend/package-lock.json --package-manager=npm --severity-threshold=high \
+            --sarif-file-output=snyk.sarif
+      - name: Scan Python
+        if: steps.token.outputs.ready == 'true' && matrix.name != 'frontend'
+        env:
+          TARGET: ${{ matrix.name }}
+        run: |
+          dir="$RUNNER_TEMP/snyk"
+          mkdir -p "$dir"
+          uv venv --seed "$dir/venv"
+          if [ "$TARGET" = ml ]; then
+            (cd ml && uv export --frozen --no-dev --no-hashes --no-emit-project --no-annotate --no-header) > "$dir/locked.txt"
+            torch=$(sed -n 's/^torch==\([^+]*\)+.*/\1/p' "$dir/locked.txt")
+            grep -vE '^(torch|triton|nvidia-|cuda-)' "$dir/locked.txt" > "$dir/requirements.txt"
+            VIRTUAL_ENV="$dir/venv" uv pip install --no-deps --index-url https://download.pytorch.org/whl/cpu "torch==${torch}+cpu"
+            VIRTUAL_ENV="$dir/venv" uv pip install --no-deps -r "$dir/requirements.txt"
+            echo "torch==${torch}" >> "$dir/requirements.txt"
+          else
+            cp scrapers/poc/requirements.txt "$dir/requirements.txt"
+            grep -oE 'faster-whisper==[0-9.]+' scrapers/Dockerfile >> "$dir/requirements.txt"
+            VIRTUAL_ENV="$dir/venv" uv pip install -r "$dir/requirements.txt"
+          fi
+          cd "$dir"
+          snyk test --file=requirements.txt --package-manager=pip --command="$dir/venv/bin/python" \
+            --skip-unresolved --severity-threshold=high --sarif-file-output="$GITHUB_WORKSPACE/snyk.sarif"
+      - name: Upload results to Security tab
+        if: always() && hashFiles('snyk.sarif') != ''
+        uses: github/codeql-action/upload-sarif@1bd86f2fdb4b86187fa4059f16f31a3202acc9ea # v4.39.4
+        with:
+          sarif_file: snyk.sarif
+          category: snyk-${{ matrix.name }}

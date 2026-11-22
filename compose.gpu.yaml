@@ -1,0 +1,16 @@
+# Opcjonalna nakładka GPU (wymaga NVIDIA Container Toolkit).
+#   Lokalnie: docker compose -f compose.yaml -f compose.gpu.yaml up -d --build
+#   Tylko lokalnie: pipeline buduje i testuje obraz CPU.
+services:
+  ai-service:
+    image: investwatch/uknf-ai-service-gpu:local
+    build:
+      context: ./ml
+      target: runtime-gpu
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

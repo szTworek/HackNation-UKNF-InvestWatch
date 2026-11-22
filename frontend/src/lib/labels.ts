@@ -1,0 +1,319 @@
+import type {
+  CampaignStatus,
+  ContentKind,
+  ContentType,
+  EntityRole,
+  FlagKey,
+  GraphEdgeType,
+  IndicatorType,
+  Instrument,
+  ModuleId,
+  Platform,
+  RegisterStatus,
+  RiskLevel,
+  RuleStatus,
+  ScamSignal,
+  Status,
+  TopicLabel,
+} from '../api/types';
+
+export const PLATFORMS: Platform[] = ['facebook', 'instagram', 'tiktok', 'youtube', 'x', 'web', 'other'];
+export const MODULES: ModuleId[] = [1, 2, 3];
+export const RISK_LEVELS: RiskLevel[] = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
+export const STATUSES: Status[] = ['NEW', 'IN_REVIEW', 'CONFIRMED', 'DISMISSED', 'ESCALATED'];
+export const CONTENT_TYPES: ContentType[] = [
+  'NEWS_EDU',
+  'OPINION_DISCUSSION',
+  'FIRM_OWN_MARKETING',
+  'THIRD_PARTY_PROMO',
+  'RECOMMENDATION',
+  'SERVICE_OFFER',
+];
+export const TOPICS: TopicLabel[] = ['NON_FINANCIAL', 'FINANCIAL_OTHER', 'INVESTMENT'];
+export const INSTRUMENTS: Instrument[] = [
+  'CFD_FOREX',
+  'STOCKS',
+  'FUNDS_ETF',
+  'BONDS',
+  'CRYPTO',
+  'OTHER_DERIVATIVES',
+  'NON_INSTRUMENT',
+];
+
+export const COMPLIANCE_FLAGS: FlagKey[] = [
+  'PROFIT_CLAIM',
+  'RISK_WARNING',
+  'AD_DISCLOSURE',
+  'PAST_PERFORMANCE',
+  'PAST_PERF_DISCLAIMER',
+  'FORECAST',
+  'FORECAST_DISCLAIMER',
+  'TAX_CLAIM',
+  'PRODUCT_COMPARISON',
+  'SUPERVISOR_AS_SAFETY',
+];
+export const ADVISORY_FLAGS: FlagKey[] = ['PERSONALIZED_ADVICE', 'PAID_ADVISORY_SERVICE', 'SPECIFIC_INSTRUMENT_CALL'];
+export const SCAM_FLAGS: FlagKey[] = [
+  'GUARANTEED_PROFIT',
+  'NO_RISK_CLAIM',
+  'UNREALISTIC_RETURNS',
+  'URGENCY_PRESSURE',
+  'CELEBRITY_OR_BRAND_ENDORSEMENT',
+  'AUTOMATED_PROFIT',
+  'LOW_ENTRY_DEPOSIT',
+  'OFF_PLATFORM_CONTACT',
+  'SECRECY_CONSPIRACY',
+  'FAKE_NEWS_FORMAT',
+];
+export const ALL_FLAGS: FlagKey[] = [...COMPLIANCE_FLAGS, ...ADVISORY_FLAGS, ...SCAM_FLAGS];
+
+/** Flagi, których obecność jest pożądana (ostrzeżenia, oznaczenia). Nie są „czerwonymi flagami”. */
+export const POSITIVE_FLAGS: ReadonlySet<FlagKey> = new Set<FlagKey>([
+  'RISK_WARNING',
+  'AD_DISCLOSURE',
+  'PAST_PERF_DISCLAIMER',
+  'FORECAST_DISCLAIMER',
+]);
+
+export const PLATFORM_LABEL: Record<Platform, string> = {
+  facebook: 'Facebook',
+  instagram: 'Instagram',
+  tiktok: 'TikTok',
+  youtube: 'YouTube',
+  x: 'X',
+  web: 'Strona WWW',
+  other: 'Inne',
+};
+
+export const KIND_LABEL: Record<ContentKind, string> = {
+  post: 'Post',
+  transcript: 'Transkrypcja',
+  comment: 'Komentarz',
+  page: 'Strona',
+};
+
+export const MODULE_SHORT: Record<ModuleId, string> = { 1: 'M1', 2: 'M2', 3: 'M3' };
+export const MODULE_LABEL: Record<ModuleId, string> = {
+  1: 'M1 Finfluencerzy',
+  2: 'M2 Informacja o ryzyku',
+  3: 'M3 Shadow advisory',
+};
+
+export const RISK_LABEL: Record<RiskLevel, string> = {
+  LOW: 'Niski',
+  MEDIUM: 'Średni',
+  HIGH: 'Wysoki',
+  CRITICAL: 'Krytyczny',
+};
+export const RISK_COLOR: Record<RiskLevel, string> = {
+  LOW: 'gray',
+  MEDIUM: 'yellow',
+  HIGH: 'orange',
+  CRITICAL: 'red',
+};
+
+export const STATUS_LABEL: Record<Status, string> = {
+  NEW: 'Nowy',
+  IN_REVIEW: 'W analizie',
+  CONFIRMED: 'Potwierdzony',
+  DISMISSED: 'Odrzucony',
+  ESCALATED: 'Eskalowany',
+};
+export const STATUS_COLOR: Record<Status, string> = {
+  NEW: 'blue',
+  IN_REVIEW: 'violet',
+  CONFIRMED: 'red',
+  DISMISSED: 'gray',
+  ESCALATED: 'orange',
+};
+
+export const TOPIC_LABEL: Record<TopicLabel, string> = {
+  NON_FINANCIAL: 'Niefinansowy',
+  FINANCIAL_OTHER: 'Finanse – inne',
+  INVESTMENT: 'Inwestycje',
+};
+
+export const CONTENT_TYPE_LABEL: Record<ContentType, string> = {
+  NEWS_EDU: 'Informacja / edukacja',
+  OPINION_DISCUSSION: 'Opinia / dyskusja',
+  FIRM_OWN_MARKETING: 'Marketing firmy',
+  THIRD_PARTY_PROMO: 'Promocja przez osobę trzecią',
+  RECOMMENDATION: 'Rekomendacja',
+  SERVICE_OFFER: 'Oferta usług',
+};
+
+export const INSTRUMENT_LABEL: Record<Instrument, string> = {
+  CFD_FOREX: 'CFD / forex',
+  STOCKS: 'Akcje',
+  FUNDS_ETF: 'Fundusze / ETF',
+  BONDS: 'Obligacje',
+  CRYPTO: 'Kryptoaktywa',
+  OTHER_DERIVATIVES: 'Inne derywaty',
+  NON_INSTRUMENT: 'Poza instrumentami finansowymi',
+};
+
+export const FLAG_LABEL: Record<FlagKey, string> = {
+  PROFIT_CLAIM: 'Obietnica zysku',
+  RISK_WARNING: 'Ostrzeżenie o ryzyku',
+  AD_DISCLOSURE: 'Oznaczenie reklamy',
+  PAST_PERFORMANCE: 'Wyniki historyczne',
+  PAST_PERF_DISCLAIMER: 'Zastrzeżenie do wyników historycznych',
+  FORECAST: 'Prognoza wyników',
+  FORECAST_DISCLAIMER: 'Zastrzeżenie do prognozy',
+  TAX_CLAIM: 'Korzyść podatkowa',
+  PRODUCT_COMPARISON: 'Porównanie produktów',
+  SUPERVISOR_AS_SAFETY: 'Nadzór KNF jako gwarancja',
+  PERSONALIZED_ADVICE: 'Porada spersonalizowana',
+  PAID_ADVISORY_SERVICE: 'Płatna usługa doradcza',
+  SPECIFIC_INSTRUMENT_CALL: 'Wezwanie do zakupu lub sprzedaży',
+  GUARANTEED_PROFIT: 'Gwarantowany zysk',
+  NO_RISK_CLAIM: 'Zapewnienie o braku ryzyka',
+  UNREALISTIC_RETURNS: 'Nierealne stopy zwrotu',
+  URGENCY_PRESSURE: 'Presja czasu',
+  CELEBRITY_OR_BRAND_ENDORSEMENT: 'Wizerunek znanej osoby lub marki',
+  AUTOMATED_PROFIT: 'Automatyczny zysk (bot, AI)',
+  LOW_ENTRY_DEPOSIT: 'Niski próg wejścia',
+  OFF_PLATFORM_CONTACT: 'Kontakt poza platformą',
+  SECRECY_CONSPIRACY: 'Tajemnica, spisek',
+  FAKE_NEWS_FORMAT: 'Format fałszywego artykułu',
+};
+
+/** Kolor podświetlenia (nazwa koloru Mantine) – każda flaga ma własny. */
+export const FLAG_COLOR: Record<FlagKey, string> = {
+  PROFIT_CLAIM: 'orange',
+  RISK_WARNING: 'teal',
+  AD_DISCLOSURE: 'cyan',
+  PAST_PERFORMANCE: 'grape',
+  PAST_PERF_DISCLAIMER: 'lime',
+  FORECAST: 'violet',
+  FORECAST_DISCLAIMER: 'green',
+  TAX_CLAIM: 'indigo',
+  PRODUCT_COMPARISON: 'blue',
+  SUPERVISOR_AS_SAFETY: 'pink',
+  PERSONALIZED_ADVICE: 'violet',
+  PAID_ADVISORY_SERVICE: 'grape',
+  SPECIFIC_INSTRUMENT_CALL: 'indigo',
+  GUARANTEED_PROFIT: 'red',
+  NO_RISK_CLAIM: 'pink',
+  UNREALISTIC_RETURNS: 'orange',
+  URGENCY_PRESSURE: 'yellow',
+  CELEBRITY_OR_BRAND_ENDORSEMENT: 'grape',
+  AUTOMATED_PROFIT: 'cyan',
+  LOW_ENTRY_DEPOSIT: 'lime',
+  OFF_PLATFORM_CONTACT: 'blue',
+  SECRECY_CONSPIRACY: 'violet',
+  FAKE_NEWS_FORMAT: 'indigo',
+};
+
+export const SCAM_SIGNAL_LABEL: Record<ScamSignal, string> = {
+  IMPERSONATION: 'Podszywanie się pod markę',
+  CERT_LIST_DOMAIN: 'Domena na liście ostrzeżeń CERT Polska',
+  KNF_WARNING_LIST: 'Podmiot na liście ostrzeżeń publicznych KNF',
+  NOT_IN_REGISTER: 'Oferuje usługi inwestycyjne, brak w rejestrze KNF',
+  TEXT_MODEL: 'Wysoki wynik modelu tekstowego',
+};
+
+export const ENTITY_ROLE_LABEL: Record<EntityRole, string> = {
+  investment_firm: 'Firma inwestycyjna',
+  advertiser: 'Reklamujący',
+  advisor: 'Podmiot doradczy',
+};
+
+export const REGISTER_LABEL: Record<RegisterStatus, string> = {
+  REGISTERED: 'W rejestrze KNF',
+  NOT_FOUND: 'Brak w rejestrze KNF',
+  ON_WARNING_LIST: 'Lista ostrzeżeń KNF',
+};
+export const REGISTER_COLOR: Record<RegisterStatus, string> = {
+  REGISTERED: 'green',
+  NOT_FOUND: 'orange',
+  ON_WARNING_LIST: 'red',
+};
+
+export const RULE_STATUS_LABEL: Record<RuleStatus, string> = {
+  VIOLATION: 'Do weryfikacji',
+  OK: 'Spełniona',
+  NOT_APPLICABLE: 'Nie dotyczy',
+  NOT_CHECKED: 'Wymaga analizy wizualnej',
+};
+export const RULE_STATUS_COLOR: Record<RuleStatus, string> = {
+  VIOLATION: 'red',
+  OK: 'green',
+  NOT_APPLICABLE: 'gray',
+  NOT_CHECKED: 'blue',
+};
+
+export const INDICATOR_LABEL: Record<IndicatorType, string> = {
+  domain: 'Domena',
+  url: 'URL',
+  phone: 'Telefon',
+  telegram: 'Telegram',
+  whatsapp: 'WhatsApp',
+  email: 'E-mail',
+  wallet: 'Portfel krypto',
+  iban: 'IBAN',
+  brand: 'Marka',
+  person: 'Osoba publiczna',
+  author: 'Autor',
+};
+
+export const EDGE_LABEL: Record<GraphEdgeType, string> = {
+  SHARES_INDICATOR: 'Wspólny wskaźnik',
+  SIMILAR_TEXT: 'Podobny tekst',
+  SAME_AUTHOR: 'Ten sam autor',
+  REDIRECTS_TO: 'Przekierowanie',
+  HAS_INDICATOR: 'Zawiera wskaźnik',
+  IMPERSONATES: 'Podszywa się',
+};
+
+export const CAMPAIGN_STATUS_LABEL: Record<CampaignStatus, string> = {
+  ACTIVE: 'Aktywna',
+  MONITORED: 'Monitorowana',
+  CLOSED: 'Zamknięta',
+};
+export const CAMPAIGN_STATUS_COLOR: Record<CampaignStatus, string> = {
+  ACTIVE: 'red',
+  MONITORED: 'yellow',
+  CLOSED: 'gray',
+};
+
+// ---------------------------------------------------------------------------
+// Progi kalibracji
+// ---------------------------------------------------------------------------
+
+export type ThresholdGroup = 'flags' | 'contentType' | 'risk' | 'scam';
+
+export const THRESHOLD_GROUP_LABEL: Record<ThresholdGroup, string> = {
+  scam: 'Oszustwo',
+  risk: 'Poziomy ryzyka',
+  flags: 'Flagi',
+  contentType: 'Typ treści',
+};
+
+export const THRESHOLD_GROUP_ORDER: ThresholdGroup[] = ['scam', 'risk', 'flags', 'contentType'];
+
+export function thresholdGroup(key: string): ThresholdGroup | null {
+  const prefix = key.split('.')[0];
+  return prefix === 'flags' || prefix === 'contentType' || prefix === 'risk' || prefix === 'scam' ? prefix : null;
+}
+
+export function thresholdLabel(key: string): string {
+  const [prefix, name] = key.split('.');
+  if (prefix === 'flags' && name in FLAG_LABEL) return FLAG_LABEL[name as FlagKey];
+  if (prefix === 'contentType' && name in CONTENT_TYPE_LABEL) return CONTENT_TYPE_LABEL[name as ContentType];
+  if (prefix === 'risk' && name in RISK_LABEL) return `Poziom: ${RISK_LABEL[name as RiskLevel].toLowerCase()}`;
+  if (prefix === 'scam') return 'Podejrzenie oszustwa';
+  return key;
+}
+
+/** Kolejność wyświetlania progów w grupie zgodna z listami powyżej. */
+export function thresholdOrder(key: string): number {
+  const [prefix, name] = key.split('.');
+  if (prefix === 'flags') return ALL_FLAGS.indexOf(name as FlagKey);
+  if (prefix === 'contentType') return CONTENT_TYPES.indexOf(name as ContentType);
+  if (prefix === 'risk') return RISK_LEVELS.indexOf(name as RiskLevel);
+  return 0;
+}
+
+export const SCAM_THRESHOLD_KEY = 'scam.p';
+export const DEFAULT_SCAM_THRESHOLD = 0.6;
