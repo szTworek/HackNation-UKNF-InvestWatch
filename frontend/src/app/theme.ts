@@ -39,11 +39,9 @@ export const theme = createTheme({
   },
 });
 
-/** Kolor modułu: paleta serwisu KNF, czerwień zarezerwowana dla podejrzeń oszustwa. */
+/** Kolor modułu: paleta serwisu KNF. */
 export const MODULE_COLOR = {
   1: '#113b6f',
   2: '#1e6ac8',
   3: '#4b5f7c',
-  scam: '#c00417',
-  all: '#2b303b',
 } as const;

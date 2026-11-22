@@ -1,7 +1,5 @@
 import { Group, Text } from '@mantine/core';
 import {
-  Area,
-  AreaChart,
   Bar,
   BarChart,
   CartesianGrid,
@@ -28,12 +26,15 @@ const axisProps = {
   axisLine: { stroke: C.grayLight },
 } as const;
 
+// ---------------------------------------------------------------------------
+// Trend incydentów
+// ---------------------------------------------------------------------------
+
 const SERIES: Record<TimeseriesGroupBy, Record<string, { label: string; color: string }>> = {
   module: {
     '1': { label: 'Finfluencerzy', color: C.blue },
     '2': { label: 'Informacja o ryzyku', color: C.teal },
     '3': { label: 'Shadow advisory', color: C.violet },
-    scam: { label: 'Oszustwa', color: C.red },
   },
   platform: {
     facebook: { label: PLATFORM_LABEL.facebook, color: C.indigo },
@@ -83,6 +84,10 @@ export function TrendChart({ data, height = 280 }: { data: Timeseries; height?: 
   );
 }
 
+// ---------------------------------------------------------------------------
+// Rozkład (poziome słupki z wartością na końcu)
+// ---------------------------------------------------------------------------
+
 export function DistributionBars({ data, color = C.blue }: { data: { label: string; value: number }[]; color?: string }) {
   const rows = data.filter((d) => d.value > 0).sort((a, b) => b.value - a.value);
   if (!rows.length) return <Text size="sm" c="dimmed">Brak danych w tym zakresie dat.</Text>;
@@ -101,6 +106,10 @@ export function DistributionBars({ data, color = C.blue }: { data: { label: stri
     </ChartBox>
   );
 }
+
+// ---------------------------------------------------------------------------
+// Kalibracja
+// ---------------------------------------------------------------------------
 
 export function PrCurve({ curve, current, height = 240 }: { curve: PrPoint[]; current: { precision: number; recall: number }; height?: number }) {
   return (
@@ -181,63 +190,5 @@ export function ThresholdCurve({
         )}
       </ChartBox>
     </>
-  );
-}
-
-/** Liczba nowych elementów kampanii per dzień. */
-export function CampaignTimeline({ dates, height = 160 }: { dates: string[]; height?: number }) {
-  const counts = new Map<string, number>();
-  for (const iso of dates) {
-    const d = iso.slice(0, 10);
-    counts.set(d, (counts.get(d) ?? 0) + 1);
-  }
-  const keys = [...counts.keys()].sort();
-  if (!keys.length) return null;
-  const rows: { date: string; n: number }[] = [];
-  const start = new Date(`${keys[0]}T00:00:00`);
-  const end = new Date(`${keys[keys.length - 1]}T00:00:00`);
-  for (const d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-    const k = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    rows.push({ date: k, n: counts.get(k) ?? 0 });
-  }
-  return (
-    <ChartBox height={height}>
-      {(w, h) => (
-        <BarChart width={w} height={h} data={rows} margin={{ top: 8, right: 8, bottom: 0, left: -24 }}>
-          <CartesianGrid vertical={false} stroke={C.grid} />
-          <XAxis dataKey="date" tickFormatter={fmtShortDate} minTickGap={12} {...axisProps} />
-          <YAxis allowDecimals={false} {...axisProps} axisLine={false} />
-          <Tooltip labelFormatter={(l) => fmtShortDate(String(l))} formatter={(v) => [String(v), 'Nowe elementy']} />
-          <Bar dataKey="n" fill={C.red} isAnimationActive={false} maxBarSize={20} />
-        </BarChart>
-      )}
-    </ChartBox>
-  );
-}
-
-/** Prawdopodobieństwo syntetycznego głosu per segment nagrania. */
-export function VoiceChart({
-  segments,
-  activeT,
-  height = 140,
-}: {
-  segments: { startS: number; endS: number; score: number }[];
-  activeT: number | null;
-  height?: number;
-}) {
-  const rows = segments.map((s) => ({ t: s.startS, score: s.score }));
-  return (
-    <ChartBox height={height}>
-      {(w, h) => (
-        <AreaChart width={w} height={h} data={rows} margin={{ top: 8, right: 12, bottom: 0, left: -12 }}>
-          <CartesianGrid vertical={false} stroke={C.grid} />
-          <XAxis dataKey="t" type="number" domain={['dataMin', 'dataMax']} tickFormatter={(v: number) => `${v} s`} {...axisProps} />
-          <YAxis domain={[0, 1]} ticks={[0, 0.5, 1]} tickFormatter={(v: number) => fmtPct(v)} {...axisProps} axisLine={false} />
-          <Tooltip formatter={(v) => [fmtPct(Number(v)), 'Syntetyczny głos']} labelFormatter={(l) => `${l} s`} />
-          <Area type="stepAfter" dataKey="score" stroke={C.orange} fill={C.orange} fillOpacity={0.25} isAnimationActive={false} />
-          {activeT !== null && <ReferenceLine x={activeT} stroke={C.dark} strokeDasharray="4 3" />}
-        </AreaChart>
-      )}
-    </ChartBox>
   );
 }

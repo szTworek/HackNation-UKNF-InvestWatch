@@ -266,9 +266,6 @@ a {
   border-bottom: 1px solid var(--iw-text);
   white-space: nowrap;
 }
-.iw-row-scam {
-  background: var(--iw-red-soft);
-}
 .iw-row-new {
   animation: iw-flash 1.6s cubic-bezier(0.16, 1, 0.3, 1);
 }

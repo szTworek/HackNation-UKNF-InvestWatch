@@ -60,7 +60,25 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
-      - run: npm run build:mock
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+
+  api:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: api/package-lock.json
+      - run: npm ci --ignore-scripts --no-audit
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build
       - name: Audit production dependencies
         run: npm audit --omit=dev --audit-level=high
 
@@ -106,15 +124,17 @@ jobs:
       matrix:
         include:
           - name: frontend
+            context: frontend
             file: frontend/Dockerfile
-          - name: mock-api
-            file: frontend/mock-server/Dockerfile
+          - name: api
+            context: .
+            file: api/Dockerfile
     steps:
       - uses: actions/checkout@v5
       - uses: docker/setup-buildx-action@v3
       - uses: docker/build-push-action@v6
         with:
-          context: frontend
+          context: ${{ matrix.context }}
           file: ${{ matrix.file }}
           push: false
           cache-from: type=gha,scope=${{ matrix.name }}

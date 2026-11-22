@@ -1,5 +1,5 @@
 // Kontrakt danych InvestWatch (docs/frontend-agent.md, sekcja 3).
-// Plik importuje też mock serwer – tylko typy, bez kodu wykonywalnego.
+// Plik importuje też api/ – tylko typy, bez kodu wykonywalnego.
 
 export type Platform = 'facebook' | 'instagram' | 'tiktok' | 'youtube' | 'x' | 'web' | 'other';
 export type ContentKind = 'post' | 'transcript' | 'comment' | 'page';
@@ -51,44 +51,14 @@ export type FlagKey =
   | 'SECRECY_CONSPIRACY'
   | 'FAKE_NEWS_FORMAT';
 
-// sygnały scamu spoza tekstu (lookupy backendu)
-export type ScamSignal =
-  | 'IMPERSONATION' // tekst wymienia zarejestrowaną markę, link prowadzi poza jej oficjalne domeny
-  | 'CERT_LIST_DOMAIN' // domena na liście ostrzeżeń CERT Polska
-  | 'KNF_WARNING_LIST' // podmiot / domena na liście ostrzeżeń publicznych KNF
-  | 'NOT_IN_REGISTER' // oferuje usługi inwestycyjne, brak w rejestrze KNF
-  | 'TEXT_MODEL'; // wysoki wynik modelu tekstowego
-
-export type EvidenceSection = 'text' | 'transcript' | 'ocr' | 'landing';
+export type EvidenceSection = 'text' | 'transcript' | 'ocr';
 
 export interface Evidence {
-  section: EvidenceSection; // gdzie jest dowód: treść posta, transkrypcja, napis na ekranie (OCR), strona docelowa
+  section: EvidenceSection; // gdzie jest dowód: treść posta, transkrypcja, napis na grafice (OCR)
   start: number; // offsety w tekście danej sekcji
   end: number;
   text: string;
   t?: number; // sekunda nagrania (transkrypcja / OCR)
-  landingIndex?: number; // która strona docelowa
-}
-
-export type LandingDomainFlag = 'CERT_LIST_DOMAIN' | 'KNF_WARNING_LIST' | 'IMPERSONATION' | 'NEW_DOMAIN';
-
-export interface LandingPageView {
-  requestedUrl: string;
-  finalUrl: string;
-  redirectChain: string[];
-  title?: string;
-  text: string;
-  screenshotUrl?: string;
-  mobileScreenshotUrl?: string;
-  hasContactForm: boolean; // formularz z telefonem / e-mailem
-  domainFlags: LandingDomainFlag[];
-}
-
-export interface MediaView {
-  durationS?: number;
-  asrUsed: boolean; // transkrypcja z naszego ASR (brak napisów platformy)
-  keyframes: { t: number; imageUrl: string; ocrText: string }[];
-  syntheticVoice?: { score: number; segments: { startS: number; endS: number; score: number }[]; experimental: true };
 }
 
 export interface FlagScore {
@@ -110,7 +80,7 @@ export type RuleStatus = 'VIOLATION' | 'OK' | 'NOT_APPLICABLE' | 'NOT_CHECKED';
 export interface RuleResult {
   // wynik reguły z 18 (oraz reguł modułu 1/3)
   ruleId: string; // '3', '12a', '15', 'M3_ADVISORY' ...
-  status: RuleStatus; // NOT_CHECKED = brak danych (np. reguły 4,5,7,8 bez landingu / zrzutu)
+  status: RuleStatus; // NOT_CHECKED = brak danych (np. reguły 4,5,7,8 bez pomiaru wizualnego)
   score: number; // 0..1
   evidence: Evidence[];
 }
@@ -142,30 +112,14 @@ export interface RelatedFinding {
   score: number;
 }
 
-export type CampaignStatus = 'ACTIVE' | 'MONITORED' | 'CLOSED';
-
-export interface Campaign {
-  id: string;
-  name: string; // auto, np. „Fałszywa platforma AI – marka X (tel. +48…)”
-  size: number;
-  scamShare: number; // udział potwierdzonych / wysokich scamów
-  avgScam: number;
-  firstSeen: string;
-  lastSeen: string;
-  platforms: Platform[];
-  topIndicators: Indicator[];
-  status: CampaignStatus;
-}
-
 export type GraphNodeKind = 'finding' | IndicatorType;
-export type GraphEdgeType = RelationReason | 'HAS_INDICATOR' | 'IMPERSONATES';
+export type GraphEdgeType = RelationReason | 'HAS_INDICATOR';
 
 export interface GraphNode {
   id: string;
   kind: GraphNodeKind;
   label: string;
-  scamP?: number;
-  campaignId?: string;
+  riskScore?: number;
 }
 
 export interface GraphEdge {
@@ -207,22 +161,17 @@ export interface Finding {
   flags: Record<FlagKey, FlagScore>;
   rules: RuleResult[];
   entities: Entity[];
-  outboundLinks: string[]; // linki z posta (landing pages)
-  scam: { p: number; signals: ScamSignal[] }; // ścieżka oszustw – niezależna od modułów 1–3
+  outboundLinks: string[]; // linki z posta
   transcript?: string; // gdy wideo
-  landingPages: LandingPageView[]; // wzbogacenie: odwiedzone strony docelowe
-  media?: MediaView; // wzbogacenie: klatki + OCR, analiza głosu
   indicators: Indicator[];
-  campaignId?: string;
   related: RelatedFinding[]; // top 5 najsilniej powiązanych
   riskScore: number; // 0..1, liczony przez backend z progów
   riskLevel: RiskLevel;
   status: Status;
   history: HistoryEntry[];
   modelVersion: string;
-  blockedUrls?: string[]; // adresy bez aktywnego linku: lista CERT albo wysokie podejrzenie oszustwa
+  blockedUrls?: string[]; // adresy bez aktywnego linku: domeny z listy ostrzeżeń CERT Polska
   revisions?: Revision[]; // wcześniejsze wersje tego samego materiału (edycja po publikacji), od najnowszej
-  demo?: boolean; // rekord demonstracyjny (ml/scripts/add_demo_findings.py)
 }
 
 /** Wcześniejsza wersja treści wykryta przy ponownym skanie. added/removed: zdania względem tej wersji. */
@@ -237,7 +186,7 @@ export interface Revision {
 }
 
 export interface Thresholds {
-  // klucze: 'flags.PROFIT_CLAIM', 'contentType.SERVICE_OFFER', 'risk.HIGH', 'scam.p'
+  // klucze: 'flags.PROFIT_CLAIM', 'contentType.SERVICE_OFFER', 'risk.HIGH'
   version: string;
   updatedAt: string;
   values: Record<string, number>;
@@ -246,7 +195,8 @@ export interface Thresholds {
 export interface EvalItem {
   // zbiór walidacyjny z ręcznymi etykietami (gold)
   id: string;
-  probs: Record<string, number>; // te same klucze co Thresholds.values
+  url?: string;
+  probs: Record<string, number>; // te same klucze co Thresholds.values, np. 'module.M1'
   gold: Record<string, 0 | 1>;
 }
 
@@ -255,7 +205,6 @@ export interface EvalItem {
 export interface ApiHealth {
   status: string;
   findings: number;
-  dataMode: 'mock' | 'real';
 }
 
 export interface Page<T> {
@@ -267,7 +216,7 @@ export interface Page<T> {
 
 /**
  * Lekki wiersz listy (GET /findings). Pełny Finding pobiera się dopiero w szczegółach,
- * żeby lista nie ciągnęła tekstów, flag, reguł, landingów i mediów.
+ * żeby lista nie ciągnęła tekstów, flag i reguł.
  */
 export interface FindingSummary {
   id: string;
@@ -282,13 +231,9 @@ export interface FindingSummary {
   modules: ModuleId[];
   contentType: ContentType; // dominujący typ treści
   topFlags: { flag: FlagKey; p: number }[]; // flagi powyżej progu, max 3
-  scamP: number;
   riskScore: number;
   riskLevel: RiskLevel;
   status: Status;
-  campaignId?: string;
-  hasLanding: boolean;
-  hasMedia: boolean;
   // pola raportów modułów (żeby lista modułu nie potrzebowała pełnego rekordu)
   firm?: { name: string; register: RegisterStatus }; // M1, M2: firma inwestycyjna
   advertiser?: string; // M1: reklamujący (finfluencer, podmiot trzeci)
@@ -297,7 +242,7 @@ export interface FindingSummary {
   advisor?: { name: string; register: RegisterStatus }; // M3: podmiot oferujący doradztwo
   instruments: Instrument[]; // instrumenty z p >= 0,5
   violations: string[]; // M2: id naruszonych reguł
-  brand?: string; // oszustwa: podszywana marka
+  brand?: string; // marka wskazana w treści
   domains: string[]; // domeny z linków
   contacts: string[]; // telefon, Telegram, WhatsApp
 }
@@ -320,9 +265,6 @@ export interface StatsOverview {
   byPlatform: Record<Platform, number>;
   byStatus: Record<Status, number>;
   byContentType: Record<ContentType, number>;
-  scam24h: number;
-  scamTotal: number;
-  topImpersonatedBrands: { brand: string; count: number }[];
   confirmed: number;
   verified: number; // CONFIRMED + DISMISSED + ESCALATED
 }
@@ -332,18 +274,8 @@ export type TimeseriesGroupBy = 'module' | 'platform' | 'riskLevel';
 export interface Timeseries {
   bucket: 'day';
   groupBy: TimeseriesGroupBy;
-  keys: string[]; // module: '1' | '2' | '3' | 'scam'
+  keys: string[]; // module: '1' | '2' | '3'
   points: { date: string; counts: Record<string, number> }[];
-}
-
-export interface CampaignListItem extends Campaign {
-  trend: number[]; // liczba nowych członków per dzień w zakresie dat
-}
-
-export interface CampaignDetail {
-  campaign: Campaign;
-  graph: Graph;
-  members: FindingSummary[];
 }
 
 export interface IndicatorFindings {
@@ -373,9 +305,21 @@ export interface BulkStatusUpdate extends StatusUpdate {
   ids: string[];
 }
 
+export interface ModuleEval {
+  tp: number;
+  fp: number;
+  fn: number;
+  tn: number;
+  precision: number;
+  recall: number;
+}
+
 export interface ThresholdsPreview {
-  current: Record<RiskLevel, number>;
-  proposed: Record<RiskLevel, number>;
+  // liczba rekordów w module (wszystkie rekordy) i metryki na zbiorze z ręcznymi etykietami
+  current: Record<ModuleId, number>;
+  proposed: Record<ModuleId, number>;
+  eval: Record<ModuleId, { current: ModuleEval; proposed: ModuleEval }>;
+  evalSize: number;
 }
 
 export interface FindingsQuery {
@@ -386,16 +330,28 @@ export interface FindingsQuery {
   riskLevel?: RiskLevel[];
   status?: Status[];
   flag?: FlagKey[];
-  scam?: boolean;
-  campaignId?: string;
   q?: string;
-  sort?: string; // 'fetchedAt:desc' | 'riskScore:desc' | 'scam:desc' | 'publishedAt:asc' ...
+  sort?: string; // 'fetchedAt:desc' | 'riskScore:desc' | 'publishedAt:asc' ...
+  confidence?: number; // podgląd: moduł wg pewności LLM >= confidence zamiast zapisanego progu
   page?: number;
   pageSize?: number;
 }
 
 // Zdarzenia socket.io
+/** Ocena LLM w tle (GET /load, zdarzenie load:progress): done/total = bieżący przebieg, pending = rekordy bez oceny. */
+export interface LoadProgress {
+  running: boolean;
+  done: number;
+  total: number;
+  pending: number;
+  startedAt: string | null;
+  finishedAt: string | null;
+}
+
 export interface ServerToClientEvents {
+  'finding:new': (f: Finding) => void; // każdy nowo oceniony rekord
+  'finding:high_risk': (f: Finding) => void; // nowy rekord HIGH / CRITICAL
+  'load:progress': (p: LoadProgress) => void;
   'finding:updated': (f: Finding) => void;
   'thresholds:updated': (t: Thresholds) => void;
 }

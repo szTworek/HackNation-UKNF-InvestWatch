@@ -1,13 +1,12 @@
-import { Accordion, Anchor, Badge, Box, Button, Grid, Group, Modal, Paper, SegmentedControl, Stack, Table, Tabs, Text, Title, UnstyledButton } from '@mantine/core';
+import { Accordion, Badge, Box, Button, Grid, Group, Modal, Paper, Stack, Tabs, Text, Title, UnstyledButton } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { lazy, Suspense, useMemo, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useFinding, useFindingGraph, useRules, useThresholds, useUpdateStatus } from '../api/hooks';
-import type { ContentType, Finding, FlagKey, GraphNode, Indicator, IndicatorType, Instrument, RuleDef, TopicLabel } from '../api/types';
+import { useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useFinding, useRules, useThresholds, useUpdateStatus } from '../api/hooks';
+import type { ContentType, Finding, FlagKey, Instrument, RuleDef, TopicLabel } from '../api/types';
 import { ModuleBadges, RiskBadge, StatusBadge } from '../components/Badges';
-import { LandingView, VideoView } from '../components/Enrichment';
 import { EntityList } from '../components/EntityList';
-import { FindingMeta, LinkList, ScamPanel } from '../components/FindingPanels';
+import { FindingMeta, LinkList } from '../components/FindingPanels';
 import { HighlightedText } from '../components/HighlightedText';
 import { ErrorState, Loading } from '../components/PageState';
 import { ProbBar } from '../components/ProbBar';
@@ -15,13 +14,12 @@ import { ModuleReport } from '../components/ModuleReport';
 import { RiskGauge } from '../components/RiskGauge';
 import { RulesChecklist } from '../components/RulesChecklist';
 import { RevisionDiff, StatusChanger, StatusHistory } from '../components/StatusPanel';
-import { activeFlags, evidenceSpans, firstEvidence, flagThreshold, isScam, snippet, thresholdOf, type ThresholdValues } from '../lib/findings';
-import { fmtPct, fmtProb } from '../lib/format';
+import { activeFlags, evidenceSpans, firstEvidence, flagThreshold, snippet, thresholdOf, type ThresholdValues } from '../lib/findings';
+import { fmtPct } from '../lib/format';
 import {
   ALL_FLAGS,
   CONTENT_TYPES,
   CONTENT_TYPE_LABEL,
-  EDGE_LABEL,
   FLAG_COLOR,
   FLAG_LABEL,
   INSTRUMENTS,
@@ -30,13 +28,7 @@ import {
   TOPICS,
   TOPIC_LABEL,
 } from '../lib/labels';
-import { useRangeSearch } from '../lib/url';
-import { IndicatorDrawer } from './IndicatorDrawer';
-
-// graf (Cytoscape) ładowany dopiero po otwarciu zakładki „Powiązania”
-const CytoscapeGraph = lazy(() => import('../components/CytoscapeGraph').then((m) => ({ default: m.CytoscapeGraph })));
-
-type Tab = 'content' | 'landing' | 'video' | 'links' | 'history';
+type Tab = 'content' | 'video' | 'history';
 
 export function FindingDetail() {
   const { id } = useParams();
@@ -45,7 +37,6 @@ export function FindingDetail() {
   const allRules = useRules();
   const [tab, setTab] = useState<Tab>('content');
   const [activeFlag, setActiveFlag] = useState<FlagKey | null>(null);
-  const [activeT, setActiveT] = useState<number | null>(null);
   const [statusOpen, setStatusOpen] = useState(false);
   const updateStatus = useUpdateStatus();
 
@@ -59,12 +50,9 @@ export function FindingDetail() {
   const focusFlag = (flag: FlagKey) => {
     setActiveFlag((cur) => (cur === flag ? null : flag));
     const ev = firstEvidence(f, flag);
-    if (!ev) return;
-    const target: Tab = ev.section === 'landing' ? 'landing' : ev.section === 'text' ? 'content' : 'video';
-    setTab(target);
-    if (ev.t !== undefined) setActiveT(ev.t);
-    const anchor = ev.section === 'ocr' ? `frame-${ev.t}` : `ev-${ev.section}-${flag}`;
-    window.setTimeout(() => document.getElementById(anchor)?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 150);
+    if (!ev || ev.section === 'ocr') return;
+    setTab(ev.section === 'transcript' && f.transcript ? 'video' : 'content');
+    window.setTimeout(() => document.getElementById(`ev-${ev.section}-${flag}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 150);
   };
 
   return (
@@ -85,16 +73,12 @@ export function FindingDetail() {
         </Group>
       </Group>
 
-      {isScam(f, tv) && <ScamPanel finding={f} thresholds={tv} />}
-
       {allRules.data && <ModuleReport finding={f} rules={allRules.data} thresholds={tv} />}
 
       <Tabs value={tab} onChange={(v) => setTab((v as Tab) ?? 'content')} keepMounted={false}>
         <Tabs.List>
           <Tabs.Tab value="content">Treść</Tabs.Tab>
-          {f.landingPages.length > 0 && <Tabs.Tab value="landing">Strona docelowa</Tabs.Tab>}
-          {(f.media || f.transcript) && <Tabs.Tab value="video">Wideo</Tabs.Tab>}
-          <Tabs.Tab value="links">Powiązania</Tabs.Tab>
+          {f.transcript && <Tabs.Tab value="video">Wideo</Tabs.Tab>}
           <Tabs.Tab value="history">
             Historia ({f.history.length}){f.revisions?.length ? ', treść zmieniona' : ''}
           </Tabs.Tab>
@@ -104,34 +88,16 @@ export function FindingDetail() {
           <ContentTab finding={f} tv={tv} activeFlag={activeFlag} onFlag={focusFlag} />
         </Tabs.Panel>
 
-        {f.landingPages.length > 0 && (
-          <Tabs.Panel value="landing" pt="md">
-            <Stack gap="lg">
-              {f.landingPages.map((lp, i) => (
-                <LandingView key={lp.finalUrl} page={lp} spans={evidenceSpans(f, tv, 'landing', i)} />
-              ))}
-            </Stack>
-          </Tabs.Panel>
-        )}
-
-        {(f.media || f.transcript) && (
+        {f.transcript && (
           <Tabs.Panel value="video" pt="md">
-            {f.media ? (
-              <VideoView media={f.media} transcript={f.transcript} spans={evidenceSpans(f, tv, 'transcript')} activeT={activeT} onSelectT={setActiveT} />
-            ) : (
-              <Paper withBorder p="md">
-                <Title order={5} mb="sm">
-                  Transkrypcja
-                </Title>
-                <HighlightedText text={f.transcript ?? ''} spans={evidenceSpans(f, tv, 'transcript')} idPrefix="ev-transcript" activeFlag={activeFlag} />
-              </Paper>
-            )}
+            <Paper withBorder p="md">
+              <Title order={5} mb="sm">
+                Transkrypcja
+              </Title>
+              <HighlightedText text={f.transcript} spans={evidenceSpans(f, tv, 'transcript')} idPrefix="ev-transcript" activeFlag={activeFlag} />
+            </Paper>
           </Tabs.Panel>
         )}
-
-        <Tabs.Panel value="links" pt="md">
-          <LinksTab finding={f} />
-        </Tabs.Panel>
 
         <Tabs.Panel value="history" pt="md">
           <Stack maw={720} gap="md">
@@ -167,6 +133,10 @@ export function FindingDetail() {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Zakładka „Treść”: tekst z dowodami, co wykryto, naruszone reguły, status
+// ---------------------------------------------------------------------------
+
 function ContentTab({
   finding: f,
   tv,
@@ -198,7 +168,7 @@ function ContentTab({
           </Paper>
           <Paper withBorder p="md">
             <FindingMeta finding={f} />
-            {!isScam(f, tv) && f.outboundLinks.length > 0 && (
+            {f.outboundLinks.length > 0 && (
               <Stack gap={4} mt="sm">
                 <Text size="xs" c="dimmed">
                   Linki wychodzące
@@ -380,93 +350,5 @@ function ModelDetails({ finding: f, tv }: { finding: Finding; tv: ThresholdValue
       {group('Typ treści', CONTENT_TYPES.map((c: ContentType) => ({ label: CONTENT_TYPE_LABEL[c], p: f.contentType[c], t: thresholdOf(tv, `contentType.${c}`, 0.4) })))}
       {group('Instrumenty', INSTRUMENTS.map((i: Instrument) => ({ label: INSTRUMENT_LABEL[i], p: f.instruments[i] })))}
     </>
-  );
-}
-
-function LinksTab({ finding: f }: { finding: Finding }) {
-  const navigate = useNavigate();
-  const search = useRangeSearch();
-  const [depth, setDepth] = useState<1 | 2>(1);
-  const [indicator, setIndicator] = useState<Indicator | null>(null);
-  const graph = useFindingGraph(f.id, depth);
-
-  const onNode = (n: GraphNode) => {
-    if (n.kind === 'finding') {
-      if (n.id !== f.id) navigate(`/findings/${n.id}${search}`);
-    } else if (!n.id.startsWith('agg:')) {
-      const sep = n.id.indexOf(':');
-      setIndicator({ type: n.id.slice(0, sep) as IndicatorType, value: n.id.slice(sep + 1) });
-    }
-  };
-
-  return (
-    <Grid gutter="md">
-      <Grid.Col span={{ base: 12, lg: 8 }}>
-        <Paper withBorder p="md">
-          <Group justify="space-between" mb="sm">
-            <Title order={5}>Graf powiązań</Title>
-            <SegmentedControl
-              size="xs"
-              value={String(depth)}
-              onChange={(v) => setDepth(v === '2' ? 2 : 1)}
-              data={[
-                { value: '1', label: 'Bezpośrednie' },
-                { value: '2', label: 'Dalsze' },
-              ]}
-            />
-          </Group>
-          <Suspense fallback={<Loading />}>
-            {graph.data ? <CytoscapeGraph graph={graph.data} highlightId={f.id} onNodeClick={onNode} /> : <Loading />}
-          </Suspense>
-        </Paper>
-      </Grid.Col>
-      <Grid.Col span={{ base: 12, lg: 4 }}>
-        <Stack gap="md">
-          <Paper withBorder p="md">
-            <Title order={5} mb="sm">
-              Najsilniej powiązane
-            </Title>
-            {f.related.length ? (
-              <Table fz="sm" verticalSpacing={6}>
-                <Table.Tbody>
-                  {f.related.map((r) => (
-                    <Table.Tr key={r.findingId}>
-                      <Table.Td>
-                        <Anchor component={Link} to={`/findings/${r.findingId}${search}`} size="sm">
-                          {r.findingId}
-                        </Anchor>
-                        <Text size="xs" c="dimmed">
-                          {EDGE_LABEL[r.reason]}: {r.detail}
-                        </Text>
-                      </Table.Td>
-                      <Table.Td ta="right" w={50} c="dimmed">
-                        {fmtProb(r.score)}
-                      </Table.Td>
-                    </Table.Tr>
-                  ))}
-                </Table.Tbody>
-              </Table>
-            ) : (
-              <Text size="sm" c="dimmed">
-                Brak powiązań.
-              </Text>
-            )}
-          </Paper>
-          <Paper withBorder p="md">
-            <Title order={5} mb="sm">
-              Wskaźniki
-            </Title>
-            <Group gap={6}>
-              {f.indicators.map((i) => (
-                <Badge key={`${i.type}:${i.value}`} variant="default" tt="none" style={{ cursor: 'pointer' }} onClick={() => setIndicator(i)} component="button">
-                  {i.value}
-                </Badge>
-              ))}
-            </Group>
-          </Paper>
-        </Stack>
-      </Grid.Col>
-      <IndicatorDrawer indicator={indicator} onClose={() => setIndicator(null)} />
-    </Grid>
   );
 }

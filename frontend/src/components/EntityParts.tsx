@@ -1,9 +1,11 @@
-import { Anchor, Badge, Box, Group, Paper, SimpleGrid, Stack, Table, Text, Title, Tooltip, UnstyledButton } from '@mantine/core';
+import { Alert, Anchor, Badge, Box, Group, Paper, SimpleGrid, Stack, Switch, Table, Text, Title, Tooltip, UnstyledButton } from '@mantine/core';
 import { IconExternalLink, IconShieldCheck, IconShieldX } from '@tabler/icons-react';
 import { useMemo, useState, type ReactNode } from 'react';
 import { API_URL } from '../api/client';
 import { useChange, useItem } from '../api/hooks';
 import type {
+  ChangeAssessment,
+  ChangeCategory,
   EntityAlert,
   EntityFinding,
   EntityModule,
@@ -155,6 +157,10 @@ export function RiskWarningStatus({ snap }: { snap: PageSnapshot | null }) {
     </Group>
   );
 }
+
+// ---------------------------------------------------------------------------
+// Rekord z podświetleniem dowodów
+// ---------------------------------------------------------------------------
 
 function Highlighted({ text, hits }: { text: string; hits: RuleHit[] }) {
   const parts = useMemo(() => {
@@ -349,9 +355,9 @@ export function ItemView({ id, focusFinding }: { id: string; focusFinding: strin
             {lg?.dominantLinePx != null && (
               <Text size="xs">Dominująca wysokość linii na grafice: {lg.dominantLinePx} px</Text>
             )}
-            {lg && <Text size="xs">Ujawnienie w tekście opisu: {lg.disclosureInText ? 'tak' : 'nie'}</Text>}
+            {lg && <Text size="xs">Oznaczenie w tekście opisu: {lg.disclosureInText ? 'tak' : 'nie'}</Text>}
             {lg?.disclosureOnImage != null && (
-              <Text size="xs">Ujawnienie na grafice: {lg.disclosureOnImage ? 'tak' : 'nie'}</Text>
+              <Text size="xs">Oznaczenie na grafice: {lg.disclosureOnImage ? 'tak' : 'nie'}</Text>
             )}
           </Stack>
           {ocrLines.length > 0 && (
@@ -363,7 +369,7 @@ export function ItemView({ id, focusFinding }: { id: string; focusFinding: strin
                   <Table.Th>Wysokość</Table.Th>
                   <Table.Th>Względem dominującej</Table.Th>
                   <Table.Th>Kontrast</Table.Th>
-                  <Table.Th>Ujawnienie</Table.Th>
+                  <Table.Th>Oznaczenie</Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
@@ -390,6 +396,10 @@ export function ItemView({ id, focusFinding }: { id: string; focusFinding: strin
     </Stack>
   );
 }
+
+// ---------------------------------------------------------------------------
+// Diff dwóch zrzutów strony
+// ---------------------------------------------------------------------------
 
 type Row = { kind: 'same' | 'del' | 'add' | 'mod'; a?: string; b?: string; ai?: number; bi?: number };
 
@@ -511,6 +521,7 @@ export function DiffView({ id }: { id: string }) {
           </Group>
         </Anchor>
       </Group>
+      <AssessmentPanel a={c.assessment} />
       <SimpleGrid cols={{ base: 1, sm: 2 }}>
         <SnapCard s={c.from} label="Przed" />
         <SnapCard s={c.to} label="Po" />
@@ -594,11 +605,80 @@ export function DiffView({ id }: { id: string }) {
   );
 }
 
-export function ChangeTimeline({ changes, onOpen }: { changes: (PageChange & { label: string })[]; onOpen: (id: string) => void }) {
+// ---------------------------------------------------------------------------
+// Oś czasu zmian i lista alertów
+// ---------------------------------------------------------------------------
+
+const CHANGE_CATEGORY_LABEL: Record<ChangeCategory, string> = {
+  risk_info: 'Informacja o ryzyku',
+  ad_marking: 'Oznaczenie reklamy',
+  sponsorship: 'Sponsoring',
+  pricing: 'Ceny i opłaty',
+  other: 'Inne',
+};
+
+/** Domyślnie tylko zmiany ocenione jako istotne; przełącznik pokazuje resztę (nieistotne i nieocenione). */
+export function useChangeFilter<T extends PageChange>(changes: T[]) {
+  const [all, setAll] = useState(false);
+  const relevant = changes.filter((c) => c.assessment?.relevant === true);
+  return { shown: all ? changes : relevant, total: changes.length, hidden: changes.length - relevant.length, all, setAll };
+}
+
+export function ShowAllChanges({ f }: { f: { hidden: number; all: boolean; setAll: (v: boolean) => void } }) {
+  if (!f.hidden) return null;
+  return (
+    <Switch
+      size="xs"
+      my="xs"
+      label={`pokaż wszystkie zmiany (pominięte: ${f.hidden})`}
+      checked={f.all}
+      onChange={(e) => f.setAll(e.currentTarget.checked)}
+    />
+  );
+}
+
+/** Stan oceny w wierszu listy: kategoria istotnej zmiany, „oczekuje na ocenę” albo „nieistotna”. */
+export function AssessmentStatus({ a }: { a: ChangeAssessment | null }) {
+  if (!a)
+    return (
+      <Text span size="xs" c="dimmed">
+        oczekuje na ocenę
+      </Text>
+    );
+  return (
+    <Text span size="xs" c={a.relevant ? 'knf.7' : 'dimmed'}>
+      {a.relevant ? CHANGE_CATEGORY_LABEL[a.category] : 'nieistotna'}
+    </Text>
+  );
+}
+
+function AssessmentPanel({ a }: { a: ChangeAssessment | null }) {
+  if (!a)
+    return (
+      <Text size="sm" c="dimmed">
+        Zmiana oczekuje na ocenę.
+      </Text>
+    );
+  return (
+    <Alert color={a.relevant ? 'orange' : 'gray'} p="sm" title={a.relevant ? `Istotna zmiana: ${CHANGE_CATEGORY_LABEL[a.category]}` : 'Zmiana nieistotna'}>
+      <Text size="sm">{a.reason}</Text>
+      {a.rules.length > 0 && (
+        <Text size="xs" c="dimmed" mt={4}>
+          Reguły: {a.rules.join(', ')}
+        </Text>
+      )}
+      <Text size="xs" c="dimmed" mt={2}>
+        Model: {a.model}
+      </Text>
+    </Alert>
+  );
+}
+
+export function ChangeTimeline({ changes, empty, onOpen }: { changes: (PageChange & { label: string })[]; empty?: string; onOpen: (id: string) => void }) {
   if (!changes.length)
     return (
       <Text size="sm" c="dimmed">
-        Brak wykrytych zmian: kolejne zrzuty są identyczne.
+        {empty ?? 'Brak wykrytych zmian: kolejne zrzuty są identyczne.'}
       </Text>
     );
   return (
@@ -611,6 +691,7 @@ export function ChangeTimeline({ changes, onOpen }: { changes: (PageChange & { l
                 {fmtDateTime(c.detectedAt)} · {fmtRelative(c.detectedAt)}
               </Text>
               {c.mock && <MockBadge hint="Zmiana wobec zrzutu zrekonstruowanego syntetycznie" />}
+              <AssessmentStatus a={c.assessment} />
             </Group>
             <Text size="sm" fw={600} mt={2}>
               {c.summary}

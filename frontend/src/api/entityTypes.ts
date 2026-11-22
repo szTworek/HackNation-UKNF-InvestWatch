@@ -187,6 +187,17 @@ export interface StyleChange {
   relSizeAfter: number | null;
 }
 
+export type ChangeCategory = 'risk_info' | 'ad_marking' | 'sponsorship' | 'pricing' | 'other';
+
+/** Ocena LLM zmiany strony: czy dotyczy reguł (informacja o ryzyku, oznaczenie reklamy…), czy to szum. */
+export interface ChangeAssessment {
+  relevant: boolean;
+  category: ChangeCategory;
+  reason: string;
+  rules: string[];
+  model: string;
+}
+
 export interface PageChange {
   id: string;
   pageId: string;
@@ -198,7 +209,7 @@ export interface PageChange {
   addedLines: string[];
   removedLines: string[];
   styleChanges: StyleChange[];
-  assessment: null | unknown;
+  assessment: ChangeAssessment | null; // null = jeszcze nie oceniona
   mock: boolean;
 }
 

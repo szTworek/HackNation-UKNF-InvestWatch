@@ -1,14 +1,12 @@
 import type {
   ApiHealth,
   BulkStatusUpdate,
-  CampaignDetail,
-  CampaignListItem,
-  CampaignStatus,
   EvalItem,
   Finding,
   FindingSummary,
   FindingsQuery,
   Graph,
+  LoadProgress,
   HistoryPage,
   IndicatorFindings,
   IndicatorType,
@@ -90,12 +88,6 @@ export interface DateRange {
   to?: string;
 }
 
-export interface CampaignsQuery extends DateRange {
-  minSize?: number;
-  status?: CampaignStatus[];
-  sort?: string;
-}
-
 const json = (body: unknown): RequestInit => ({ body: JSON.stringify(body) });
 
 export interface JobStatus {
@@ -115,6 +107,7 @@ export const api = {
   setJobSchedule: (body: { enabled?: boolean; intervalMin?: number }) =>
     request<JobStatus>('/jobs/schedule', { method: 'PUT', ...json(body) }),
   health: () => request<ApiHealth>('/health'),
+  load: () => request<LoadProgress>('/load'),
   findings: (q: FindingsQuery) => request<Page<FindingSummary>>(`/findings${buildQuery({ ...q })}`),
   finding: (id: string) => request<Finding>(`/findings/${encodeURIComponent(id)}`),
   updateStatus: (id: string, body: StatusUpdate) =>
@@ -135,8 +128,6 @@ export const api = {
     request<ThresholdsPreview>('/thresholds/preview', { method: 'POST', ...json({ values }) }),
   evalSet: () => request<EvalItem[]>('/calibration/eval-set'),
 
-  campaigns: (q: CampaignsQuery) => request<Page<CampaignListItem>>(`/campaigns${buildQuery({ ...q })}`),
-  campaign: (id: string) => request<CampaignDetail>(`/campaigns/${encodeURIComponent(id)}`),
   indicator: (type: IndicatorType, value: string) =>
     request<IndicatorFindings>(`/indicators/${type}/${encodeURIComponent(value)}`),
 

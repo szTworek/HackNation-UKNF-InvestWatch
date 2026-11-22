@@ -1,12 +1,13 @@
-import { Accordion, Badge, Box, Button, Grid, Group, Paper, SimpleGrid, Stack, Text, Title } from '@mantine/core';
+import { Alert, Badge, Box, Button, Grid, Group, Paper, SimpleGrid, Stack, Text, Title } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { lazy, Suspense, useMemo, useState } from 'react';
 import { useEvalSet, useSaveThresholds, useThresholds, useThresholdsPreview } from '../api/hooks';
+import type { ModuleId } from '../api/types';
 import { ConfusionMatrix, ThresholdSlider } from '../components/Calibration';
 import { ErrorState, Loading } from '../components/PageState';
 import { fmtInt, fmtPct, fmtProb } from '../lib/format';
-import { thresholdGroup, thresholdLabel, thresholdOrder, SCAM_THRESHOLD_KEY } from '../lib/labels';
+import { thresholdLabel } from '../lib/labels';
 import { metricsAt, prCurve, presetThresholds, seriesFor, thresholdSweep } from '../lib/metrics';
 
 const PrCurve = lazy(() => import('../components/Charts').then((m) => ({ default: m.PrCurve })));
@@ -18,36 +19,36 @@ const PRESETS = [
   { label: 'Mniej fałszywych alarmów', hint: 'wysoka precyzja', beta: 0.5 },
 ];
 
-/** Progi widoczne od razu; reszta w zwiniętych sekcjach. */
-const MAIN_KEYS = [SCAM_THRESHOLD_KEY, 'risk.HIGH', 'risk.CRITICAL', 'risk.MEDIUM'];
+/** Rekord trafia do modułu X, gdy pewność LLM dla X >= próg 'module.MX'. */
+const MODULES: ModuleId[] = [1, 2, 3];
+const KEYS = MODULES.map((m) => `module.M${m}`);
 
-const sameValues = (a: Record<string, number>, b: Record<string, number>) => Object.keys(a).every((k) => Math.abs(a[k] - (b[k] ?? NaN)) < 1e-9);
+const sameValues = (a: Record<string, number>, b: Record<string, number>) => KEYS.every((k) => Math.abs(a[k] - (b[k] ?? NaN)) < 1e-9);
 
 export function Calibration() {
   const thresholds = useThresholds();
   const evalSet = useEvalSet();
   const save = useSaveThresholds();
   const [draft, setDraft] = useState<Record<string, number> | null>(null);
-  const [selected, setSelected] = useState<string>(SCAM_THRESHOLD_KEY);
+  const [selected, setSelected] = useState<string>(KEYS[0]);
 
   const saved = thresholds.data?.values;
   const values = draft ?? saved;
-  const dirtyKeys = useMemo(() => (values && saved ? Object.keys(values).filter((k) => Math.abs(values[k] - saved[k]) > 1e-9) : []), [values, saved]);
+  const dirtyKeys = useMemo(() => (values && saved ? KEYS.filter((k) => Math.abs((values[k] ?? 0) - (saved[k] ?? 0)) > 1e-9) : []), [values, saved]);
   const dirty = dirtyKeys.length > 0;
 
-  const [debounced] = useDebouncedValue(values, 300);
-  const preview = useThresholdsPreview(dirty && debounced ? debounced : null);
-
-  const sorted = (g: string) =>
-    Object.keys(saved ?? {})
-      .filter((k) => thresholdGroup(k) === g)
-      .sort((a, b) => thresholdOrder(a) - thresholdOrder(b));
+  const [debounced] = useDebouncedValue(values, 250);
+  const preview = useThresholdsPreview(debounced ? Object.fromEntries(KEYS.map((k) => [k, debounced[k] ?? 0.5])) : null);
 
   const series = useMemo(() => (evalSet.data ? seriesFor(evalSet.data, selected) : null), [evalSet.data, selected]);
   const curve = useMemo(() => (series ? prCurve(series.scores, series.labels) : []), [series]);
   const sweep = useMemo(() => (series ? thresholdSweep(series.scores, series.labels) : []), [series]);
   const t = values?.[selected] ?? 0.5;
   const m = useMemo(() => (series ? metricsAt(series.scores, series.labels, t) : null), [series, t]);
+  const positives = useMemo(
+    () => Object.fromEntries(KEYS.map((k) => [k, evalSet.data?.filter((it) => it.gold[k] === 1).length ?? 0])),
+    [evalSet.data],
+  );
 
   if (thresholds.isError) return <ErrorState error={thresholds.error} onRetry={() => void thresholds.refetch()} />;
   if (evalSet.isError) return <ErrorState error={evalSet.error} onRetry={() => void evalSet.refetch()} />;
@@ -55,42 +56,32 @@ export function Calibration() {
 
   const setValue = (key: string, v: number) => setDraft({ ...values, [key]: v });
   const applyPreset = (beta: number) => {
-    const next = { ...values, ...presetThresholds(evalSet.data, Object.keys(values), beta) };
+    const next = { ...values, ...presetThresholds(evalSet.data, KEYS, beta) };
     setDraft(sameValues(next, saved) ? null : next);
   };
   const onSave = () =>
-    save.mutate(values, {
+    save.mutate(Object.fromEntries(KEYS.map((k) => [k, values[k]])), {
       onSuccess: (res) => {
         setDraft(null);
-        notifications.show({ color: 'green', title: 'Progi zapisane', message: `Wersja ${res.version}. Poziomy ryzyka zostały przeliczone.` });
+        notifications.show({ color: 'green', title: 'Progi zapisane', message: `Wersja ${res.version}. Moduły rekordów zostały przeliczone.` });
       },
       onError: (e) => notifications.show({ color: 'red', title: 'Nie zapisano progów', message: e.message }),
     });
 
-  const slider = (k: string) => (
-    <ThresholdSlider
-      key={k}
-      id={`thr-${k.replace(/\./g, '-')}`}
-      label={thresholdLabel(k)}
-      value={values[k]}
-      saved={saved[k]}
-      selected={selected === k}
-      onSelect={() => setSelected(k)}
-      onChange={(v) => setValue(k, v)}
-    />
-  );
-
-  const highCrit = (r?: Record<string, number>) => (r ? (r.HIGH ?? 0) + (r.CRITICAL ?? 0) : undefined);
-  const before = highCrit(preview.data?.current);
-  const after = highCrit(preview.data?.proposed);
-  const positives = m.tp + m.fn;
+  const n = evalSet.data.length;
   const flagged = m.tp + m.fp;
-  const flagKeys = sorted('flags');
-  const ctKeys = sorted('contentType');
 
   return (
     <Stack gap="md">
       <Title order={2}>Kalibracja</Title>
+
+      <Alert color="yellow" variant="light" p="xs">
+        <Text size="sm">
+          Rekord trafia do modułu, gdy pewność modelu językowego dla tego modułu jest co najmniej równa progowi. Zbiór testowy ma tylko{' '}
+          {fmtInt(n)} rekordów z ręcznym werdyktem i oceną modelu (pozytywy: {KEYS.map((k) => `${thresholdLabel(k)} ${fmtInt(positives[k])}`).join(', ')}
+          ), więc precyzja i pełność są orientacyjne.
+        </Text>
+      </Alert>
 
       <Paper withBorder p="sm">
         <Group justify="space-between" gap="sm">
@@ -103,15 +94,9 @@ export function Calibration() {
           </Group>
           <Group gap="sm">
             {dirty && (
-              <>
-                <Badge color="orange" variant="light" tt="none">
-                  Niezapisane zmiany: {dirtyKeys.length}
-                </Badge>
-                <Text size="sm">
-                  Wysokie i krytyczne (30 dni):{' '}
-                  {before === undefined || after === undefined ? '…' : <b>{`${fmtInt(before)} → ${fmtInt(after)}`}</b>}
-                </Text>
-              </>
+              <Badge color="orange" variant="light" tt="none">
+                Niezapisane zmiany: {dirtyKeys.length}
+              </Badge>
             )}
             <Button variant="default" size="xs" disabled={!dirty} onClick={() => setDraft(null)}>
               Przywróć
@@ -127,26 +112,49 @@ export function Calibration() {
         <Grid.Col span={{ base: 12, lg: 5 }}>
           <Stack gap="sm">
             <Paper withBorder p="xs">
-              <Stack gap={2}>{MAIN_KEYS.filter((k) => k in values).map(slider)}</Stack>
+              <Stack gap={2}>
+                {KEYS.map((k) => (
+                  <ThresholdSlider
+                    key={k}
+                    id={`thr-${k.replace(/\./g, '-')}`}
+                    label={thresholdLabel(k)}
+                    value={values[k] ?? 0.5}
+                    saved={saved[k] ?? 0.5}
+                    selected={selected === k}
+                    onSelect={() => setSelected(k)}
+                    onChange={(v) => setValue(k, v)}
+                  />
+                ))}
+              </Stack>
             </Paper>
-            <Accordion variant="contained" multiple>
-              <Accordion.Item value="flags">
-                <Accordion.Control>
-                  <Text size="sm">Progi wykrywanych cech ({flagKeys.length})</Text>
-                </Accordion.Control>
-                <Accordion.Panel>
-                  <Stack gap={2}>{flagKeys.map(slider)}</Stack>
-                </Accordion.Panel>
-              </Accordion.Item>
-              <Accordion.Item value="ct">
-                <Accordion.Control>
-                  <Text size="sm">Progi typu treści ({ctKeys.length})</Text>
-                </Accordion.Control>
-                <Accordion.Panel>
-                  <Stack gap={2}>{ctKeys.map(slider)}</Stack>
-                </Accordion.Panel>
-              </Accordion.Item>
-            </Accordion>
+
+            <Paper withBorder p="sm">
+              <Text size="sm" fw={600} mb="xs">
+                Rekordy w module (wszystkie rekordy)
+              </Text>
+              <SimpleGrid cols={3} spacing="xs">
+                {MODULES.map((mod) => {
+                  const before = preview.data?.current[mod];
+                  const after = preview.data?.proposed[mod];
+                  const ev = preview.data?.eval[mod].proposed;
+                  return (
+                    <Box key={mod}>
+                      <Text size="xs" c="dimmed">
+                        {thresholdLabel(`module.M${mod}`)}
+                      </Text>
+                      <Text fz={20} fw={600} c={before !== undefined && after !== before ? 'orange.8' : undefined}>
+                        {before === undefined || after === undefined ? '…' : after === before ? fmtInt(after) : `${fmtInt(before)} → ${fmtInt(after)}`}
+                      </Text>
+                      {ev && (
+                        <Text size="xs" c="dimmed">
+                          FP {fmtInt(ev.fp)} · FN {fmtInt(ev.fn)}
+                        </Text>
+                      )}
+                    </Box>
+                  );
+                })}
+              </SimpleGrid>
+            </Paper>
           </Stack>
         </Grid.Col>
 
@@ -159,9 +167,11 @@ export function Calibration() {
               </Text>
             </Group>
             <Text size="md" mb="md">
-              Na zbiorze testowym ({fmtInt(series.scores.length)} ręcznie ocenionych przykładów) model przy tym progu wskazuje{' '}
-              <b>{fmtInt(m.tp)} z {fmtInt(positives)}</b> prawdziwych przypadków i daje <b>{fmtInt(m.fp)}</b>{' '}
-              {m.fp === 1 ? 'fałszywy alarm' : 'fałszywych alarmów'}
+              Na zbiorze testowym ({fmtInt(series.scores.length)} rekordów) model przy tym progu wskazuje{' '}
+              <b>
+                {fmtInt(m.tp)} z {fmtInt(m.tp + m.fn)}
+              </b>{' '}
+              prawdziwych przypadków, pomija <b>{fmtInt(m.fn)}</b> i daje <b>{fmtInt(m.fp)}</b> {m.fp === 1 ? 'fałszywy alarm' : 'fałszywych alarmów'}
               {flagged ? ` na ${fmtInt(flagged)} zgłoszeń` : ''}.
             </Text>
 

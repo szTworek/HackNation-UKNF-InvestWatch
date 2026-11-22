@@ -86,6 +86,9 @@ jobs:
       - name: npm audit
         working-directory: frontend
         run: npm audit --audit-level=high
+      - name: npm audit (api)
+        working-directory: api
+        run: npm audit --audit-level=high
       - name: pip-audit
         run: |
           (cd ml && uv export --frozen --no-dev --no-hashes --no-emit-project --no-annotate --no-header) \

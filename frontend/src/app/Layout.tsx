@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useEntities, useOverview } from '../api/hooks';
 import { useConnectionState } from '../api/socket';
-import { ConnectionIndicator, DateRangeFilter } from '../components/Header';
+import { AlertBell, ConnectionIndicator, DateRangeFilter, LoadIndicator } from '../components/Header';
 import { JobControl } from '../components/JobControl';
 import { fmtInt } from '../lib/format';
 import { useDateRange, useRangeSearch } from '../lib/url';
@@ -136,6 +136,8 @@ export function Layout() {
               A+
             </button>
             <JobControl />
+            <LoadIndicator />
+            <AlertBell />
             <ConnectionIndicator state={connection} />
           </div>
         </div>

@@ -1,7 +1,7 @@
 """scrape-worker: kolejka przebiegów kolektorów sterowana z aplikacji (przycisk i harmonogram).
 
 Przebieg: kolektory -> adaptery -> pomijanie znanych adresów -> filtr języka -> LLM w ai-service -> gotowe rekordy.
-API pobiera gotowe rekordy przez GET /findings?after=N. Usługa słucha tylko w sieci wewnętrznej Compose.
+Gotowe rekordy trafiają do Postgresa (items + findings), a API pobiera je na bieżąco przez GET /findings?after=N. Usługa słucha tylko w sieci wewnętrznej Compose.
 Rekordy bez oceny LLM (np. po wyczerpaniu limitu) czekają na kolejny przebieg i nie trafiają do aplikacji.
 Meta jest tylko ręczna: kolektor działa przez stronę WWW, a regulamin dopuszcza automatyczne zbieranie wyłącznie przez API.
 """
@@ -21,7 +21,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
 APP = Path(__file__).resolve().parents[1]
-for extra in (APP / "ml/scripts", APP / "scripts", APP / "preprocessing/ocr", APP, APP / "scrapers/poc"):
+for extra in (APP / "db", APP / "ml/scripts", APP / "scripts", APP / "preprocessing/ocr", APP, APP / "scrapers/poc"):
     sys.path.insert(0, str(extra))
 
 JOBS = Path(os.environ.get("JOBS_DIR", "/jobs"))
@@ -134,6 +134,19 @@ def text_of(record: dict) -> str:
     return "\n".join(str(v) for v in t.values()) if isinstance(t, dict) else str(t or "")
 
 
+def persist(record: dict, finding: dict) -> None:
+    """Zapis do Postgresa; bez bazy rekord zostaje tylko w findings.jsonl."""
+    try:
+        import store
+
+        with store.connect() as conn, conn.cursor() as cur:
+            iid = store.upsert_item(cur, record, "worker")
+            store.link_item(cur, iid, record)  # nowy rekord od razu trafia na oś podmiotu
+            store.save_finding(cur, iid, finding)
+    except Exception as e:
+        log(f"Postgres: {type(e).__name__}: {str(e)[:100]}")
+
+
 def classify(records: list[dict], stats: Counter) -> list[dict]:
     """Zapisuje rekordy ocenione przez LLM. Zwraca te, które muszą poczekać."""
     import build_findings as bf
@@ -160,6 +173,7 @@ def classify(records: list[dict], stats: Counter) -> list[dict]:
                 waiting.append(by_url[url])
                 continue
             finding = bf.to_finding(x["item"], analysis, now(), cert, stats)
+            persist(by_url[url], finding)
             with lock, open(OUT, "a", encoding="utf-8") as f:
                 f.write(json.dumps(finding, ensure_ascii=False) + "\n")
                 state["seen"].append(url)

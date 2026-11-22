@@ -6,7 +6,7 @@ import type { SourcePlatform } from '../api/entityTypes';
 import { useEntities, useEntity, useEntityAlerts, useEntityFindings, useEntityPages } from '../api/hooks';
 import { DistributionBars } from '../components/Charts';
 import { FindingsByDayChart, LabeledBars, daysFromFindings } from '../components/EntityCharts';
-import { EntityModuleBadge, RiskMeter, SeverityBadge, pageChanges, shortUrl } from '../components/EntityParts';
+import { AssessmentStatus, EntityModuleBadge, RiskMeter, ShowAllChanges, useChangeFilter, SeverityBadge, pageChanges, shortUrl } from '../components/EntityParts';
 import { ErrorState, Loading } from '../components/PageState';
 import { fmtDate, fmtDateTime, fmtInt, fmtProb } from '../lib/format';
 import { ENTITY_MODULES, ENTITY_MODULE_COLOR, ENTITY_MODULE_LABEL, KNF_CATEGORY_LABEL, SOURCE_PLATFORM_LABEL, ruleModule, ruleText } from '../lib/labels';
@@ -30,10 +30,11 @@ function Report({ id }: { id: string }) {
     return [...m.entries()].sort((a, b) => b[1].n - a[1].n).slice(0, 6);
   }, [findings]);
 
+  const cf = useChangeFilter(pageChanges(pages.data ?? []));
   const e = ent.data;
   if (ent.isError) return <ErrorState error={ent.error} onRetry={() => void ent.refetch()} />;
   if (!e || isLoading || pages.isLoading || alerts.isLoading) return <Loading />;
-  const changes = pageChanges(pages.data ?? []);
+  const changes = cf.shown;
   const noWarn = (pages.data ?? []).filter((p) => p.lastSnapshot && !p.lastSnapshot.riskWarning.present);
   const open = (alerts.data ?? []).filter((a) => a.status === 'new');
 
@@ -197,6 +198,7 @@ function Report({ id }: { id: string }) {
                   <Title order={5} mb="sm">
                     Zmiany stron WWW
                   </Title>
+                  <ShowAllChanges f={cf} />
                   {changes.length ? (
                     <Stack gap={8}>
                       {changes.map((c) => (
@@ -206,14 +208,14 @@ function Report({ id }: { id: string }) {
                           </Text>
                           <Text size="xs" c="dimmed">
                             {shortUrl(c.url)} · {fmtDate(c.detectedAt)}
-                            {c.mock ? ' · atrapa' : ''}
+                            {c.mock ? ' · atrapa' : ''} · <AssessmentStatus a={c.assessment} />
                           </Text>
                         </div>
                       ))}
                     </Stack>
                   ) : (
                     <Text size="sm" c="dimmed">
-                      Brak zmian.
+                      {cf.total ? 'Brak istotnych zmian.' : 'Brak zmian.'}
                     </Text>
                   )}
                   {noWarn.length > 0 && (

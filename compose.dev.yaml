@@ -34,17 +34,18 @@ services:
   api:
     image: investwatch-api:dev
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: api/Dockerfile
       target: dev
     restart: "no"
     read_only: false
-    command: ["npx", "tsx", "watch", "mock-server/server.ts"]
     ports:
       - "127.0.0.1:4000:4000"
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - ./api:/app/api
+      - /app/api/node_modules
+      - ./frontend/src:/app/frontend/src:ro
+      - ./data:/app/data:ro
 
   ai-service:
     image: investwatch-ai-service:dev
