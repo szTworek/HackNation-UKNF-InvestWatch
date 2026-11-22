@@ -1,8 +1,9 @@
 // Powiązania: indeks wskaźników, top 5 powiązanych rekordów, ego-graf i graf kampanii.
 
-import type { Finding, Graph, GraphEdge, GraphEdgeType, GraphNode, Indicator, RelatedFinding } from '../src/api/types';
-import { round3 } from './rng';
-import type { World } from './seed';
+import type { Finding, Graph, GraphEdge, GraphEdgeType, GraphNode, Indicator, RelatedFinding } from '../frontend/src/api/types';
+import type { World } from './real';
+
+const round3 = (x: number) => Math.round(x * 1000) / 1000;
 
 export const MAX_GRAPH_NODES = 300;
 const STOPLIST_DF = 60;
@@ -19,13 +20,6 @@ export function indexFinding(world: World, f: Finding): void {
     }
     set.add(f.id);
   }
-}
-
-function pairSimilarity(a: string, b: string): number {
-  const key = a < b ? a + b : b + a;
-  let h = 2166136261;
-  for (let i = 0; i < key.length; i++) h = Math.imul(h ^ key.charCodeAt(i), 16777619);
-  return 0.84 + ((h >>> 0) % 1000) / 1000 * 0.13;
 }
 
 function indicatorDetail(ind: Indicator): string {
@@ -80,13 +74,6 @@ export function computeRelated(world: World, f: Finding): RelatedFinding[] {
     }
   }
 
-  if (f.campaignId) {
-    for (const id of world.members.get(f.campaignId) ?? []) {
-      const sim = pairSimilarity(f.id, id);
-      consider(id, 'SIMILAR_TEXT', `ten sam szablon tekstu, podobieństwo ${sim.toFixed(2)}`, sim);
-    }
-  }
-
   return [...best.values()].sort((a, b) => b.score - a.score || a.findingId.localeCompare(b.findingId)).slice(0, 5);
 }
 
@@ -107,7 +94,7 @@ class GraphBuilder {
   addFinding(f: Finding): boolean {
     if (this.nodes.has(f.id)) return true;
     if (this.full) return false;
-    this.nodes.set(f.id, { id: f.id, kind: 'finding', label: f.author.handle, scamP: f.scam.p, campaignId: f.campaignId });
+    this.nodes.set(f.id, { id: f.id, kind: 'finding', label: f.author.handle, riskScore: f.riskScore });
     return true;
   }
 
@@ -133,11 +120,7 @@ class GraphBuilder {
       if (node.kind !== 'finding') continue;
       const f = this.world.byId.get(node.id);
       if (!f) continue;
-      const impersonates = f.scam.signals.includes('IMPERSONATION');
-      for (const ind of f.indicators) {
-        const type: GraphEdgeType = ind.type === 'brand' && impersonates ? 'IMPERSONATES' : 'HAS_INDICATOR';
-        this.addEdge(f.id, indKey(ind), type, 1);
-      }
+      for (const ind of f.indicators) this.addEdge(f.id, indKey(ind), 'HAS_INDICATOR', 1);
       for (const r of f.related) {
         if (r.reason === 'SHARES_INDICATOR') continue; // widać to przez węzeł wskaźnika
         this.addEdge(f.id, r.findingId, r.reason, r.score);
@@ -189,18 +172,9 @@ export function egoGraph(world: World, findingId: string, depth: 1 | 2): Graph |
   return g.build();
 }
 
-export function campaignGraph(world: World, campaignId: string): Graph {
-  const g = new GraphBuilder(world);
-  const members = (world.members.get(campaignId) ?? []).map((id) => world.byId.get(id)).filter((f): f is Finding => !!f);
-  for (const f of members) g.addFinding(f);
-  for (const f of members) for (const ind of f.indicators) if (showIndicator(world, ind)) g.addIndicator(ind);
-  g.connect();
-  return g.build();
-}
-
 /**
  * Powyżej limitu węzłów: wskaźniki o stopniu 1 agregowane per typ w jeden węzeł „+N”,
- * a jeśli to nie wystarczy, odrzucane są rekordy z najniższym scam p.
+ * a jeśli to nie wystarczy, odrzucane są rekordy z najniższym wynikiem ryzyka.
  */
 export function limitGraph(graph: Graph, max: number): Graph {
   if (graph.nodes.length <= max) return graph;
@@ -234,7 +208,7 @@ export function limitGraph(graph: Graph, max: number): Graph {
   }
   let kept = nodes;
   if (kept.length > max) {
-    const findings = kept.filter((n) => n.kind === 'finding').sort((a, b) => (b.scamP ?? 0) - (a.scamP ?? 0));
+    const findings = kept.filter((n) => n.kind === 'finding').sort((a, b) => (b.riskScore ?? 0) - (a.riskScore ?? 0));
     const others = kept.filter((n) => n.kind !== 'finding');
     const room = Math.max(0, max - others.length);
     kept = [...findings.slice(0, room), ...others].slice(0, max);

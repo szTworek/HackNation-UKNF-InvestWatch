@@ -4,6 +4,8 @@
 !scrapers
 !scripts/convert_fb_ads_web.py
 !ml/scripts/build_findings.py
+!db
+!ml/src/investwatch_ml/knf_register.json
 scrapers/poc/results
 **/__pycache__
 **/*.pyc

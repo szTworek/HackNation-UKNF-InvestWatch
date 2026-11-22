@@ -1,9 +1,6 @@
 import type {
   ApiHealth,
   BulkStatusUpdate,
-  CampaignDetail,
-  CampaignListItem,
-  CampaignStatus,
   EvalItem,
   Finding,
   FindingSummary,
@@ -90,12 +87,6 @@ export interface DateRange {
   to?: string;
 }
 
-export interface CampaignsQuery extends DateRange {
-  minSize?: number;
-  status?: CampaignStatus[];
-  sort?: string;
-}
-
 const json = (body: unknown): RequestInit => ({ body: JSON.stringify(body) });
 
 export interface JobStatus {
@@ -135,8 +126,6 @@ export const api = {
     request<ThresholdsPreview>('/thresholds/preview', { method: 'POST', ...json({ values }) }),
   evalSet: () => request<EvalItem[]>('/calibration/eval-set'),
 
-  campaigns: (q: CampaignsQuery) => request<Page<CampaignListItem>>(`/campaigns${buildQuery({ ...q })}`),
-  campaign: (id: string) => request<CampaignDetail>(`/campaigns/${encodeURIComponent(id)}`),
   indicator: (type: IndicatorType, value: string) =>
     request<IndicatorFindings>(`/indicators/${type}/${encodeURIComponent(value)}`),
 

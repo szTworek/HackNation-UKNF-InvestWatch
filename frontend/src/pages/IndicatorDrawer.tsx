@@ -4,7 +4,6 @@ import { useIndicator, useThresholds } from '../api/hooks';
 import type { Indicator } from '../api/types';
 import { FindingList } from '../components/FindingsTable';
 import { ErrorState, Loading } from '../components/PageState';
-import { scamThreshold } from '../lib/findings';
 import { fmtInt } from '../lib/format';
 import { INDICATOR_LABEL } from '../lib/labels';
 
@@ -32,7 +31,6 @@ export function IndicatorDrawer({ indicator, onClose }: { indicator: Indicator |
           </Text>
           <FindingList
             items={q.data.findings}
-            scamThreshold={scamThreshold(thresholds.data?.values)}
             onOpen={(id) => {
               onClose();
               navigate(`/findings/${id}`);

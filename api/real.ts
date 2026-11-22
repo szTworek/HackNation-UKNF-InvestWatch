@@ -1,34 +1,29 @@
-// Tryb DATA_MODE=real: świat z findings.real.json (ml/scripts/build_findings.py), wyniki progów z ai-service.
+// Świat w pamięci API: wyniki z Postgresa (db.ts, ładuje go db/load.py), przeliczenia progów z ai-service.
 // Ten moduł niczego nie generuje. Brak danych kończy start serwera błędem.
 
-import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
-import { dirname } from 'node:path';
-import type { Campaign, EvalItem, Evidence, Finding, HistoryEntry, Indicator, RiskLevel, Status, Thresholds } from '../src/api/types';
+import type { EvalItem, Evidence, Finding, HistoryEntry, RiskLevel, Status, Thresholds } from '../frontend/src/api/types';
 import { computeRelated, indexFinding } from './graph';
-import { Rng } from './rng';
-import { defaultThresholdValues } from './scoring';
-import { recomputeCampaign, type World } from './seed';
 
 const AI_TIMEOUT_MS = 120_000;
 
 type StoredFinding = Finding & { scoringInput?: unknown };
 
-interface RealCampaign {
-  id: string;
-  name: string;
-  memberIds?: string[];
-  topIndicators?: Indicator[];
+export interface World {
+  findings: Finding[]; // posortowane malejąco po fetchedAt
+  byId: Map<string, Finding>;
+  index: Map<string, Set<string>>; // `${type}:${value}` -> id rekordów
+  evalSet: EvalItem[];
+  thresholds: Thresholds;
 }
 
-interface RealFile {
+export interface RealFile {
   generatedAt: string;
   modelVersion: string;
   thresholds?: Pick<Thresholds, 'values'> & Partial<Thresholds>;
   findings: StoredFinding[];
-  campaigns?: RealCampaign[];
 }
 
-interface SavedState {
+export interface SavedState {
   statuses?: Record<string, { status: Status; history: HistoryEntry[] }>;
   thresholds?: Thresholds;
 }
@@ -36,7 +31,6 @@ interface SavedState {
 export interface RealData {
   world: World;
   scoringInputs: Map<string, unknown>;
-  certBlocked: Map<string, string[]>;
   savedThresholds?: Thresholds;
   generatedAt: string;
   modelVersion: string;
@@ -48,16 +42,6 @@ export interface RescoreResult {
   modules: Finding['modules'];
   riskScore: number;
   riskLevel: RiskLevel;
-  scam: Finding['scam'];
-}
-
-function readState(path: string): SavedState {
-  if (!existsSync(path)) return {};
-  try {
-    return JSON.parse(readFileSync(path, 'utf8')) as SavedState;
-  } catch (e) {
-    throw new Error(`Nie można odczytać stanu ${path}: ${(e as Error).message}`, { cause: e });
-  }
 }
 
 /** ai-service liczy offsety w znakach Unicode, a JavaScript w jednostkach UTF-16 (emoji zajmuje dwie). */
@@ -86,101 +70,46 @@ function withUtf16Evidence(f: Finding): Finding {
   return { ...f, flags, rules: f.rules.map((r) => ({ ...r, evidence: toUtf16(r.evidence, index) })) };
 }
 
-export function refreshBlockedUrls(real: RealData): void {
-  const scamThreshold = real.world.thresholds.values['scam.p'] ?? 0.6;
-  for (const f of real.world.byId.values()) {
-    const cert = real.certBlocked.get(f.id) ?? [];
-    f.blockedUrls = f.scam.p >= scamThreshold ? [...new Set([f.url, ...f.outboundLinks])] : cert;
-  }
-}
-
-export function loadRealWorld(path: string, statePath: string, now: Date): RealData {
-  if (!existsSync(path)) {
-    throw new Error(`DATA_MODE=real: brak pliku ${path}. Zbuduj go poleceniem: python ml/scripts/build_findings.py`);
-  }
-  let file: RealFile;
-  try {
-    file = JSON.parse(readFileSync(path, 'utf8')) as RealFile;
-  } catch (e) {
-    throw new Error(`DATA_MODE=real: nieprawidłowy plik ${path}: ${(e as Error).message}`, { cause: e });
-  }
-  if (!Array.isArray(file.findings) || file.findings.length === 0) {
-    throw new Error(`DATA_MODE=real: plik ${path} nie zawiera rekordów`);
+export function loadRealWorld(file: RealFile, state: SavedState, now: Date): RealData {
+  if (file.findings.length === 0) {
+    throw new Error('Baza nie zawiera rekordów. Załaduj ją: docker compose run --rm loader');
   }
 
-  const state = readState(statePath);
   const scoringInputs = new Map<string, unknown>();
-  const certBlocked = new Map<string, string[]>();
   const all: Finding[] = file.findings.map(({ scoringInput, ...f }) => {
     if (scoringInput !== undefined) scoringInputs.set(f.id, scoringInput);
-    certBlocked.set(f.id, f.blockedUrls ?? []);
     const saved = state.statuses?.[f.id];
     return withUtf16Evidence(saved ? { ...f, status: saved.status, history: saved.history } : f);
   });
   all.sort((a, b) => b.fetchedAt.localeCompare(a.fetchedAt));
 
-  const campaigns = file.campaigns ?? [];
   const world: World = {
-    rng: new Rng(0),
-    seq: all.length,
     findings: all,
     byId: new Map(all.map((f) => [f.id, f])),
     index: new Map(),
-    members: new Map(),
-    campaigns: new Map(),
-    defs: new Map(campaigns.map((c) => [c.id, { name: c.name, status: 'ACTIVE' as Campaign['status'] }])),
     evalSet: [],
     thresholds: {
       version: 'v1',
       updatedAt: file.generatedAt ?? now.toISOString(),
-      values: file.thresholds?.values ?? defaultThresholdValues(),
+      values: file.thresholds?.values ?? {},
     },
   };
-  for (const f of world.findings) {
-    indexFinding(world, f);
-    if (f.campaignId) world.members.set(f.campaignId, [...(world.members.get(f.campaignId) ?? []), f.id]);
-  }
-  for (const c of campaigns) recomputeCampaign(world, c.id);
-
-  const real: RealData = {
-    world,
-    scoringInputs,
-    certBlocked,
-    savedThresholds: state.thresholds,
-    generatedAt: file.generatedAt,
-    modelVersion: file.modelVersion,
-  };
-  refreshBlockedUrls(real);
-  return real;
+  for (const f of world.findings) indexFinding(world, f);
+  return { world, scoringInputs, savedThresholds: state.thresholds, generatedAt: file.generatedAt, modelVersion: file.modelVersion };
 }
 
-/** Rekord z przebiegu scrape-workera. Znany adres jest pomijany, a zapisany status analityka zostaje. */
-export function addRealFinding(real: RealData, raw: StoredFinding, statePath: string): Finding | null {
+/** Rekord z przebiegu scrape-workera (worker zapisał go już w Postgresie). Znany adres jest pomijany. */
+export function addRealFinding(real: RealData, raw: StoredFinding): Finding | null {
   const { world } = real;
   if (world.byId.has(raw.id) || world.findings.some((x) => x.url === raw.url)) return null;
   const { scoringInput, ...rest } = raw;
   if (scoringInput !== undefined) real.scoringInputs.set(rest.id, scoringInput);
-  real.certBlocked.set(rest.id, rest.blockedUrls ?? []);
-  const saved = readState(statePath).statuses?.[rest.id];
-  const f = withUtf16Evidence(saved ? { ...rest, status: saved.status, history: saved.history } : rest);
+  const f = withUtf16Evidence(rest);
   world.findings.unshift(f);
   world.byId.set(f.id, f);
-  world.seq += 1;
   indexFinding(world, f);
   f.related = computeRelated(world, f);
   return f;
-}
-
-export function saveState(path: string, real: RealData): void {
-  const statuses: NonNullable<SavedState['statuses']> = {};
-  for (const f of real.world.byId.values()) {
-    if (f.status !== 'NEW' || f.history.some((h) => h.user !== 'system')) statuses[f.id] = { status: f.status, history: f.history };
-  }
-  const body: SavedState = { statuses, thresholds: real.world.thresholds };
-  mkdirSync(dirname(path), { recursive: true });
-  const tmp = `${path}.${process.pid}.tmp`;
-  writeFileSync(tmp, JSON.stringify(body));
-  renameSync(tmp, path);
 }
 
 async function postAi<T>(url: string, body: unknown): Promise<T> {
@@ -218,10 +147,8 @@ export function applyRescore(real: RealData, results: Map<string, RescoreResult>
     const rules = r.rules.map((rule) => ({ ...rule, evidence: toUtf16(rule.evidence, index) }));
     // rekord oceniony przez LLM (ml/scripts/merge_llm.py): moduł, ryzyko i reguły zostają z LLM
     if ((f as { llm?: unknown }).llm !== undefined) continue;
-    Object.assign(f, { rules, modules: r.modules, riskScore: r.riskScore, riskLevel: r.riskLevel, scam: r.scam });
+    Object.assign(f, { rules, modules: r.modules, riskScore: r.riskScore, riskLevel: r.riskLevel });
   }
-  refreshBlockedUrls(real);
-  for (const id of real.world.campaigns.keys()) recomputeCampaign(real.world, id);
 }
 
 export async function fetchEvalSet(aiUrl: string): Promise<EvalItem[]> {

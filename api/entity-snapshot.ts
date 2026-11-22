@@ -1,32 +1,17 @@
-// Buduje mock-server/entities.snapshot.json: oś podmiotu (rejestr KNF) + zebrane rekordy.
-// Źródła (prawdziwe pliki repo):
-//   - data/entity_fixtures.json: wynik app/backend/scripts/build_fixtures.py
-//     (data/export/*/records.jsonl, data/monitor/*, linkowanie z app/backend/inwestwatch_api/entities.py,
-//     klasyfikator słownikowy mock-v0),
-//   - rejestr KNF: ../data/knf_entities.json (760 wpisów), uzupełniany z ml/src/investwatch_ml/knf_register.json.
-// Uruchom: npm run entities:build
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+// Mapowanie danych osi podmiotu (kształt data/entity_fixtures.json, snake_case) na kontrakt UI (src/api/entityTypes.ts).
+// Używają go: build-entities.ts (plik entities.snapshot.json dla DATA_MODE=mock) i db.ts (DATA_MODE=real, dane z Postgresa).
 import type {
   EntityAlert,
   EntityFinding,
   EntityItem,
   EntityModule,
-  KnfCategory,
   KnfEntity,
   KnfEntityDetail,
   LegibilityCheck,
   PageChange,
   PageSnapshot,
   RegistryEntry,
-} from '../src/api/entityTypes';
-
-const FRONT = process.cwd();
-const REPO = join(FRONT, '..');
-const FIXTURES = process.env.ENTITY_FIXTURES ?? join(REPO, 'data', 'entity_fixtures.json');
-const KNF_FULL = process.env.KNF_FILE ?? join(REPO, '..', 'data', 'knf_entities.json');
-const KNF_ML = join(REPO, 'ml', 'src', 'investwatch_ml', 'knf_register.json');
-const OUT = join(FRONT, 'mock-server', 'entities.snapshot.json');
+} from '../frontend/src/api/entityTypes';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Raw = Record<string, any>;
@@ -75,7 +60,7 @@ const PAGE_LABEL_PL: Record<string, string> = {
   'Interest on balance (promo)': 'Oprocentowanie salda (promocja)',
   Fees: 'Opłaty',
   Crypto: 'Kryptowaluty',
-  'General risk disclosure': 'Ogólne ujawnienie ryzyka',
+  'General risk disclosure': 'Ogólna informacja o ryzyku',
   'Crypto CFD': 'CFD na kryptowaluty',
   'Promotion (Chicago Bulls)': 'Promocja (Chicago Bulls)',
   'Disclosures / legal': 'Dokumenty prawne',
@@ -110,15 +95,6 @@ function summaryPl(s: string): string {
   return s.replace(/(\d+) lines? added, (\d+) removed(?:, (\d+) style changes)?/g, (_m, a, r, st) => `+${a} / −${r} linii${st ? `, ${st} zmian stylu` : ''}`);
 }
 
-const LIST_CATEGORY: Record<string, KnfCategory> = {
-  BROKERAGE_HOUSE: 'domy_maklerskie',
-  BANK: 'banki_maklerskie',
-  FOREIGN_BRANCH: 'zagraniczne_oddzialy',
-  CROSS_BORDER: 'zagraniczne_bez_oddzialu',
-};
-
-const read = (p: string): Raw => JSON.parse(readFileSync(p, 'utf8'));
-
 function slug(s: string): string {
   return (
     s
@@ -130,44 +106,8 @@ function slug(s: string): string {
   );
 }
 
-function loadRegistry(): { entries: RegistryEntry[]; source: string } {
-  const ml = read(KNF_ML).entities as Raw[];
-  const mlByName = new Map(ml.map((r) => [String(r.name), r]));
-  if (existsSync(KNF_FULL)) {
-    const rows = read(KNF_FULL) as unknown as Raw[];
-    const entries = rows.map((r): RegistryEntry => {
-      const m = mlByName.get(r.name);
-      return {
-        name: r.name,
-        aliases: r.aliases?.length ? r.aliases : (m?.aliases ?? []),
-        category: r.category,
-        country: r.country,
-        supervisor: m?.supervisor ?? null,
-        registeredAt: r.details?.['Data zezwolenia'] ?? m?.registeredAt ?? null,
-        address: r.address ?? null,
-        sourceUrl: r.source_url ?? null,
-      };
-    });
-    return { entries, source: 'data/knf_entities.json' };
-  }
-  const entries = ml.map(
-    (r): RegistryEntry => ({
-      name: r.name,
-      aliases: r.aliases ?? [],
-      category: LIST_CATEGORY[(r.lists as string[]).find((l) => l !== 'CROSS_BORDER') ?? 'CROSS_BORDER'] ?? 'zagraniczne_bez_oddzialu',
-      country: r.country,
-      supervisor: r.supervisor ?? null,
-      registeredAt: r.registeredAt ?? null,
-      address: null,
-      sourceUrl: null,
-    }),
-  );
-  return { entries, source: 'ml/src/investwatch_ml/knf_register.json' };
-}
-
-function main(): void {
-  const fx = read(FIXTURES);
-  const { entries, source } = loadRegistry();
+/** `mock`: wyniki i alerty z klasyfikatora mock-v0 (plik fixtures), w danych z Postgresa false. */
+export function buildSnapshot(fx: Raw, entries: RegistryEntry[], source: string, fixtures: string, mock: boolean) {
   const byName = new Map(entries.map((e) => [e.name, e]));
 
   const findings: EntityFinding[] = (fx.findings as Raw[]).map((f) => ({
@@ -186,8 +126,8 @@ function main(): void {
     })),
     model: f.model,
     createdAt: f.created_at,
-    // klasyfikator to atrapa LLM (reguły słownikowe), a daty wyników rozłożone na 30 dni
-    mock: true,
+    // mock-v0 z pliku fixtures: atrapa LLM (reguły słownikowe), daty wyników rozłożone na 30 dni
+    mock,
   }));
 
   const items: EntityItem[] = (fx.items as Raw[]).map((i) => ({
@@ -314,7 +254,7 @@ function main(): void {
       title,
       ref: { findingId: a.ref.finding_id, changeId: a.ref.change_id, itemId: findingById.get(a.ref.finding_id)?.itemId ?? null },
       status: a.status,
-      mock: true,
+      mock,
     };
   });
 
@@ -373,7 +313,7 @@ function main(): void {
   const ov = fx.overview as Raw;
   const snapshot = {
     generatedAt: fx.generated_at as string,
-    sources: { fixtures: 'data/entity_fixtures.json', registry: source, registryEntries: entries.length },
+    sources: { fixtures, registry: source, registryEntries: entries.length },
     entities: [...withData, ...rest],
     items,
     findings,
@@ -384,11 +324,5 @@ function main(): void {
     findingsByDay: ov.findings_by_day,
     itemsByPlatform: ov.items_by_platform,
   };
-  writeFileSync(OUT, JSON.stringify(snapshot));
-  process.stdout.write(
-    `entities.snapshot.json: ${snapshot.entities.length} podmiotów (${withData.length} z danymi, rejestr ${entries.length} z ${source}), ` +
-      `${items.length} rekordów, ${findings.length} wyników, ${pages.length} stron, ${changes.length} zmian, ${alerts.length} alertów\n`,
-  );
+  return snapshot;
 }
-
-main();

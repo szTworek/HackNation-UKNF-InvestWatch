@@ -15,7 +15,7 @@ from typing import Any
 from fastapi import FastAPI
 from pydantic import BaseModel, ConfigDict, Field
 
-from . import campaigns, heuristics, indicators, ingest, knf, language, llm, scoring
+from . import campaigns, change_assess, heuristics, indicators, ingest, knf, language, llm, scoring
 from .text import normalize
 
 import json
@@ -112,6 +112,28 @@ class MediaRequest(BaseModel):
 class ExplainRequest(BaseModel):
     itemId: str
     scoringInput: ScoringInput | None = None
+
+
+class StyleChange(BaseModel):
+    model_config = ConfigDict(extra="allow")  # contrast_*, rel_size_* z pomiaru czytelności
+    text: str = ""
+    viewport: str | None = None
+    field: str
+    before: Any = None
+    after: Any = None
+
+
+class PageChange(BaseModel):
+    id: str
+    entity_id: str | None = None
+    url: str | None = None
+    added_lines: list[str] = Field(default_factory=list)
+    removed_lines: list[str] = Field(default_factory=list)
+    style_changes: list[StyleChange] = Field(default_factory=list)
+
+
+class ChangesRequest(BaseModel):
+    changes: list[PageChange]
 
 
 def _full_text(it: Item) -> str:
@@ -211,6 +233,13 @@ def triage(req: ItemsRequest) -> dict[str, Any]:
 @app.post("/analyze")
 def analyze(req: ItemsRequest) -> dict[str, Any]:
     return {"results": _with_llm(req.items)}
+
+
+@app.post("/assess/change")
+def assess_change(req: ChangesRequest) -> dict[str, Any]:
+    """Ocena LLM zmian stron; assessment=null, gdy LLM wyłączony lub zawiódł (zmiana zostaje oczekująca)."""
+    got = change_assess.assess([c.model_dump() for c in req.changes])
+    return {"results": [{"id": c.id, "assessment": got.get(c.id)} for c in req.changes]}
 
 
 class LanguageRequest(BaseModel):

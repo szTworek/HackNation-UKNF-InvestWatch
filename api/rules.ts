@@ -1,4 +1,4 @@
-import type { RuleDef } from '../src/api/types';
+import type { RuleDef } from '../frontend/src/api/types';
 
 // 18 reguł z „ZASÓB DLA UCZESTNIKÓW – kryteria oceny informacji o ryzyku” + reguły modułów 1 i 3.
 export const RULES: RuleDef[] = [

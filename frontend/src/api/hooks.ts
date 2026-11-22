@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api, type CampaignsQuery, type DateRange } from './client';
+import { api, type DateRange } from './client';
 import type { BulkStatusUpdate, Finding, FindingsQuery, IndicatorType, Status, TimeseriesGroupBy } from './types';
 
 export const qk = {
@@ -13,8 +13,6 @@ export const qk = {
   thresholds: ['thresholds'] as const,
   preview: (v: Record<string, number>) => ['thresholdsPreview', v] as const,
   evalSet: ['evalSet'] as const,
-  campaigns: (q: CampaignsQuery) => ['campaigns', q] as const,
-  campaign: (id: string) => ['campaign', id] as const,
   indicator: (t: IndicatorType, v: string) => ['indicator', t, v] as const,
 };
 
@@ -72,14 +70,6 @@ export function useEvalSet() {
   return useQuery({ queryKey: qk.evalSet, queryFn: api.evalSet, staleTime: Infinity });
 }
 
-export function useCampaigns(q: CampaignsQuery) {
-  return useQuery({ queryKey: qk.campaigns(q), queryFn: () => api.campaigns(q), placeholderData: keepPreviousData });
-}
-
-export function useCampaign(id: string | undefined) {
-  return useQuery({ queryKey: qk.campaign(id ?? ''), queryFn: () => api.campaign(id ?? ''), enabled: !!id });
-}
-
 export function useIndicator(type: IndicatorType | undefined, value: string | undefined) {
   return useQuery({
     queryKey: qk.indicator(type ?? 'domain', value ?? ''),
@@ -88,15 +78,13 @@ export function useIndicator(type: IndicatorType | undefined, value: string | un
   });
 }
 
-/** Po zmianie statusu odświeżamy listy, statystyki i kampanie; sam rekord podmieniamy w cache. */
+/** Po zmianie statusu odświeżamy listy i statystyki; sam rekord podmieniamy w cache. */
 function useInvalidateAfterStatus() {
   const qc = useQueryClient();
   return (updated: Finding[]) => {
     for (const f of updated) qc.setQueryData(qk.finding(f.id), f);
     void qc.invalidateQueries({ queryKey: ['findings'] });
     void qc.invalidateQueries({ queryKey: ['overview'] });
-    void qc.invalidateQueries({ queryKey: ['campaigns'] });
-    void qc.invalidateQueries({ queryKey: ['campaign'] });
     void qc.invalidateQueries({ queryKey: ['indicator'] });
     void qc.invalidateQueries({ queryKey: ['history'] });
   };

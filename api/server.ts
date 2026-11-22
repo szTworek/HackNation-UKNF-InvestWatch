@@ -1,7 +1,6 @@
-// Mock serwer InvestWatch = kontrakt API dla backendu (docs/frontend-agent.md, sekcja 4).
+// API InvestWatch (kontrakt: docs/frontend-agent.md, sekcja 4). DATA_MODE=real: Postgres + MinIO, mock: generator w pamięci.
 
 import { createServer } from 'node:http';
-import { join } from 'node:path';
 import express, { type Request, type Response } from 'express';
 import { Server } from 'socket.io';
 import type {
@@ -26,7 +25,7 @@ import type {
   ThresholdsPreview,
   Timeseries,
   TimeseriesGroupBy,
-} from '../src/api/types';
+} from '../frontend/src/api/types';
 import {
   CONTENT_TYPES,
   PLATFORMS,
@@ -36,8 +35,9 @@ import {
   RISK_LEVELS,
   STATUSES,
   STATUS_LABEL,
-} from '../src/lib/labels';
-import { registerEntityRoutes } from './entities';
+} from '../frontend/src/lib/labels';
+import { loadEntitySnapshot, loadRealFile, saveStatuses, saveThresholds } from './db';
+import { readSnapshotFile, registerEntityRoutes } from './entities';
 import { frameSvg, landingSvg } from './enrich';
 import { campaignGraph, egoGraph } from './graph';
 import { RULES } from './rules';
@@ -49,7 +49,6 @@ import {
   loadRealWorld,
   type RealData,
   rescoreViaAi,
-  saveState,
 } from './real';
 import { applyThresholds, createWorld, recomputeCampaign, type World } from './seed';
 
@@ -59,11 +58,11 @@ try {
   // brak .env – zostają wartości domyślne
 }
 
-const PORT = Number(process.env.MOCK_PORT ?? 4000);
+const PORT = Number(process.env.API_PORT ?? 4000);
 const SEED = Number(process.env.MOCK_SEED ?? 42);
-const CORS_ORIGIN = process.env.MOCK_CORS_ORIGIN ?? '*';
+const CORS_ORIGIN = process.env.CORS_ORIGIN ?? '*';
 
-const log = (msg: string) => process.stdout.write(`[mock] ${msg}\n`);
+const log = (msg: string) => process.stdout.write(`[api] ${msg}\n`);
 
 const DATA_MODE = process.env.DATA_MODE ?? 'mock';
 if (DATA_MODE !== 'mock' && DATA_MODE !== 'real') {
@@ -71,22 +70,10 @@ if (DATA_MODE !== 'mock' && DATA_MODE !== 'real') {
   process.exit(1);
 }
 const AI_URL = (process.env.AI_URL ?? 'http://localhost:8000').replace(/\/$/, '');
-const DATA_DIR = join(process.cwd(), 'mock-server', 'data');
-const REAL_PATH = process.env.REAL_DATA_PATH ?? join(DATA_DIR, 'findings.real.json');
-const STATE_PATH = process.env.STATE_PATH ?? join(DATA_DIR, 'state.json');
 
-function loadReal(): RealData | null {
-  if (DATA_MODE !== 'real') return null;
-  try {
-    return loadRealWorld(REAL_PATH, STATE_PATH, new Date());
-  } catch (e) {
-    process.stderr.write(`[api] ${(e as Error).message}\n`);
-    process.exit(1);
-  }
-}
-
-const real = loadReal();
-const world: World = real?.world ?? createWorld(SEED, new Date());
+// Wypełniane w start(): w trybie real z Postgresa, w trybie mock z generatora.
+let real: RealData | null = null;
+let world!: World;
 const DAY = 24 * 3600 * 1000;
 
 // ---------------------------------------------------------------------------
@@ -340,7 +327,7 @@ async function pullJobFindings(data: RealData): Promise<void> {
       const page = (await r.json()) as { items: Parameters<typeof addRealFinding>[1][]; next: number };
       if (!page.items.length) return;
       let added = 0;
-      for (const item of page.items) if (addRealFinding(data, item, STATE_PATH)) added += 1;
+      for (const item of page.items) if (addRealFinding(data, item)) added += 1;
       jobCursor = page.next;
       if (added) log(`job: dodano ${added} rekordów`);
     }
@@ -373,11 +360,20 @@ function updateStatus(f: Finding, status: Status, comment: string | undefined): 
   return f;
 }
 
-function persistState(): void {
-  if (real) saveState(STATE_PATH, real);
+/** Tryb real: status i wpis historii trafiają do Postgresa przed odpowiedzią. */
+async function persistStatuses(updated: Finding[], res: Response): Promise<boolean> {
+  if (!real || !updated.length) return true;
+  try {
+    await saveStatuses(updated.map((f) => ({ id: f.id, entry: f.history[f.history.length - 1] })));
+    return true;
+  } catch (e) {
+    log(`postgres: ${(e as Error).message}`);
+    res.status(503).json({ error: 'Baza danych jest niedostępna, status nie został zapisany' });
+    return false;
+  }
 }
 
-app.patch('/api/findings/status', (req, res) => {
+app.patch('/api/findings/status', async (req, res) => {
   const body = req.body as Partial<BulkStatusUpdate>;
   if (!Array.isArray(body.ids) || !STATUSES.includes(body.status as Status)) {
     res.status(400).json({ error: 'Wymagane: ids[], status' });
@@ -388,9 +384,9 @@ app.patch('/api/findings/status', (req, res) => {
     const f = world.byId.get(String(id));
     if (!f) continue;
     updated.push(updateStatus(f, body.status as Status, body.comment));
-    io.emit('finding:updated', f);
   }
-  persistState();
+  if (!(await persistStatuses(updated, res))) return;
+  for (const f of updated) io.emit('finding:updated', f);
   res.json({ items: updated });
 });
 
@@ -400,7 +396,7 @@ app.get('/api/findings/:id', (req, res) => {
   res.json(f);
 });
 
-app.patch('/api/findings/:id/status', (req, res) => {
+app.patch('/api/findings/:id/status', async (req, res) => {
   const f = world.byId.get(req.params.id);
   if (!f) return void notFound(res, 'Nie ma takiego rekordu');
   const { status, comment } = req.body as { status?: Status; comment?: string };
@@ -409,7 +405,7 @@ app.patch('/api/findings/:id/status', (req, res) => {
     return;
   }
   updateStatus(f, status, comment);
-  persistState();
+  if (!(await persistStatuses([f], res))) return;
   io.emit('finding:updated', f);
   res.json(f);
 });
@@ -548,7 +544,10 @@ async function saveRealThresholds(data: RealData, values: Record<string, number>
     const n = Number(world.thresholds.version.replace(/\D/g, '')) || 1;
     world.thresholds = { version: `v${n + 1}`, updatedAt: new Date().toISOString(), values: proposed };
     applyRescore(data, results);
-    saveState(STATE_PATH, data);
+    await saveThresholds(
+      world.thresholds,
+      world.findings.map((f) => ({ id: f.id, modules: f.modules, risk_score: f.riskScore, risk_level: f.riskLevel, scam_p: f.scam.p })),
+    );
   } catch (e) {
     return aiUnavailable(res, e);
   }
@@ -722,13 +721,6 @@ app.get('/api/assets/frame/:id/:file', (req, res) => {
   res.send(frameSvg(frame.ocrText, frame.t));
 });
 
-const entityCount = registerEntityRoutes(app);
-log(`podmioty: ${entityCount} (rejestr KNF + snapshot rekordów)`);
-
-app.use('/api', (_req, res) => {
-  notFound(res, 'Nieznany endpoint');
-});
-
 // ---------------------------------------------------------------------------
 // Socket.io + emisja nowych rekordów
 // ---------------------------------------------------------------------------
@@ -759,13 +751,29 @@ async function restoreThresholds(data: RealData): Promise<void> {
 }
 
 async function start(): Promise<void> {
-  if (real) await restoreThresholds(real);
+  try {
+    if (DATA_MODE === 'real') {
+      const { file, state } = await loadRealFile();
+      real = loadRealWorld(file, state, new Date());
+    }
+    world = real?.world ?? createWorld(SEED, new Date());
+    const entityCount = registerEntityRoutes(app, DATA_MODE === 'real' ? await loadEntitySnapshot() : readSnapshotFile(), DATA_MODE === 'real');
+    log(`podmioty: ${entityCount} (rejestr KNF + rekordy, źródło: ${DATA_MODE === 'real' ? 'Postgres' : 'entities.snapshot.json'})`);
+  } catch (e) {
+    process.stderr.write(`[api] ${(e as Error).message}\n`);
+    process.exit(1);
+  }
+  app.use('/api', (_req, res) => {
+    notFound(res, 'Nieznany endpoint');
+  });
+  const data = real;
+  if (data) await restoreThresholds(data);
   httpServer.listen(PORT, () => {
     log(`API: http://localhost:${PORT}/api, tryb ${DATA_MODE}, ${world.findings.length} rekordów, ${world.campaigns.size} kampanii`);
-    if (real) {
-      log(`dane z ${real.generatedAt}, model ${real.modelVersion}`);
-      void pullJobFindings(real);
-      setInterval(() => void pullJobFindings(real), 5000).unref();
+    if (data) {
+      log(`dane z ${data.generatedAt}, model ${data.modelVersion}`);
+      void pullJobFindings(data);
+      setInterval(() => void pullJobFindings(data), 5000).unref();
     }
   });
 }

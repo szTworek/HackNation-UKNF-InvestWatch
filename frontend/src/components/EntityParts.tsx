@@ -354,9 +354,9 @@ export function ItemView({ id, focusFinding }: { id: string; focusFinding: strin
             {lg?.dominantLinePx != null && (
               <Text size="xs">Dominująca wysokość linii na grafice: {lg.dominantLinePx} px</Text>
             )}
-            {lg && <Text size="xs">Ujawnienie w tekście opisu: {lg.disclosureInText ? 'tak' : 'nie'}</Text>}
+            {lg && <Text size="xs">Oznaczenie w tekście opisu: {lg.disclosureInText ? 'tak' : 'nie'}</Text>}
             {lg?.disclosureOnImage != null && (
-              <Text size="xs">Ujawnienie na grafice: {lg.disclosureOnImage ? 'tak' : 'nie'}</Text>
+              <Text size="xs">Oznaczenie na grafice: {lg.disclosureOnImage ? 'tak' : 'nie'}</Text>
             )}
           </Stack>
           {ocrLines.length > 0 && (
@@ -368,7 +368,7 @@ export function ItemView({ id, focusFinding }: { id: string; focusFinding: strin
                   <Table.Th>Wysokość</Table.Th>
                   <Table.Th>Względem dominującej</Table.Th>
                   <Table.Th>Kontrast</Table.Th>
-                  <Table.Th>Ujawnienie</Table.Th>
+                  <Table.Th>Oznaczenie</Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>

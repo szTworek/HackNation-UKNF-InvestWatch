@@ -1,9 +1,6 @@
 import { Badge, Group, Tooltip } from '@mantine/core';
-import type { CampaignStatus, ModuleId, RegisterStatus, RiskLevel, Status } from '../api/types';
-import { fmtProb } from '../lib/format';
+import type { ModuleId, RegisterStatus, RiskLevel, Status } from '../api/types';
 import {
-  CAMPAIGN_STATUS_COLOR,
-  CAMPAIGN_STATUS_LABEL,
   MODULE_LABEL,
   MODULE_SHORT,
   REGISTER_COLOR,
@@ -47,30 +44,10 @@ export function ModuleBadges({ modules, size = 'sm' }: { modules: ModuleId[]; si
   );
 }
 
-/** Scam p: wyróżniony, gdy przekracza próg. */
-export function ScamBadge({ p, threshold, size = 'sm' }: { p: number; threshold: number; size?: Size }) {
-  const hit = p >= threshold;
-  return (
-    <Tooltip label={hit ? `Podejrzenie oszustwa (próg ${fmtProb(threshold)})` : `Poniżej progu ${fmtProb(threshold)}`} withArrow>
-      <Badge size={size} color={hit ? 'red' : 'gray'} variant={hit ? 'filled' : 'light'} radius="sm">
-        {fmtProb(p)}
-      </Badge>
-    </Tooltip>
-  );
-}
-
 export function RegisterBadge({ status, size = 'sm' }: { status: RegisterStatus; size?: Size }) {
   return (
     <Badge color={REGISTER_COLOR[status]} variant="light" size={size}>
       {REGISTER_LABEL[status]}
-    </Badge>
-  );
-}
-
-export function CampaignStatusBadge({ status, size = 'sm' }: { status: CampaignStatus; size?: Size }) {
-  return (
-    <Badge color={CAMPAIGN_STATUS_COLOR[status]} variant="light" size={size}>
-      {CAMPAIGN_STATUS_LABEL[status]}
     </Badge>
   );
 }

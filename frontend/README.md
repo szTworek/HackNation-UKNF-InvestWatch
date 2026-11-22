@@ -24,9 +24,9 @@ Node.js 20.19+ (testowane na 24), npm 10+. Docker do obrazów. Przeglądarka: Ch
 |---|---|---|
 | `VITE_API_URL` | `http://localhost:4000/api` | adres REST (wkompilowany przy buildzie) |
 | `VITE_WS_URL` | `http://localhost:4000` | adres socket.io (synchronizacja statusów i progów) |
-| `MOCK_PORT` | `4000` | port mocka |
+| `API_PORT` | `4000` | port mocka |
 | `MOCK_SEED` | `42` | seed generatora danych |
-| `MOCK_CORS_ORIGIN` | `*` | CORS mocka |
+| `CORS_ORIGIN` | `*` | CORS mocka |
 
 Przełączenie na prawdziwy backend: zmiana `VITE_API_URL` i `VITE_WS_URL`.
 

@@ -1,5 +1,5 @@
 // Oś podmiotu: endpointy /api/entities*, /api/items/:id, /api/changes/:id, /api/entity-stats/overview.
-// Dane z entities.snapshot.json (npm run entities:build). Rekordy, strony i rejestr są prawdziwe;
+// Dane: DATA_MODE=real z Postgresa (db.ts), DATA_MODE=mock z entities.snapshot.json (npm run entities:build). Rekordy, strony i rejestr są prawdziwe;
 // wyniki klasyfikatora (mock-v0) i część historii stron to atrapy oznaczone `mock: true`.
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -16,9 +16,10 @@ import type {
   MonitoredPage,
   PageChange,
   PageSnapshot,
-} from '../src/api/entityTypes';
+} from '../frontend/src/api/entityTypes';
+import { objectProxy } from './db';
 
-interface Snapshot {
+export interface Snapshot {
   generatedAt: string;
   sources: { registryEntries: number };
   entities: KnfEntityDetail[];
@@ -34,8 +35,12 @@ interface Snapshot {
 
 const MODULES: EntityModule[] = ['M1', 'M2', 'M3'];
 
-export function registerEntityRoutes(app: Express, path = join(process.cwd(), 'mock-server', 'entities.snapshot.json')): number {
-  const s = JSON.parse(readFileSync(path, 'utf8')) as Snapshot;
+export function readSnapshotFile(path = join(process.cwd(), 'entities.snapshot.json')): Snapshot {
+  return JSON.parse(readFileSync(path, 'utf8')) as Snapshot;
+}
+
+/** `fromStorage`: zrzuty stron i grafiki z MinIO (tryb real), w trybie mock z plików repo. */
+export function registerEntityRoutes(app: Express, s: Snapshot, fromStorage: boolean): number {
   const entityById = new Map(s.entities.map((e) => [e.id, e]));
   const itemById = new Map(s.items.map((i) => [i.id, i]));
   const findingsByItem = new Map<string, EntityFinding[]>();
@@ -104,8 +109,13 @@ export function registerEntityRoutes(app: Express, path = join(process.cwd(), 'm
     res.json(withFindings(it));
   });
 
-  app.use('/api/screens', express.static(join(process.cwd(), '..', 'data', 'monitor', 'screens')));
-  app.use('/api/media', express.static(join(process.cwd(), '..', 'data', 'media')));
+  if (fromStorage) {
+    app.get('/api/screens/:key', objectProxy('screens'));
+    app.get('/api/media/:key', objectProxy('media'));
+  } else {
+    app.use('/api/screens', express.static(join(process.cwd(), '..', 'data', 'monitor', 'screens')));
+    app.use('/api/media', express.static(join(process.cwd(), '..', 'data', 'media')));
+  }
 
   app.get('/api/changes/:id', (req, res) => {
     const c = s.changes.find((x) => x.id === req.params.id);

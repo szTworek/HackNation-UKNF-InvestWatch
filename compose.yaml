@@ -1,4 +1,5 @@
 # Cały stack ze źródeł: docker compose up -d --build, potem http://localhost:8080
+# Dane: Postgres (rekordy, wyniki, statusy, progi, podmioty) + MinIO (grafiki, zrzuty stron); ładuje je usługa loader przy każdym up.
 # Kolektory (profil jobs) są jednorazowe: docker compose run --rm --build collector youtube_posts forex
 # Weryfikacja środowiska: bash deploy/verify.sh <dev|prod>
 
@@ -14,7 +15,102 @@ x-service: &service
       max-size: 10m
       max-file: "5"
 
+x-db-env: &db-env
+  DATABASE_URL: postgresql://${POSTGRES_USER:-investwatch}:${POSTGRES_PASSWORD:-investwatch}@postgres:5432/${POSTGRES_DB:-investwatch}
+
 services:
+  postgres:
+    <<: *service
+    image: pgvector/pgvector:pg16
+    # entrypoint obrazu ustawia właściciela katalogu danych i przechodzi na użytkownika postgres
+    cap_add: [CHOWN, DAC_OVERRIDE, FOWNER, SETGID, SETUID]
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-investwatch}
+      POSTGRES_USER: ${POSTGRES_USER:-investwatch}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-investwatch}
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # Object Storage (D4). Konsola tylko na localhost: http://127.0.0.1:9001
+  # Obrazy minio/minio zniknęły z Docker Hub i quay.io; bitnamilegacy to ostatnie publiczne, zamrożone wydanie.
+  minio:
+    <<: *service
+    image: &minio-image bitnamilegacy/minio:2025.7.23-debian-12-r5
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-investwatch}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-investwatch-dev}
+    ports:
+      - "127.0.0.1:${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio-data:/bitnami/minio/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:9000/minio/health/live"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # Jednorazowo: buckety media i screens (odczyt anonimowy tylko w sieci Compose) + kopia plików z data/.
+  minio-init:
+    image: *minio-image
+    restart: "no"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    depends_on:
+      minio:
+        condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-investwatch}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-investwatch-dev}
+      MC_CONFIG_DIR: /tmp/mc
+    entrypoint: ["/bin/sh", "-ec"]
+    command:
+      - |
+        # obraz bitnami restartuje serwer po konfiguracji, więc pierwsze połączenie może się nie udać
+        for n in $$(seq 30); do mc alias set local http://minio:9000 "$$MINIO_ROOT_USER" "$$MINIO_ROOT_PASSWORD" >/dev/null 2>&1 && break; sleep 2; done
+        mc alias set local http://minio:9000 "$$MINIO_ROOT_USER" "$$MINIO_ROOT_PASSWORD" >/dev/null
+        for b in media screens; do mc mb -p "local/$$b" >/dev/null; mc anonymous set download "local/$$b" >/dev/null; done
+        mc mirror --overwrite --quiet /seed/media local/media
+        if [ -d /seed/monitor/screens ]; then mc mirror --overwrite --quiet /seed/monitor/screens local/screens; fi
+        mc du local/media local/screens
+    volumes:
+      - ./data/media:/seed/media:ro
+      - ./data/monitor:/seed/monitor:ro
+
+  # Jednorazowo przy każdym up: migracje db/migrations, rejestr KNF, podmioty, rekordy i wyniki ai-service (tylko nowe adresy).
+  loader:
+    image: investwatch/uknf-collector:local
+    build:
+      context: .
+      dockerfile: scrapers/Dockerfile
+    restart: "no"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    entrypoint: ["python", "/app/db/load.py"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+      ai-service:
+        condition: service_started
+    environment:
+      <<: *db-env
+      AI_URL: http://ai-service:8000
+      # Z LLM (np. Groq) ocenia najwyżej tyle rekordów na przebieg; kolejne porcje: docker compose run --rm loader
+      LOADER_LLM_LIMIT: ${LOADER_LLM_LIMIT:-100}
+      LOADER_LLM_BATCH: ${LOADER_LLM_BATCH:-8}
+    volumes:
+      - ./data:/app/data:ro
+
   collector:
     profiles: [jobs]
     image: investwatch/uknf-collector:local
@@ -47,28 +143,32 @@ services:
     ports:
       - "${FRONTEND_BIND:-127.0.0.1}:${FRONTEND_PORT:-8080}:8080"
 
-  # Mock API jest kontraktem backendu. Gdy powstanie backend, podmieniamy tylko ten serwis.
+  # Backend aplikacji (api/): REST + socket.io, dane z Postgresa i MinIO.
   api:
     <<: *service
-    image: investwatch/uknf-mock-api:local
+    image: investwatch/uknf-api:local
     build:
-      context: ./frontend
-      dockerfile: mock-server/Dockerfile
+      context: .
+      dockerfile: api/Dockerfile
     depends_on:
-      - ai-service
+      ai-service:
+        condition: service_started
+      minio:
+        condition: service_healthy
+      loader:
+        condition: service_completed_successfully
     read_only: true
     tmpfs:
       - /tmp
     environment:
-      DATA_MODE: ${DATA_MODE:-mock}
+      <<: *db-env
+      # real: Postgres + MinIO; mock: generator w pamięci (bez bazy)
+      DATA_MODE: ${DATA_MODE:-real}
       AI_URL: http://ai-service:8000
-      STATE_PATH: /state/state.json
+      MINIO_URL: http://minio:9000
       SCRAPE_WORKER_URL: http://scrape-worker:8100
       MOCK_SEED: ${MOCK_SEED:-42}
-      MOCK_CORS_ORIGIN: ${MOCK_CORS_ORIGIN:-*}
-    volumes:
-      - ./frontend/mock-server/data:/app/mock-server/data:ro
-      - api-state:/state
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
 
   ai-service:
     <<: *service
@@ -103,11 +203,15 @@ services:
     shm_size: 1gb
     entrypoint: ["python", "/app/scrapers/worker.py"]
     depends_on:
-      - ai-service
+      ai-service:
+        condition: service_started
+      postgres:
+        condition: service_healthy
     env_file:
       - path: .env
         required: false
     environment:
+      <<: *db-env
       AI_URL: http://ai-service:8000
       API_URL: http://api:4000
       JOBS_DIR: /jobs
@@ -151,9 +255,10 @@ services:
     command: ["pull", "${LLM_MODEL:-SpeakLeash/bielik-11b-v3.1-instruct:Q4_K_M}"]
 
 volumes:
+  pg-data:
+  minio-data:
   ollama-models:
   job-state:
-  api-state:
   collector-results:
   collector-cache:
   hf-cache:

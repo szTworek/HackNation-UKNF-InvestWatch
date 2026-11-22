@@ -1,17 +1,16 @@
 import { AD_DISCLOSURE_COLOR, AD_DISCLOSURE_LABEL } from '../lib/labels';
-import { ActionIcon, Anchor, Badge, Checkbox, Group, Menu, Table, Text, Tooltip, UnstyledButton } from '@mantine/core';
+import { ActionIcon, Badge, Checkbox, Group, Menu, Table, Text, Tooltip, UnstyledButton } from '@mantine/core';
 import { IconArrowDown, IconArrowUp, IconDots } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
 import type { FindingSummary, RuleDef, Status } from '../api/types';
-import { fmtDateTime, fmtPct } from '../lib/format';
-import { FLAG_LABEL, INSTRUMENT_LABEL, MODULE_SHORT, RISK_LABEL } from '../lib/labels';
+import { fmtDateTime } from '../lib/format';
+import { INSTRUMENT_LABEL, RISK_LABEL } from '../lib/labels';
 import { RegisterBadge, StatusBadge } from './Badges';
 import { StatusMenuItems } from './FindingsTable';
 import { PlatformIcon } from './PlatformIcon';
 import { RISK_HEX } from './Terminal';
 
-export type ModuleKey = '1' | '2' | '3' | 'scam' | 'all';
+export type ModuleKey = '1' | '2' | '3';
 
 interface Column {
   key: string;
@@ -42,12 +41,12 @@ function Content({ f }: { f: FindingSummary }) {
   );
 }
 
-function Risk({ f, scam }: { f: FindingSummary; scam: boolean }) {
+function Risk({ f }: { f: FindingSummary }) {
   return (
     <Group gap={6} wrap="nowrap">
-      <span style={{ width: 8, height: 8, borderRadius: 2, background: scam ? RISK_HEX.CRITICAL : RISK_HEX[f.riskLevel], flexShrink: 0 }} aria-hidden />
-      <Text size="sm" fw={500} c={scam ? RISK_HEX.CRITICAL : undefined}>
-        {scam ? 'Podejrzenie' : RISK_LABEL[f.riskLevel]}
+      <span style={{ width: 8, height: 8, borderRadius: 2, background: RISK_HEX[f.riskLevel], flexShrink: 0 }} aria-hidden />
+      <Text size="sm" fw={500}>
+        {RISK_LABEL[f.riskLevel]}
       </Text>
     </Group>
   );
@@ -155,60 +154,6 @@ function columnsFor(key: ModuleKey, rules: Map<string, RuleDef>): Column[] {
         },
         source,
       ];
-    case 'scam':
-      return [
-        { key: 'brand', title: 'Podszywana marka', w: 160, render: (f) => (f.brand ? <Text size="sm" fw={500}>{f.brand}</Text> : muted('—')) },
-        content,
-        {
-          key: 'domain',
-          title: 'Domena i kontakt',
-          w: 210,
-          render: (f) => (
-            <div>
-              <Text size="sm" truncate maw={200}>
-                {f.domains[0] ?? '—'}
-              </Text>
-              {f.contacts[0] && (
-                <Text size="xs" c="dimmed" truncate maw={200}>
-                  {f.contacts[0]}
-                </Text>
-              )}
-            </div>
-          ),
-        },
-        {
-          key: 'campaign',
-          title: 'Kampania',
-          w: 90,
-          render: (f) =>
-            f.campaignId ? (
-              <Anchor component={Link} to={`/campaigns/${f.campaignId}`} size="sm" onClick={(e) => e.stopPropagation()}>
-                {f.campaignId}
-              </Anchor>
-            ) : (
-              muted('—')
-            ),
-        },
-        { key: 'p', title: 'Pewność', w: 80, sort: 'scam', render: (f) => <Text size="sm" fw={600} c={RISK_HEX.CRITICAL}>{fmtPct(f.scamP)}</Text> },
-        source,
-      ];
-    default:
-      return [
-        source,
-        content,
-        {
-          key: 'mods',
-          title: 'Moduł',
-          w: 80,
-          render: (f) => <Text size="sm">{f.modules.map((m) => MODULE_SHORT[m]).join(', ') || '—'}</Text>,
-        },
-        {
-          key: 'flags',
-          title: 'Wykryto',
-          w: 200,
-          render: (f) => <Text size="xs" lineClamp={2}>{f.topFlags.map((t) => FLAG_LABEL[t.flag]).join(', ') || '—'}</Text>,
-        },
-      ];
   }
 }
 
@@ -216,7 +161,6 @@ interface Props {
   moduleKey: ModuleKey;
   items: FindingSummary[];
   rules: RuleDef[];
-  scamThreshold: number;
   selected: ReadonlySet<string>;
   freshIds: ReadonlySet<string>;
   sort: string;
@@ -279,7 +223,7 @@ export function ModuleTable(p: Props) {
                   <Table.Td key={c.key}>{c.render(f)}</Table.Td>
                 ))}
                 <Table.Td>
-                  <Risk f={f} scam={false} />
+                  <Risk f={f} />
                 </Table.Td>
                 <Table.Td>
                   <StatusBadge status={f.status} size="sm" />

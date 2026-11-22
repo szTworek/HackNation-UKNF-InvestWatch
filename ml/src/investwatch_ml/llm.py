@@ -64,7 +64,7 @@ def build_input(item_id: str, text: str, author: str | None, sponsor: str | None
             "keywords": keywords.analyze(text), "content_type": content_type, "url": url, "text": text[:MAX_CHARS]}
 
 
-def parse(text: str) -> list[dict]:
+def parse(text: str, key: str = "scores") -> list[dict]:
     """Tablica JSON albo kolejne obiekty (lokalne modele często pomijają tablicę)."""
     text = text.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
     try:
@@ -82,7 +82,7 @@ def parse(text: str) -> list[dict]:
         except json.JSONDecodeError:
             i = j + 1
             continue
-        if isinstance(obj, dict) and "scores" in obj:
+        if isinstance(obj, dict) and key in obj:
             out.append(obj)
         i = end
     return out
@@ -134,16 +134,16 @@ def ad_disclosure(rules: list[dict], is_paid_ad: bool, text: str) -> str:
     return "PLATFORM" if is_paid_ad else "UNKNOWN"
 
 
-def _call(items: list[dict]) -> list[dict]:
+def _call(items: list[dict], prompt: str = PROMPT, key: str = "scores") -> list[dict]:
     user = "Oceń rekordy:\n" + json.dumps(items, ensure_ascii=False)
     if BACKEND == "ollama":
-        body = {"model": MODEL, "stream": False, "messages": [{"role": "system", "content": PROMPT}, {"role": "user", "content": user}],
+        body = {"model": MODEL, "stream": False, "messages": [{"role": "system", "content": prompt}, {"role": "user", "content": user}],
                 "options": {"temperature": 0.1, "num_ctx": 8192, "num_predict": 700 * len(items) + 300}}
         r = httpx.post(f"{OLLAMA_URL}/api/chat", json=body, timeout=900)
         r.raise_for_status()
-        return parse(r.json()["message"]["content"])
+        return parse(r.json()["message"]["content"], key)
     body = {"model": MODEL, "temperature": 0.1, "max_tokens": 900 * len(items) + 400,
-            "messages": [{"role": "system", "content": PROMPT}, {"role": "user", "content": user}]}
+            "messages": [{"role": "system", "content": prompt}, {"role": "user", "content": user}]}
     if MODEL.startswith("openai/gpt-oss"):
         body["reasoning_effort"] = "low"
     headers = {"Authorization": f"Bearer {os.environ.get('GROQ_API_KEY', '')}"}
@@ -153,7 +153,7 @@ def _call(items: list[dict]) -> list[dict]:
             time.sleep(min(float(r.headers.get("retry-after") or 15 * (attempt + 1)), 60))
             continue
         r.raise_for_status()
-        return parse(r.json()["choices"][0]["message"]["content"])
+        return parse(r.json()["choices"][0]["message"]["content"], key)
     raise RuntimeError("Groq: limit zapytań")
 
 

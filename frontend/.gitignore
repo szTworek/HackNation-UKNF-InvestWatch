@@ -1,7 +1,5 @@
 node_modules
 dist
-dist-mock
 .env
 .env.local
-mock-server/data/*.json
 *.log

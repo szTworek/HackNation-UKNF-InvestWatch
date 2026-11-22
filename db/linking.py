@@ -1,8 +1,5 @@
-"""PoC entity groups built from the KNF registry, plus item -> entity linking."""
-import json
+"""PoC entity groups (KNF registry names, brand domains) and record -> entity linking (moved from app/backend)."""
 import re
-
-from .config import KNF_FILE
 
 # Brand group -> KNF registry entry names, brand domains, name patterns, official author names, homonym exclusions.
 GROUPS = {
@@ -53,21 +50,9 @@ _EXCL = {eid: re.compile(g["exclude"], re.I) for eid, g in GROUPS.items() if g["
 _DOMAIN = {eid: re.compile("|".join(re.escape(d) for d in g["domains"]), re.I) for eid, g in GROUPS.items()}
 
 
-def registry_entries():
-    """{entity_id: [registry entry]} matched by exact name from data/knf_entities.json."""
-    try:
-        rows = json.loads(KNF_FILE.read_text(encoding="utf-8"))
-    except FileNotFoundError:
-        rows = []
-    by_name = {r["name"]: r for r in rows}
-    out = {}
-    for eid, g in GROUPS.items():
-        out[eid] = [
-            {"name": n, "category": by_name[n]["category"], "country": by_name[n]["country"],
-             "source_url": by_name[n].get("source_url")}
-            for n in g["registry"] if n in by_name
-        ]
-    return out
+# Official social profiles shown on the entity card.
+HANDLES = {"xtb": {"youtube": "XTBPolska", "tiktok": "xtbpl"}, "etoro": {"tiktok": "etoro_official"},
+           "plus500": {"tiktok": "plus500official"}, "trading212": {"tiktok": "trading212"}, "revolut": {"tiktok": "revolut"}}
 
 
 def is_official(eid, author):

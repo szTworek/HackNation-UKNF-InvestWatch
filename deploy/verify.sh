@@ -31,12 +31,26 @@ check() {
   echo "ok: $1"
 }
 
-compose up -d --build --wait --wait-timeout 600
+compose up -d --build --wait --wait-timeout 900
+
+for svc in postgres minio; do
+  [ "$(docker inspect -f '{{.State.Health.Status}}' "$(compose ps -q "$svc")")" = healthy ]
+  echo "ok: $svc healthy"
+done
+[ "$(docker inspect -f '{{.State.ExitCode}}' "$(compose ps -aq loader)")" = 0 ]
+echo "ok: loader zakończony"
 
 check "frontend" "$FRONTEND/"
 check "nginx health" "$FRONTEND/healthz"
 check "API przez nginx" "$FRONTEND/api/health"
 check "lista wyników" "$FRONTEND/api/findings?pageSize=1"
+curl -fsS "$FRONTEND/api/health" | grep -Eq '"findings":[1-9][0-9]*,"dataMode":"real"'
+echo "ok: rekordy z Postgresa"
+curl -fsS "$FRONTEND/api/entities/xtb" | grep -q '"hasData":true'
+echo "ok: podmiot z Postgresa"
+MEDIA_KEY="$(curl -fsS "$FRONTEND/api/entities/xtb/items?limit=200" | grep -o '"key":"[^"]*\.webp"' | head -n1 | cut -d'"' -f4)"
+[ -n "$MEDIA_KEY" ]
+check "grafika z MinIO" "$FRONTEND/api/media/$MEDIA_KEY"
 check "socket.io przez nginx" "$FRONTEND/socket.io/?EIO=4&transport=polling"
 check "ai-service" "$AI/health"
 

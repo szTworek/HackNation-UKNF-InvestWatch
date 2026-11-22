@@ -1,25 +1,22 @@
-import { Box, Button, Grid, Group, Menu, MultiSelect, Pagination, Paper, Select, SimpleGrid, Stack, Switch, Text, TextInput, Title } from '@mantine/core';
+import { Box, Button, Grid, Group, Menu, MultiSelect, Pagination, Paper, Select, SimpleGrid, Stack, Text, TextInput, Title } from '@mantine/core';
 import { useDebouncedCallback } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconChevronDown, IconDownload, IconSearch } from '@tabler/icons-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { api } from '../api/client';
-import { useBulkStatus, useFindings, useRules, useThresholds, useUpdateStatus } from '../api/hooks';
+import { useBulkStatus, useFindings, useRules, useUpdateStatus } from '../api/hooks';
 import type { FindingSummary, FindingsQuery, FlagKey, ModuleId, Platform, RiskLevel, RuleDef, Status } from '../api/types';
 import { MODULE_COLOR } from '../app/theme';
 import { StatusMenuItems } from '../components/FindingsTable';
 import { ModuleTable, type ModuleKey } from '../components/ModuleTable';
 import { ErrorState, Loading } from '../components/PageState';
 import { Meter, Panel } from '../components/Terminal';
-import { scamThreshold } from '../lib/findings';
 import { fmtInt, todayIso } from '../lib/format';
 import {
   ALL_FLAGS,
   FLAG_LABEL,
   INSTRUMENT_LABEL,
-  MODULES,
-  MODULE_LABEL,
   PLATFORMS,
   PLATFORM_LABEL,
   RISK_LABEL,
@@ -34,7 +31,7 @@ interface ModuleConfig {
   scope: string;
   color: string;
   base: Partial<FindingsQuery>;
-  report?: ModuleId;
+  report: ModuleId;
 }
 
 const CONFIG: Record<ModuleKey, ModuleConfig> = {
@@ -58,18 +55,6 @@ const CONFIG: Record<ModuleKey, ModuleConfig> = {
     color: MODULE_COLOR[3],
     base: { module: [3] },
     report: 3,
-  },
-  scam: {
-    title: 'Oszustwa',
-    scope: 'Fałszywe reklamy inwestycyjne podszywające się pod znane firmy i osoby. Ścieżka niezależna od modułów; każde podejrzenie to alert krytyczny.',
-    color: MODULE_COLOR.scam,
-    base: { scam: true },
-  },
-  all: {
-    title: 'Wszystkie wyniki',
-    scope: 'Wszystkie przeanalizowane materiały, także te, które nie trafiły do żadnego modułu.',
-    color: MODULE_COLOR.all,
-    base: {},
   },
 };
 
@@ -152,21 +137,6 @@ function Insights({ moduleKey, items, rules, color }: { moduleKey: ModuleKey; it
           <TopList title="Instrumenty w ofertach" rows={top(items.flatMap((i) => i.instruments.map((x) => INSTRUMENT_LABEL[x])))} color={color} />
         </SimpleGrid>
       );
-    case 'scam':
-      return (
-        <SimpleGrid cols={{ base: 1, md: 3 }} spacing="xl">
-          <TopList title="Podszywane marki" rows={top(items.map((i) => i.brand))} color={color} />
-          <TopList title="Kanały kontaktu" rows={top(items.flatMap((i) => i.contacts))} color={color} />
-          <TopList title="Domeny" rows={top(items.flatMap((i) => i.domains))} color={color} />
-        </SimpleGrid>
-      );
-    default:
-      return (
-        <SimpleGrid cols={{ base: 1, md: 2 }} spacing="xl">
-          <TopList title="Moduły" rows={MODULES.map((m) => ({ label: MODULE_LABEL[m], count: items.filter((i) => i.modules.includes(m)).length }))} color={color} />
-          <TopList title="Platformy" rows={top(items.map((i) => PLATFORM_LABEL[i.platform]), 7)} color={color} />
-        </SimpleGrid>
-      );
   }
 }
 
@@ -207,7 +177,6 @@ export function ModulePage({ moduleKey }: { moduleKey: ModuleKey }) {
   const highRisk = useFindings({ ...countBase, riskLevel: ['HIGH', 'CRITICAL'] });
   const waiting = useFindings({ ...countBase, status: ['NEW'] });
   const rules = useRules();
-  const thresholds = useThresholds();
   const updateStatus = useUpdateStatus();
   const bulk = useBulkStatus();
 
@@ -246,7 +215,7 @@ export function ModulePage({ moduleKey }: { moduleKey: ModuleKey }) {
       },
     );
 
-  const hasFilters = !!filters.q || filters.platform.length + filters.module.length + filters.riskLevel.length + filters.status.length + filters.flag.length > 0 || filters.scam;
+  const hasFilters = !!filters.q || filters.platform.length + filters.module.length + filters.riskLevel.length + filters.status.length + filters.flag.length > 0;
 
   return (
     <Stack gap="md">
@@ -261,26 +230,9 @@ export function ModulePage({ moduleKey }: { moduleKey: ModuleKey }) {
               {cfg.scope}
             </Text>
           </div>
-          {cfg.report ? (
-            <Button component="a" href={api.reportUrl(cfg.report, query)} download variant="default" bg="var(--iw-soft)" bd="0" leftSection={<IconDownload size={16} />}>
-              Raport CSV
-            </Button>
-          ) : moduleKey === 'all' ? (
-            <Menu position="bottom-end">
-              <Menu.Target>
-                <Button variant="default" leftSection={<IconDownload size={16} />} rightSection={<IconChevronDown size={14} />}>
-                  Raport CSV
-                </Button>
-              </Menu.Target>
-              <Menu.Dropdown>
-                {MODULES.map((m) => (
-                  <Menu.Item key={m} component="a" href={api.reportUrl(m, query)} download>
-                    {MODULE_LABEL[m]}
-                  </Menu.Item>
-                ))}
-              </Menu.Dropdown>
-            </Menu>
-          ) : null}
+          <Button component="a" href={api.reportUrl(cfg.report, query)} download variant="default" bg="var(--iw-soft)" bd="0" leftSection={<IconDownload size={16} />}>
+            Raport CSV
+          </Button>
         </Group>
       </Box>
 
@@ -331,22 +283,12 @@ export function ModulePage({ moduleKey }: { moduleKey: ModuleKey }) {
             <Grid.Col span="content">
               <MultiSelect label="Źródło" size="xs" w={160} data={PLATFORMS.map((p) => ({ value: p, label: PLATFORM_LABEL[p] }))} value={filters.platform} onChange={(v) => update({ platform: v as Platform[] })} clearable />
             </Grid.Col>
-            {moduleKey === 'all' && (
-              <Grid.Col span="content">
-                <MultiSelect label="Moduł" size="xs" w={190} data={MODULES.map((m) => ({ value: String(m), label: MODULE_LABEL[m] }))} value={filters.module.map(String)} onChange={(v) => update({ module: v.map(Number) as ModuleId[] })} clearable />
-              </Grid.Col>
-            )}
             <Grid.Col span="content">
               <MultiSelect label="Ryzyko" size="xs" w={160} data={RISK_LEVELS.map((r) => ({ value: r, label: RISK_LABEL[r] }))} value={filters.riskLevel} onChange={(v) => update({ riskLevel: v as RiskLevel[] })} clearable />
             </Grid.Col>
             <Grid.Col span="content">
               <MultiSelect label="Status" size="xs" w={170} data={STATUSES.map((s) => ({ value: s, label: STATUS_LABEL[s] }))} value={filters.status} onChange={(v) => update({ status: v as Status[] })} clearable />
             </Grid.Col>
-            {moduleKey === 'all' && (
-              <Grid.Col span="content">
-                <Switch label="Podejrzenie oszustwa" size="sm" checked={filters.scam} onChange={(e) => update({ scam: e.currentTarget.checked })} mb={4} />
-              </Grid.Col>
-            )}
             <Grid.Col span="content">
               <Button variant="subtle" size="xs" onClick={() => setMore((v) => !v)}>
                 {more ? 'Mniej filtrów' : `Więcej filtrów${moreActive ? ` (${moreActive})` : ''}`}
@@ -378,7 +320,6 @@ export function ModulePage({ moduleKey }: { moduleKey: ModuleKey }) {
             moduleKey={moduleKey}
             items={items}
             rules={rules.data}
-            scamThreshold={scamThreshold(thresholds.data?.values)}
             selected={selected}
             freshIds={freshIds}
             sort={filters.sort}

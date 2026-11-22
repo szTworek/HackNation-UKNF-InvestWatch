@@ -37,22 +37,21 @@ function SortTh({ field, sort, onSort, children, w }: { field: string; sort: str
   );
 }
 
-/** Ryzyko jako pasek + etykieta; oszustwo zawsze na czerwono. */
-export function RiskCell({ f, scam }: { f: FindingSummary; scam: boolean }) {
-  const color = scam ? RISK_HEX.CRITICAL : RISK_HEX[f.riskLevel];
+/** Ryzyko jako pasek + etykieta. */
+export function RiskCell({ f }: { f: FindingSummary }) {
+  const color = RISK_HEX[f.riskLevel];
   return (
     <div>
       <Text size="xs" fw={600} c={color} mb={3}>
-        {scam ? 'Podejrzenie oszustwa' : RISK_LABEL[f.riskLevel]}
+        {RISK_LABEL[f.riskLevel]}
       </Text>
-      <Meter value={scam ? f.scamP : f.riskScore} color={color} h={4} />
+      <Meter value={f.riskScore} color={color} h={4} />
     </div>
   );
 }
 
 interface Props {
   items: FindingSummary[];
-  scamThreshold: number;
   selected: ReadonlySet<string>;
   activeId: string | null;
   freshIds: ReadonlySet<string>;
@@ -67,7 +66,7 @@ interface Props {
 
 /** Kolejka rekordów: klik zaznacza (podgląd obok), dwuklik lub Enter otwiera akta. */
 export function FindingsTable(p: Props) {
-  const { items, scamThreshold, selected, activeId, freshIds, sort } = p;
+  const { items, selected, activeId, freshIds, sort } = p;
   const allChecked = items.length > 0 && items.every((f) => selected.has(f.id));
   const someChecked = items.some((f) => selected.has(f.id));
   const activeRef = useRef<HTMLTableRowElement>(null);
@@ -104,9 +103,8 @@ export function FindingsTable(p: Props) {
         </Table.Thead>
         <Table.Tbody>
           {items.map((f) => {
-            const scam = f.scamP >= scamThreshold;
             const active = f.id === activeId;
-            const cls = [active ? 'iw-row-selected' : '', scam && !active ? 'iw-row-scam' : '', freshIds.has(f.id) ? 'iw-row-new' : '']
+            const cls = [active ? 'iw-row-selected' : '', freshIds.has(f.id) ? 'iw-row-new' : '']
               .filter(Boolean)
               .join(' ');
             return (
@@ -161,7 +159,7 @@ export function FindingsTable(p: Props) {
                   </Text>
                 </Table.Td>
                 <Table.Td>
-                  <RiskCell f={f} scam={scam} />
+                  <RiskCell f={f} />
                 </Table.Td>
                 <Table.Td>
                   <StatusBadge status={f.status} size="xs" />
@@ -188,17 +186,16 @@ export function FindingsTable(p: Props) {
   );
 }
 
-/** Zwarta lista rekordów (kampania, wskaźnik). */
-export function FindingList({ items, scamThreshold, onOpen }: { items: FindingSummary[]; scamThreshold: number; onOpen: (id: string) => void }) {
+/** Zwarta lista rekordów (wskaźnik). */
+export function FindingList({ items, onOpen }: { items: FindingSummary[]; onOpen: (id: string) => void }) {
   if (!items.length) return <Text size="sm" c="dimmed">Brak rekordów.</Text>;
   return (
     <Table.ScrollContainer minWidth={560}>
       <Table highlightOnHover verticalSpacing={6}>
         <Table.Tbody>
           {items.map((f) => {
-            const scam = f.scamP >= scamThreshold;
             return (
-              <Table.Tr key={f.id} onClick={() => onOpen(f.id)} style={{ cursor: 'pointer' }} className={scam ? 'iw-row-scam' : undefined}>
+              <Table.Tr key={f.id} onClick={() => onOpen(f.id)} style={{ cursor: 'pointer' }}>
                 <Table.Td w={120}>
                   <Text size="xs">
                     {fmtDateTime(f.fetchedAt)}
@@ -218,7 +215,7 @@ export function FindingList({ items, scamThreshold, onOpen }: { items: FindingSu
                   </Text>
                 </Table.Td>
                 <Table.Td w={110}>
-                  <RiskCell f={f} scam={scam} />
+                  <RiskCell f={f} />
                 </Table.Td>
                 <Table.Td w={104}>
                   <StatusBadge status={f.status} size="xs" />

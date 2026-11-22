@@ -28,9 +28,9 @@ jobs:
           - name: frontend
             context: frontend
             file: frontend/Dockerfile
-          - name: mock-api
-            context: frontend
-            file: frontend/mock-server/Dockerfile
+          - name: api
+            context: .
+            file: api/Dockerfile
           - name: ai-service
             context: ml
             file: ml/Dockerfile

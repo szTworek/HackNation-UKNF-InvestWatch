@@ -1,5 +1,4 @@
 import type {
-  CampaignStatus,
   ContentKind,
   ContentType,
   EntityRole,
@@ -13,7 +12,6 @@ import type {
   RiskLevel,
   RuleStatus,
   AdDisclosure,
-  ScamSignal,
   Status,
   TopicLabel,
 } from '../api/types';
@@ -207,14 +205,6 @@ export const FLAG_COLOR: Record<FlagKey, string> = {
   FAKE_NEWS_FORMAT: 'indigo',
 };
 
-export const SCAM_SIGNAL_LABEL: Record<ScamSignal, string> = {
-  IMPERSONATION: 'Podszywanie się pod markę',
-  CERT_LIST_DOMAIN: 'Domena na liście ostrzeżeń CERT Polska',
-  KNF_WARNING_LIST: 'Podmiot na liście ostrzeżeń publicznych KNF',
-  NOT_IN_REGISTER: 'Oferuje usługi inwestycyjne, brak w rejestrze KNF',
-  TEXT_MODEL: 'Wysoki wynik modelu tekstowego',
-};
-
 export const ENTITY_ROLE_LABEL: Record<EntityRole, string> = {
   investment_firm: 'Firma inwestycyjna',
   advertiser: 'Reklamujący',
@@ -278,38 +268,25 @@ export const EDGE_LABEL: Record<GraphEdgeType, string> = {
   SAME_AUTHOR: 'Ten sam autor',
   REDIRECTS_TO: 'Przekierowanie',
   HAS_INDICATOR: 'Zawiera wskaźnik',
-  IMPERSONATES: 'Podszywa się',
-};
-
-export const CAMPAIGN_STATUS_LABEL: Record<CampaignStatus, string> = {
-  ACTIVE: 'Aktywna',
-  MONITORED: 'Monitorowana',
-  CLOSED: 'Zamknięta',
-};
-export const CAMPAIGN_STATUS_COLOR: Record<CampaignStatus, string> = {
-  ACTIVE: 'red',
-  MONITORED: 'yellow',
-  CLOSED: 'gray',
 };
 
 // ---------------------------------------------------------------------------
 // Progi kalibracji
 // ---------------------------------------------------------------------------
 
-export type ThresholdGroup = 'flags' | 'contentType' | 'risk' | 'scam';
+export type ThresholdGroup = 'flags' | 'contentType' | 'risk';
 
 export const THRESHOLD_GROUP_LABEL: Record<ThresholdGroup, string> = {
-  scam: 'Oszustwo',
   risk: 'Poziomy ryzyka',
   flags: 'Flagi',
   contentType: 'Typ treści',
 };
 
-export const THRESHOLD_GROUP_ORDER: ThresholdGroup[] = ['scam', 'risk', 'flags', 'contentType'];
+export const THRESHOLD_GROUP_ORDER: ThresholdGroup[] = ['risk', 'flags', 'contentType'];
 
 export function thresholdGroup(key: string): ThresholdGroup | null {
   const prefix = key.split('.')[0];
-  return prefix === 'flags' || prefix === 'contentType' || prefix === 'risk' || prefix === 'scam' ? prefix : null;
+  return prefix === 'flags' || prefix === 'contentType' || prefix === 'risk' ? prefix : null;
 }
 
 export function thresholdLabel(key: string): string {
@@ -317,7 +294,6 @@ export function thresholdLabel(key: string): string {
   if (prefix === 'flags' && name in FLAG_LABEL) return FLAG_LABEL[name as FlagKey];
   if (prefix === 'contentType' && name in CONTENT_TYPE_LABEL) return CONTENT_TYPE_LABEL[name as ContentType];
   if (prefix === 'risk' && name in RISK_LABEL) return `Poziom: ${RISK_LABEL[name as RiskLevel].toLowerCase()}`;
-  if (prefix === 'scam') return 'Podejrzenie oszustwa';
   return key;
 }
 
@@ -329,9 +305,6 @@ export function thresholdOrder(key: string): number {
   if (prefix === 'risk') return RISK_LEVELS.indexOf(name as RiskLevel);
   return 0;
 }
-
-export const SCAM_THRESHOLD_KEY = 'scam.p';
-export const DEFAULT_SCAM_THRESHOLD = 0.6;
 
 // ---------------------------------------------------------------------------
 // Oś podmiotu (rejestr KNF)

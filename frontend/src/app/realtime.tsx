@@ -16,7 +16,7 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
 
   useSocketEvent('thresholds:updated', (t: Thresholds) => {
     qc.setQueryData(qk.thresholds, t);
-    for (const key of ['findings', 'finding', 'overview', 'timeseries', 'campaigns', 'campaign', 'graph', 'indicator', 'thresholdsPreview']) {
+    for (const key of ['findings', 'finding', 'overview', 'timeseries', 'graph', 'indicator', 'thresholdsPreview']) {
       void qc.invalidateQueries({ queryKey: [key] });
     }
   });
