@@ -105,7 +105,8 @@ services:
     volumes:
       - ./data:/app/data:ro
 
-  # W tle przy każdym up: ocena nowych rekordów w ai-service. API pokazuje postęp i nowe wyniki na bieżąco.
+  # W tle przy każdym up. Z data/findings.seed.json wczytuje gotowe wyniki, nie woła LLM i usuwa rekordy bez oceny;
+  # bez tego pliku (albo z LOADER_SCORE_NEW=1) ocenia nowe rekordy w ai-service.
   loader:
     image: investwatch/uknf-loader:local
     command: ["--stage", "score"]
@@ -125,6 +126,7 @@ services:
       # Z LLM (np. Groq) ocenia najwyżej tyle rekordów na przebieg; kolejne porcje: docker compose run --rm loader
       LOADER_LLM_LIMIT: ${LOADER_LLM_LIMIT:-100}
       LOADER_LLM_BATCH: ${LOADER_LLM_BATCH:-8}
+      LOADER_SCORE_NEW: ${LOADER_SCORE_NEW:-0}
     volumes:
       - ./data:/app/data:ro
 

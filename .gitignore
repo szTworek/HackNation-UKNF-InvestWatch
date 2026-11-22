@@ -13,3 +13,4 @@ scrapers/poc/results/
 /models/
 app/frontend/
 data/monitor/screens/
+data/findings.seed.json

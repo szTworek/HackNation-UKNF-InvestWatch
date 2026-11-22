@@ -13,8 +13,9 @@ RUN apt-get update \
 
 WORKDIR /app
 COPY scrapers/poc/requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir -r /tmp/requirements.txt faster-whisper==1.2.1 "psycopg[binary]==3.2.9" \
-    && playwright install --with-deps chromium chrome \
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install -r /tmp/requirements.txt faster-whisper==1.2.1 "psycopg[binary]==3.2.9" \
+    && playwright install --with-deps --only-shell chromium chrome \
     && rm -rf /var/lib/apt/lists/*
 
 COPY adapters ./adapters
