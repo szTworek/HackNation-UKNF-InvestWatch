@@ -31,7 +31,9 @@ check() {
   echo "ok: $1"
 }
 
-compose up -d --build --wait --wait-timeout 900
+compose build
+if [ -n "${CI:-}" ]; then docker builder prune -af >/dev/null; df -h /; fi
+compose up -d --wait --wait-timeout 900
 
 for svc in postgres minio; do
   [ "$(docker inspect -f '{{.State.Health.Status}}' "$(compose ps -q "$svc")")" = healthy ]

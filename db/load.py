@@ -14,6 +14,10 @@
    did not score (e.g. 429) stay pending instead of being stored with the keyword baseline,
 5. media_objects from data/media and data/monitor/screens (files are copied to MinIO by the `minio-init` service).
 
+When data/findings.seed.json exists (findings.real.json of the earlier pipeline, already scored), step 4 imports
+those results by URL instead of sending records to ai-service, so `up` does not re-run the LLM. Records without a
+result are then removed from items (db-init adds them again on the next run); LOADER_SCORE_NEW=1 scores them instead.
+
 Run: python db/load.py --stage init|score [--ai-url http://ai-service:8000]
 """
 import argparse
@@ -40,6 +44,8 @@ KNF_ML = APP / "ml/src/investwatch_ml/knf_register.json"
 LLM_LIMIT = int(os.environ.get("LOADER_LLM_LIMIT", "100"))
 LLM_BATCH = int(os.environ.get("LOADER_LLM_BATCH", "8"))
 KNF_FULL = Path(os.environ.get("KNF_FILE", APP.parent / "data" / "knf_entities.json"))
+SEED = Path(os.environ.get("LOADER_SEED", DATA / "findings.seed.json"))
+SCORE_NEW = os.environ.get("LOADER_SCORE_NEW") == "1"
 LIST_CATEGORY = {"BROKERAGE_HOUSE": "domy_maklerskie", "BANK": "banki_maklerskie", "FOREIGN_BRANCH": "zagraniczne_oddzialy",
                  "CROSS_BORDER": "zagraniczne_bez_oddzialu"}
 
@@ -225,6 +231,43 @@ def load_findings(conn, ai_url: str, records: list[dict], ids: dict[str, str], l
     return stats
 
 
+def seed_item(f: dict) -> dict:
+    """Collector-style record rebuilt from a seed finding whose URL is not among the collected records
+    (the fictional `demo-*` examples of docs/demo.md, records dropped from the export)."""
+    author = f.get("author") or {}
+    return {"source_url": f["url"], "source": f.get("platform"), "title": f.get("title"), "text": f.get("text") or "",
+            "author": author.get("displayName") or author.get("handle") if isinstance(author, dict) else author,
+            "links": f.get("outboundLinks") or [], "published_at": f.get("publishedAt"), "fetched_at": f.get("fetchedAt")}
+
+
+def load_seed(conn, ids: dict[str, str]) -> Counter:
+    """Already scored findings from SEED, matched to items by URL. A finding already in the table is left as it is;
+    another finding of the same collected item (different id from a later scoring run) is replaced, so an item has
+    one result. A finding without a collected item gets an item of its own (origin `seed`); versions of one post
+    (demo-ig-kasia-v1/v2) share that item."""
+    n: Counter = Counter()
+    findings = json.loads(SEED.read_text(encoding="utf-8"))["findings"]
+    with conn.cursor() as cur:
+        cur.execute("select id from findings")
+        present = {r[0] for r in cur.fetchall()}
+        for f in findings:
+            if f["id"] in present:
+                n["seedPresent"] += 1
+                continue
+            iid = ids.get(f["url"])
+            if iid:
+                cur.execute("delete from findings where item_id = %s and id <> %s", (iid, f["id"]))
+            else:
+                iid = store.upsert_item(cur, seed_item(f), "seed")
+                n["seedItems"] += 1
+            store.save_finding(cur, iid, f)
+            # status zapisany w pliku pasuje do jego historii (findings.result.history); później zmienia go tylko analityk
+            cur.execute("update findings set status = %s where id = %s", (f.get("status") or "NEW", f["id"]))
+            n["seeded"] += 1
+    conn.commit()
+    return n
+
+
 def interleave(records: list[dict]) -> list[dict]:
     """Round-robin by source, so a limited run still covers every platform."""
     groups: dict[str, list[dict]] = {}
@@ -277,9 +320,21 @@ def main() -> int:
             stats.update({f"read.{k}": v for k, v in read_stats.items()})
         else:
             ids, links = db_links(conn)
-            found = load_findings(conn, args.ai_url.rstrip("/"), records, ids, links, imported_at, run_id)
-            found.pop("modelVersion")
-            stats.update(found)
+            if SEED.is_file():
+                stats.update(load_seed(conn, ids))
+                log(f"wyniki z {SEED.name}: {stats['seeded']} nowych (w tym {stats['seedItems']} z własnym rekordem), "
+                    f"{stats['seedPresent']} już w bazie")
+            if SCORE_NEW or not SEED.is_file():
+                found = load_findings(conn, args.ai_url.rstrip("/"), records, ids, links, imported_at, run_id)
+                found.pop("modelVersion")
+                stats.update(found)
+            else:
+                # bez oceny LLM aplikacja pokazuje tylko ocenione rekordy; db-init doda resztę przy kolejnym up
+                with conn.cursor() as cur:
+                    cur.execute("delete from items where analyzed_at is null")
+                    stats["unscoredRemoved"] = cur.rowcount
+                conn.commit()
+                log(f"bez oceny LLM: usunięto {stats['unscoredRemoved']} rekordów bez oceny (LOADER_SCORE_NEW=1 je ocenia)")
         with conn.cursor() as cur:
             cur.execute("update load_runs set finished_at = now(), stats = %s where id = %s", (Jsonb(dict(stats)), run_id))
             cur.execute("select count(*) from findings")
