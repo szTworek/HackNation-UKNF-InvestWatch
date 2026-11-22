@@ -4,7 +4,9 @@
 FROM python:3.12-slim
 
 ENV PYTHONUNBUFFERED=1 PLAYWRIGHT_BROWSERS_PATH=/ms-playwright HF_HOME=/cache/huggingface
+# upgrade: poprawki bezpieczeństwa Debiana, których obraz bazowy jeszcze nie ma (skan Grype w CD blokuje high z poprawką)
 RUN apt-get update \
+    && apt-get upgrade -y --no-install-recommends \
     && apt-get install -y --no-install-recommends ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 

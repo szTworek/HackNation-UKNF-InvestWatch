@@ -8,3 +8,5 @@ scrapers/poc/results
 **/.env
 **/.env.*
 **/*_state.json
+**/.venv
+**/.secrets
