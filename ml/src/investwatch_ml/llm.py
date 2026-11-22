@@ -33,6 +33,7 @@ MAX_CHARS = int(os.environ.get("LLM_MAX_CHARS", "1500"))
 MODULES = ("M1", "M2", "M3", "NONE")
 VISUAL = {"4", "5", "6", "7", "8"}
 _CACHE: dict[str, dict] = {}
+_groq_key = 0  # indeks aktywnego klucza Groq
 
 
 def enabled() -> bool:
@@ -146,9 +147,15 @@ def _call(items: list[dict], prompt: str = PROMPT, key: str = "scores") -> list[
             "messages": [{"role": "system", "content": prompt}, {"role": "user", "content": user}]}
     if MODEL.startswith("openai/gpt-oss"):
         body["reasoning_effort"] = "low"
-    headers = {"Authorization": f"Bearer {os.environ.get('GROQ_API_KEY', '')}"}
-    for attempt in range(5):
-        r = httpx.post("https://api.groq.com/openai/v1/chat/completions", json=body, headers=headers, timeout=180)
+    global _groq_key
+    keys = [k for k in (os.environ.get("GROQ_API_KEY"), os.environ.get("GROQ_API_KEY_2")) if k]
+    for attempt in range(5 + len(keys)):
+        key = keys[min(_groq_key, len(keys) - 1)] if keys else ""
+        r = httpx.post("https://api.groq.com/openai/v1/chat/completions", json=body,
+                       headers={"Authorization": f"Bearer {key}"}, timeout=180)
+        if r.status_code == 429 and "per day" in r.text and _groq_key + 1 < len(keys):
+            _groq_key += 1  # dzienny limit klucza: przejście na kolejny
+            continue
         if r.status_code == 429 and "per day" not in r.text:
             time.sleep(min(float(r.headers.get("retry-after") or 15 * (attempt + 1)), 60))
             continue

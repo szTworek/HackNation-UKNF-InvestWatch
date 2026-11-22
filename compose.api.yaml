@@ -9,7 +9,6 @@ services:
       target: runtime-api
     environment:
       INVESTWATCH_BASELINE: "1"
-      LLM_BACKEND: ${LLM_BACKEND:-groq}
 
   scrape-worker:
     profiles: [scraping]

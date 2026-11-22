@@ -58,10 +58,6 @@ const CONFIG: Record<ModuleKey, ModuleConfig> = {
   },
 };
 
-// ---------------------------------------------------------------------------
-// Podsumowanie modułu (liczone z rekordów modułu w zakresie dat)
-// ---------------------------------------------------------------------------
-
 function top(values: (string | undefined)[], n = 5): { label: string; count: number }[] {
   const m = new Map<string, number>();
   for (const v of values) if (v) m.set(v, (m.get(v) ?? 0) + 1);
@@ -153,8 +149,6 @@ function Kpi({ label, value, color }: { label: string; value?: number; color?: s
   );
 }
 
-// ---------------------------------------------------------------------------
-
 export function ModuleRoute() {
   const { key } = useParams();
   if (key !== '1' && key !== '2' && key !== '3') return <Navigate to="/modules/1" replace />;
@@ -226,7 +220,6 @@ export function ModulePage({ moduleKey }: { moduleKey: ModuleKey }) {
 
   return (
     <Stack gap="md">
-      {/* nagłówek modułu */}
       <Box pb="lg" style={{ borderBottom: '1px solid var(--iw-border)' }}>
         <Group justify="space-between" align="flex-start" wrap="nowrap">
           <div>

@@ -77,10 +77,6 @@ export function computeRelated(world: World, f: Finding): RelatedFinding[] {
   return [...best.values()].sort((a, b) => b.score - a.score || a.findingId.localeCompare(b.findingId)).slice(0, 5);
 }
 
-// ---------------------------------------------------------------------------
-// Budowa grafów
-// ---------------------------------------------------------------------------
-
 class GraphBuilder {
   nodes = new Map<string, GraphNode>();
   edges = new Map<string, GraphEdge>();

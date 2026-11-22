@@ -138,7 +138,6 @@ def main() -> None:
     groups = [docs[i].author or docs[i].source for i in ids]
     weights = np.array([merged[i][1] for i in ids])
 
-    # --- embeddingi okien
     log("embeddingi okien (bge-m3, GPU)...")
     emb = Embedder(args.embedder)
     spans = [doc_windows(t) for t in texts]
@@ -153,7 +152,7 @@ def main() -> None:
     D = np.stack([E[a:b].mean(0) for a, b in W_idx])
     D /= np.linalg.norm(D, axis=1, keepdims=True) + 1e-9
 
-    # --- podział po autorze / kanale (bez przecieku tego samego autora do testu)
+    # podział po autorze / kanale (bez przecieku tego samego autora do testu)
     gss = GroupShuffleSplit(n_splits=1, test_size=args.test_size, random_state=42)
     tr, te = next(gss.split(D, groups=groups))
     synth = np.array([bool(docs[i].meta.get("synthetic")) for i in ids])
@@ -174,7 +173,7 @@ def main() -> None:
     heads.scam = fit_binary(D[tr], y_scam[tr], weights[tr])
     heads.instruments = {i: fit_binary(D[tr], y_instr[i][tr], weights[tr]) for i in INSTRUMENTS}
 
-    # --- flagi na poziomie okien: pozytyw = okno nachodzi na dopasowany cytat; negatyw = okna dokumentów bez flagi
+    # flagi na poziomie okien: pozytyw = okno nachodzi na dopasowany cytat; negatyw = okna dokumentów bez flagi
     tr_set = set(tr.tolist())
     for f in FLAG_KEYS:
         Xs, ys, ws = [], [], []
@@ -194,7 +193,7 @@ def main() -> None:
         heads.flags[f] = fit_binary(E[Xs], y, np.array(ws) if args.curated else None) if len(Xs) else 0.0
         log(f"  flaga {f:30s} okna: {len(y)} (poz. {int(y.sum()) if len(y) else 0})")
 
-    # --- ewaluacja na teście (etykiety nauczycieli) + baseline słownikowy
+    # ewaluacja na teście (etykiety nauczycieli) + baseline słownikowy
     metrics: dict = {"n_train": int(len(tr)), "n_test": int(len(te)), "teachers": args.teachers, "heads": {}, "baseline": {}}
     topics, ctypes = list(TOPICS), list(CONTENT_TYPES)
     p_topic = heads.topic.predict(D[te])

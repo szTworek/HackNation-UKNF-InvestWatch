@@ -100,8 +100,6 @@ def evaluate(risk_by_viewport: dict[str, Any] | None) -> dict[str, tuple[str, fl
     return out
 
 
-# ---------------------------------------------------------------- grafiki reklam (OCR z ramkami)
-
 import re as _re
 from statistics import median as _median
 

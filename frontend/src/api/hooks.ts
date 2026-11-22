@@ -118,10 +118,6 @@ export function useSaveThresholds() {
   });
 }
 
-// ---------------------------------------------------------------------------
-// Oś podmiotu (rejestr KNF); dane statyczne ze snapshotu, stąd długi staleTime
-// ---------------------------------------------------------------------------
-
 const ENTITY_STALE = 5 * 60_000;
 
 export function useEntities() {

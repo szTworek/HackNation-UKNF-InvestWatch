@@ -195,8 +195,6 @@ def user_message(doc: Doc, chunk: str, part: int, parts: int) -> str:
     return " | ".join(head) + "\n\nTREŚĆ:\n" + chunk
 
 
-# ---------------------------------------------------------------- Ollama helpers
-
 
 def list_models(host: str = DEFAULT_HOST) -> list[str] | None:
     """Lista modeli w Ollamie albo None, gdy serwer nie odpowiada."""
@@ -229,8 +227,6 @@ def wait_for_model(model: str, host: str = DEFAULT_HOST, poll_s: int = 20, log=p
             last = state
         time.sleep(poll_s)
 
-
-# ---------------------------------------------------------------- Teacher
 
 
 class Teacher:
@@ -391,8 +387,6 @@ def merge_chunks(chunks: list[dict[str, Any]], full_text: str) -> dict[str, Any]
     }
 
 
-# ---------------------------------------------------------------- Gemini (drugi nauczyciel, tylko do danych)
-
 
 def _strip_additional(schema: Any) -> Any:
     if isinstance(schema, dict):
@@ -468,8 +462,6 @@ class GeminiTeacher(Teacher):
                                       "seconds": round(time.time() - t, 2)}
         raise RuntimeError(f"Gemini: limit / błąd {r.status_code}: {r.text[:200]}")
 
-
-# ---------------------------------------------------------------- Groq (API zgodne z OpenAI, tylko do danych)
 
 
 class GroqTeacher(Teacher):

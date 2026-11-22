@@ -25,7 +25,7 @@ K = {"CFD": "CFD_FOREX", "STK": "STOCKS", "ETF": "FUNDS_ETF", "BND": "BONDS", "C
 
 # (grupa, temat, typ, instrumenty, scam, tekst, [(flaga, cytat), ...])
 CASES = [
-    # --- ostrzeżenia i edukacja cytujące język oszustów: NIE scam
+    # ostrzeżenia i edukacja cytujące język oszustów: NIE scam
     ("warning", "I", "NE", "CRY", 0, "Uwaga na reklamy typu „zarabiaj 5000 zł dziennie z botem AI”. To klasyczny schemat oszustwa, nie wpłacajcie nikomu pieniędzy.", []),
     ("warning", "I", "NE", "CFD", 0, "Jak rozpoznać fałszywego brokera? Dzwoni „opiekun konta”, obiecuje gwarantowany zysk i każe zainstalować AnyDesk. Jeśli to słyszysz, rozłącz się i sprawdź firmę na liście ostrzeżeń KNF.", []),
     ("warning", "I", "NE", "NON", 0, "Piramida finansowa działa tak: wypłaty starych uczestników pochodzą z wpłat nowych. Dlatego obietnica 3% dziennie powinna od razu zapalić czerwoną lampkę.", []),
@@ -36,7 +36,7 @@ CASES = [
     ("warning", "I", "NE", "CRY", 0, "Dziś w odcinku rozkładamy na czynniki pierwsze scam „rug pull”: twórcy tokena wyciągają płynność i znikają z pieniędzmi inwestorów.", []),
     ("warning", "I", "OP", "CRY", 0, "hahaha „1000% w tydzień gwarantowane” jasne, a ja jestem królową Anglii. ludzie ogarnijcie się", []),
     ("warning", "F", "NO", "", 0, "Oszuści podszywają się pod bank i wysyłają SMS o blokadzie konta. Nie klikaj w link, zadzwoń na infolinię z karty.", []),
-    # --- legalny marketing firmy: z ryzykiem i z brakami
+    # legalny marketing firmy: z ryzykiem i z brakami
     ("firm_ok", "I", "FM", "CFD", 0, "Handluj na ponad 60 parach walut w Nordtradix. Kontrakty CFD są złożonymi instrumentami i wiążą się z dużym ryzykiem szybkiej utraty środków z powodu dźwigni finansowej. 74% rachunków inwestorów detalicznych traci pieniądze.", [("RISK_WARNING", "74% rachunków inwestorów detalicznych traci pieniądze")]),
     ("firm_ok", "I", "FM", "ETF", 0, "Bursztynowe TFI: fundusz obligacji zarobił 6,2% w 2024 r. Wyniki historyczne nie gwarantują osiągnięcia podobnych wyników w przyszłości. Inwestowanie wiąże się z ryzykiem utraty części kapitału.", [("PAST_PERFORMANCE", "zarobił 6,2% w 2024 r."), ("PAST_PERF_DISCLAIMER", "Wyniki historyczne nie gwarantują"), ("RISK_WARNING", "ryzykiem utraty części kapitału")]),
     ("firm_bad", "I", "FM", "ETF", 0, "Bursztynowe TFI: nasz fundusz akcji zarobił 31% w zeszłym roku! Dołącz do zadowolonych klientów i pozwól pieniądzom pracować.", [("PAST_PERFORMANCE", "zarobił 31% w zeszłym roku"), ("PROFIT_CLAIM", "pozwól pieniądzom pracować")]),
@@ -47,7 +47,7 @@ CASES = [
     ("firm_ok", "I", "FM", "BND", 0, "Nowa emisja obligacji Finmostek S.A., oprocentowanie 9% w skali roku. Obligacje korporacyjne niosą ryzyko niewypłacalności emitenta i utraty zainwestowanych środków. Szczegóły w prospekcie.", [("PROFIT_CLAIM", "oprocentowanie 9% w skali roku"), ("RISK_WARNING", "ryzyko niewypłacalności emitenta i utraty zainwestowanych środków")]),
     ("firm_bad", "I", "FM", "CRY", 0, "Kryptolia: kupuj bitcoina bez prowizji przez 30 dni! Promocja tylko do niedzieli. BTC w tym roku dojdzie do nowych szczytów.", [("URGENCY_PRESSURE", "Promocja tylko do niedzieli"), ("FORECAST", "BTC w tym roku dojdzie do nowych szczytów")]),
     ("firm_ok", "I", "FM", "ETF", 0, "Prognoza zakłada wzrost funduszu o 5% w 2027 r. Prognozy nie są wiarygodnym wskaźnikiem przyszłych wyników, a wartość jednostek może spaść.", [("FORECAST", "wzrost funduszu o 5% w 2027 r."), ("FORECAST_DISCLAIMER", "Prognozy nie są wiarygodnym wskaźnikiem przyszłych wyników"), ("RISK_WARNING", "wartość jednostek może spaść")]),
-    # --- influencer / osoba trzecia: M1
+    # influencer / osoba trzecia: M1
     ("promo", "I", "TP", "CFD", 0, "Partnerem dzisiejszego odcinka jest Nordtradix. Z moim linkiem masz zero prowizji na start, link w opisie. Pamiętaj, że CFD są ryzykowne i możesz stracić pieniądze.", [("AD_DISCLOSURE", "Partnerem dzisiejszego odcinka jest Nordtradix"), ("RISK_WARNING", "możesz stracić pieniądze")]),
     ("promo", "I", "TP", "CRY", 0, "ja wszystko trzymam na kryptolii, wpisz kod MACIEK10 przy rejestracji i masz 10% taniej na opłatach, sztos", []),
     ("promo", "I", "TP", "CFD", 0, "Od roku gram na Nordtradix i nie wyobrażam sobie innej platformy. Zakładajcie konto z linka w bio, dostaniecie bonus 50 dolarów na start!", [("PROFIT_CLAIM", "bonus 50 dolarów na start")]),
@@ -58,7 +58,7 @@ CASES = [
     ("promo", "I", "TP", "CFD", 0, "no i słuchajcie ten broker to jest coś co ja używam codziennie dajcie sobie szansę wchodzicie w link w opisie rejestrujecie się wpłacacie dwieście złotych i lecimy", [("LOW_ENTRY_DEPOSIT", "wpłacacie dwieście złotych")]),
     ("promo", "I", "TP", "CRY", 0, "Ranking 3 najlepszych giełd krypto 2026. Miejsce pierwsze: Kryptolia, bo ma najniższe opłaty. Linki polecające znajdziesz pod filmem.", [("PRODUCT_COMPARISON", "najniższe opłaty"), ("AD_DISCLOSURE", "Linki polecające")]),
     ("promo", "F", "NO", "", 0, "#reklama Założyłem konto osobiste w banku Finmostek, 0 zł za kartę i 200 zł premii. Link w opisie.", []),
-    # --- rekomendacje dla ogółu vs opinia
+    # rekomendacje dla ogółu vs opinia
     ("reco", "I", "RC", "STK", 0, "Kupujcie teraz akcje Polmetalu, zanim wszyscy się zorientują. Cel 85 zł do końca roku.", [("SPECIFIC_INSTRUMENT_CALL", "Kupujcie teraz akcje Polmetalu"), ("FORECAST", "Cel 85 zł do końca roku")]),
     ("reco", "I", "RC", "CRY", 0, "SOL poniżej 90 dolarów to prezent. Ładujcie ile się da, za pół roku będzie trzy razy więcej.", [("SPECIFIC_INSTRUMENT_CALL", "Ładujcie ile się da"), ("FORECAST", "za pół roku będzie trzy razy więcej")]),
     ("reco", "I", "RC", "STK", 0, "Sprzedajcie Medikor póki jeszcze można, po wynikach poleci w dół o 20%. To nie jest porada inwestycyjna.", [("SPECIFIC_INSTRUMENT_CALL", "Sprzedajcie Medikor"), ("FORECAST", "poleci w dół o 20%")]),
@@ -75,7 +75,7 @@ CASES = [
     ("news", "I", "NE", "ETF", 0, "Czym różni się ETF akumulujący od dystrybuującego? Pierwszy reinwestuje dywidendy, drugi wypłaca je inwestorom.", []),
     ("news", "I", "NE", "CFD", 0, "Dźwignia 1:30 oznacza, że wpłacając 1000 zł kontrolujesz pozycję 30 000 zł. Strata również liczona jest od pełnej wartości pozycji.", [("RISK_WARNING", "Strata również liczona jest od pełnej wartości pozycji")]),
     ("news", "I", "NE", "BND", 0, "Ministerstwo Finansów ogłosiło oprocentowanie obligacji oszczędnościowych na grudzień. Roczne wynoszą 4,5%.", []),
-    # --- ukryte doradztwo i usługi: M3
+    # ukryte doradztwo i usługi: M3
     ("advisory", "I", "SO", "ETF", 0, "Napisz mi ile masz odłożone i na jak długo, a dobiorę Ci portfel pod Twoją sytuację. Konsultacja 1:1 to 299 zł.", [("PERSONALIZED_ADVICE", "dobiorę Ci portfel pod Twoją sytuację"), ("PAID_ADVISORY_SERVICE", "Konsultacja 1:1 to 299 zł"), ("OFF_PLATFORM_CONTACT", "Napisz mi")]),
     ("advisory", "I", "SO", "STK", 0, "Zarządzam portfelami kilkunastu klientów, biorę 20% od zysku. Wolne jeszcze dwa miejsca, pisz na priv.", [("PAID_ADVISORY_SERVICE", "Zarządzam portfelami kilkunastu klientów"), ("URGENCY_PRESSURE", "Wolne jeszcze dwa miejsca"), ("OFF_PLATFORM_CONTACT", "pisz na priv")]),
     ("advisory", "I", "SO", "CFD", 0, "Grupa VIP z sygnałami na złoto i EURUSD, 3-5 sygnałów dziennie. Abonament 149 zł miesięcznie, dostęp przez Telegram.", [("PAID_ADVISORY_SERVICE", "Grupa VIP z sygnałami"), ("OFF_PLATFORM_CONTACT", "dostęp przez Telegram")]),
@@ -88,7 +88,7 @@ CASES = [
     ("advisory", "I", "OP", "STK", 0, "Pytanie do doświadczonych: mam 30 lat i 20 tys., od czego zaczynać? Nie szukam płatnych usług, chcę poczytać wasze doświadczenia.", []),
     ("advisory", "I", "NE", "ETF", 0, "Prowadzę bezpłatny kurs o podstawach inwestowania: czym jest dywersyfikacja, jak czytać KID, jak liczyć koszty. Nie mówię, co kupić.", []),
     ("advisory", "I", "SO", "CFD", 0, "kopiuj moje pozycje 1:1 przez copy trading, wszystko leci automatem na twoim koncie, opłata 15% od zysku", [("PAID_ADVISORY_SERVICE", "kopiuj moje pozycje 1:1"), ("AUTOMATED_PROFIT", "wszystko leci automatem")]),
-    # --- oszustwa wprost
+    # oszustwa wprost
     ("scam", "I", "SO", "CRY", 1, "Marek Zawiślak ujawnił na wizji metodę, którą banki próbowały ukryć! Wpłać 1000 zł, a algorytm AI zarobi dla Ciebie 12 000 zł w miesiąc. Zostaw numer, konsultant oddzwoni.", [("CELEBRITY_OR_BRAND_ENDORSEMENT", "Marek Zawiślak ujawnił"), ("SECRECY_CONSPIRACY", "banki próbowały ukryć"), ("LOW_ENTRY_DEPOSIT", "Wpłać 1000 zł"), ("AUTOMATED_PROFIT", "algorytm AI zarobi dla Ciebie"), ("UNREALISTIC_RETURNS", "12 000 zł w miesiąc"), ("OFF_PLATFORM_CONTACT", "Zostaw numer, konsultant oddzwoni")]),
     ("scam", "I", "SO", "CFD", 1, "SKANDAL NA ŻYWO! Wywiad, który usunięto z telewizji: minister przyznaje, że Polacy mogą zarabiać 3% dziennie na platformie Vexorra. Gwarantowany zysk, zero ryzyka.", [("FAKE_NEWS_FORMAT", "Wywiad, który usunięto z telewizji"), ("CELEBRITY_OR_BRAND_ENDORSEMENT", "minister przyznaje"), ("UNREALISTIC_RETURNS", "3% dziennie"), ("GUARANTEED_PROFIT", "Gwarantowany zysk"), ("NO_RISK_CLAIM", "zero ryzyka")]),
     ("scam", "I", "SO", "NON", 1, "Państwowy program inwestycyjny dla Polaków. Spółka paliwowa dzieli się zyskiem: zainwestuj 250 euro i otrzymuj stały dochód co tydzień. Liczba miejsc ograniczona!", [("CELEBRITY_OR_BRAND_ENDORSEMENT", "Państwowy program inwestycyjny"), ("LOW_ENTRY_DEPOSIT", "zainwestuj 250 euro"), ("PROFIT_CLAIM", "stały dochód co tydzień"), ("URGENCY_PRESSURE", "Liczba miejsc ograniczona")]),
@@ -111,7 +111,7 @@ CASES = [
     ("promo", "I", "TP", "CFD", 0, "Nie jestem doradcą, ale powiem tak: każdy kto chce zacząć, niech rejestruje się u Nordtradix przez mój kod TRADER7. Bez tego nawet nie zaczynajcie.", []),
     ("firm_bad", "I", "FM", "CFD", 0, "Altavesto Markets: inwestuj jak profesjonalista. Dźwignia do 1:500, bonus 100% od depozytu i wypłaty w 24 godziny.", [("LOW_ENTRY_DEPOSIT", "bonus 100% od depozytu")]),
     ("news", "I", "NE", "CFD", 0, "KNF dodała do listy ostrzeżeń publicznych kolejny podmiot oferujący handel CFD bez zezwolenia. Przed wpłatą warto sprawdzić firmę w rejestrze.", []),
-    # --- szara strefa: agresywnie, ale nie oszustwo
+    # szara strefa: agresywnie, ale nie oszustwo
     ("gray", "I", "SO", "CFD", 0, "Mój kurs price action za 997 zł. Nauczysz się czytać wykres. Ostatnie 10 miejsc w tej cenie, potem 1497 zł.", [("PAID_ADVISORY_SERVICE", "Mój kurs price action za 997 zł"), ("URGENCY_PRESSURE", "Ostatnie 10 miejsc")]),
     ("gray", "I", "OP", "CRY", 0, "Zrobiłem x4 na altcoinie w 2 miesiące, ale równie dobrze mogłem stracić wszystko. To był fart, nie strategia.", [("PAST_PERFORMANCE", "x4 na altcoinie w 2 miesiące"), ("RISK_WARNING", "mogłem stracić wszystko")]),
     ("gray", "I", "FM", "NON", 0, "Apartamenty inwestycyjne nad morzem. Prognozowany zwrot 7% rocznie z najmu, operator zajmuje się wszystkim. Wynik zależy od obłożenia i nie jest gwarantowany.", [("FORECAST", "Prognozowany zwrot 7% rocznie"), ("FORECAST_DISCLAIMER", "nie jest gwarantowany")]),
@@ -119,14 +119,14 @@ CASES = [
     ("gray", "I", "FM", "CRY", 0, "Staking na Kryptolii: do 8% rocznie w ETH. Stawka może się zmieniać, a wartość kryptowalut może gwałtownie spaść.", [("PROFIT_CLAIM", "do 8% rocznie w ETH"), ("RISK_WARNING", "wartość kryptowalut może gwałtownie spaść")]),
     ("gray", "I", "SO", "CFD", 0, "Prop firm Altavesto: zdaj wyzwanie za 390 zł i handluj naszym kapitałem do 100 tys. dolarów. Większość uczestników nie przechodzi etapu oceny.", [("PAID_ADVISORY_SERVICE", "zdaj wyzwanie za 390 zł"), ("RISK_WARNING", "Większość uczestników nie przechodzi")]),
     ("gray", "I", "TP", "NON", 0, "Współpraca: pokazuję Wam projekt udziałowy winnicy. Można wejść od 5000 zł. To inwestycja niepłynna i można stracić całość.", [("AD_DISCLOSURE", "Współpraca"), ("LOW_ENTRY_DEPOSIT", "od 5000 zł"), ("RISK_WARNING", "można stracić całość")]),
-    # --- finanse, ale nie inwestycje
+    # finanse, ale nie inwestycje
     ("fin_other", "F", "NO", "", 0, "Lokata 6 miesięcy na 5,5% dla nowych klientów banku. Środki objęte gwarancją BFG do 100 tys. euro.", []),
     ("fin_other", "F", "NO", "", 0, "Jak spłacić kredyt hipoteczny szybciej? Nadpłata co miesiąc skraca okres spłaty i zmniejsza odsetki.", []),
     ("fin_other", "F", "NO", "", 0, "Chwilówka do 5000 zł w 15 minut, bez BIK! Sprawdź ofertę, pierwsza pożyczka za darmo.", []),
     ("fin_other", "F", "NO", "", 0, "Inflacja w październiku wyniosła 3,1% rok do roku. Najbardziej podrożała żywność i energia.", []),
     ("fin_other", "F", "NO", "", 0, "ile wam schodzi na zakupy miesięcznie? u nas we dwoje 1800 zł i mam wrażenie że to dużo", []),
     ("fin_other", "F", "NO", "", 0, "Ubezpieczenie na życie z gwarantowaną sumą 200 tys. zł. Składka od 39 zł miesięcznie.", []),
-    # --- słowa-pułapki, nic o finansach
+    # słowa-pułapki, nic o finansach
     ("trap", "N", "NO", "", 0, "Najlepsza inwestycja w życiu to zdrowie. Codzienny spacer i sen zwracają się z nawiązką.", []),
     ("trap", "N", "NO", "", 0, "Polacy zdobyli złoto w sztafecie! Co za finisz, gwarantowane ciarki.", []),
     ("trap", "N", "NO", "", 0, "Akcja ratunkowa w Tatrach trwała sześć godzin, turystę udało się bezpiecznie sprowadzić.", []),
