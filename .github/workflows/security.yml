@@ -89,9 +89,16 @@ jobs:
           status=0
           for target in ml collector; do
             echo "### pip-audit: $target" >> "$GITHUB_STEP_SUMMARY"
-            target_status=0
-            uvx pip-audit@2.10.1 -r "$RUNNER_TEMP/$target.txt" --no-deps --disable-pip --progress-spinner off \
-              "${ignored[@]}" -f markdown -o "$RUNNER_TEMP/$target.md" || target_status=$?
+            # Ponawiamy tylko błąd sieci: znaleziona podatność zapisuje raport i kończy pętlę.
+            for attempt in 1 2 3; do
+              target_status=0
+              rm -f "$RUNNER_TEMP/$target.md"
+              uvx pip-audit@2.10.1 -r "$RUNNER_TEMP/$target.txt" --no-deps --disable-pip --progress-spinner off \
+                --timeout 60 "${ignored[@]}" -f markdown -o "$RUNNER_TEMP/$target.md" || target_status=$?
+              if [ "$target_status" -eq 0 ] || [ -s "$RUNNER_TEMP/$target.md" ]; then break; fi
+              echo "::warning::pip-audit ($target): próba $attempt nieudana"
+              if [ "$attempt" -lt 3 ]; then sleep $((attempt * 20)); fi
+            done
             # bez znalezisk pip-audit nie tworzy pliku raportu
             if [ -s "$RUNNER_TEMP/$target.md" ]; then
               cat "$RUNNER_TEMP/$target.md" >> "$GITHUB_STEP_SUMMARY"
